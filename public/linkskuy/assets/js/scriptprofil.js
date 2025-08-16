@@ -146,44 +146,56 @@ document.addEventListener('DOMContentLoaded', function() {
   // Profile form submission
   const profileForm = document.querySelector('.profile-form');
   if (profileForm) {
+    console.log('Profile form found, setting up submission handler');
+    
+    // Remove the preventDefault that was blocking form submission
     profileForm.addEventListener('submit', function(e) {
-      e.preventDefault();
+      console.log('Form submission triggered');
       
+      // Validate form before submission
       const username = document.getElementById('username').value;
       const email = document.getElementById('email').value;
       const phone = document.getElementById('phone').value;
+      const fullname = document.getElementById('fullname').value;
       
       // Basic validation
-      if (!username || !email || !phone) {
+      if (!username || !email || !phone || !fullname) {
+        e.preventDefault();
         console.log('Semua field harus diisi!');
-        return;
+        alert('Mohon lengkapi semua field yang wajib diisi!');
+        return false;
       }
       
       if (!isValidEmail(email)) {
+        e.preventDefault();
         console.log('Format email tidak valid!');
-        return;
+        alert('Format email tidak valid!');
+        return false;
       }
       
       if (!isValidPhone(phone)) {
+        e.preventDefault();
         console.log('Format nomor HP tidak valid!');
-        return;
+        alert('Format nomor HP tidak valid!');
+        return false;
       }
       
-      // Simulate saving
-      const saveBtn = this.querySelector('.save-btn');
-      const originalText = saveBtn.innerHTML;
-      saveBtn.innerHTML = '<ion-icon name="checkmark-outline"></ion-icon> Menyimpan...';
-      saveBtn.disabled = true;
+      // If validation passes, allow form submission
+      console.log('Form validation passed, submitting...');
       
-      setTimeout(() => {
-        saveBtn.innerHTML = '<ion-icon name="checkmark-outline"></ion-icon> Tersimpan!';
+      // Show loading state
+      const saveBtn = this.querySelector('.save-profile-btn');
+      if (saveBtn) {
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<ion-icon name="checkmark-outline"></ion-icon> Menyimpan...';
+        saveBtn.disabled = true;
+        
+        // Re-enable button after a delay (in case of error)
         setTimeout(() => {
           saveBtn.innerHTML = originalText;
           saveBtn.disabled = false;
-        }, 2000);
-      }, 1500);
-      
-      console.log('Profil berhasil diperbarui!');
+        }, 5000);
+      }
     });
   }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\user;
+namespace App\Http\Controllers\superadmin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ class ProfilController extends Controller
     public function index()
     {
         $data = User::where('id', auth()->user()->id)->first();
-        return view('pageuser.landing.profil', compact('data'));
+        return view('pagesuperadmin.profil.index', compact('data'));
     }
 
     public function update(Request $request)
@@ -28,6 +28,7 @@ class ProfilController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'username' => 'required|unique:users,username,' . $user->id,
             'no_wa' => 'required',
+            'password' => 'nullable|min:8|confirmed',
         ]);
 
         if($validator->fails()) {

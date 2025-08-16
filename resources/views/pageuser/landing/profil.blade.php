@@ -53,13 +53,31 @@
                     <div class="profile-container">
                         <!-- Form Profil -->
                         <div class="profile-form-container">
-                            <form class="profile-form" id="profile-form">
+                            <form class="profile-form" id="profileForm" action="{{ route('profil.update') }}" method="POST"
+                                enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
                                 <!-- Foto Profil -->
                                 <div class="form-group">
                                     <div class="profile-photo-input-container">
                                         <div class="profile-photo-preview" id="profile-photo-preview"
                                             onclick="document.getElementById('profile-photo').click()">
-                                            <img src="./assets/images/my-avatar.png" alt="Foto Profil"
+                                            @php
+                                                use Illuminate\Support\Str;
+                                                $fotoProfile = $data->foto_profile ?? auth()->user()->foto_profile ?? null;
+                                                if ($fotoProfile) {
+                                                    // Jika sudah berupa URL lengkap
+                                                    if (Str::startsWith($fotoProfile, ['http://', 'https://'])) {
+                                                        $srcFoto = $fotoProfile;
+                                                    } else {
+                                                        // Jika path lokal, gunakan asset()
+                                                        $srcFoto = asset('uploads/foto_profile/' . $fotoProfile);
+                                                    }
+                                                } else {
+                                                    $srcFoto = asset('env/logo.jpg');
+                                                }
+                                            @endphp
+                                            <img src="{{ $srcFoto }}" alt="Foto Profil"
                                                 class="profile-photo-img" id="profile-photo-img">
                                             <div class="photo-upload-overlay">
                                                 <ion-icon name="camera-outline"></ion-icon>
@@ -67,7 +85,7 @@
                                             </div>
                                         </div>
 
-                                        <input type="file" id="profile-photo" name="profile-photo" accept="image/*"
+                                        <input type="file" id="profile-photo" name="foto_profile" accept="image/*"
                                             style="display: none !important;" onchange="handlePhotoChange(this)">
 
                                         <small class="form-help">
@@ -82,7 +100,7 @@
                                         <ion-icon name="person-outline"></ion-icon>
                                         Nama Lengkap
                                     </label>
-                                    <input type="text" id="fullname" name="fullname" class="form-input"
+                                    <input type="text" id="fullname" name="name" value="{{ $data->name ?? auth()->user()->name ?? '' }}" class="form-input"
                                         placeholder="Masukkan nama lengkap Anda" required>
                                 </div>
 
@@ -92,7 +110,7 @@
                                         <ion-icon name="at-outline"></ion-icon>
                                         Username
                                     </label>
-                                    <input type="text" id="username" name="username" class="form-input"
+                                    <input type="text" id="username" name="username" value="{{ $data->username ?? auth()->user()->username ?? '' }}" class="form-input"
                                         placeholder="Masukkan username unik" required>
                                     <small class="form-help">
                                         Username akan digunakan untuk login dan URL profil Anda
@@ -105,18 +123,18 @@
                                         <ion-icon name="mail-outline"></ion-icon>
                                         Email
                                     </label>
-                                    <input type="email" id="email" name="email" class="form-input"
+                                    <input type="email" id="email" name="email" value="{{ $data->email ?? auth()->user()->email ?? '' }}" class="form-input"
                                         placeholder="Masukkan alamat email" required>
                                 </div>
 
                                 <!-- No HP -->
                                 <div class="form-group">
-                                    <label for="phone" class="form-label">
-                                        <ion-icon name="call-outline"></ion-icon>
-                                        No HP
+                                    <label for="email" class="form-label">
+                                        <ion-icon name="logo-whatsapp"></ion-icon>
+                                        No Whatsapp
                                     </label>
-                                    <input type="tel" id="phone" name="phone" class="form-input"
-                                        placeholder="Masukkan nomor HP" required>
+                                    <input type="tel" id="phone" name="no_wa" value="{{ $data->no_wa ?? auth()->user()->no_wa ?? '' }}" class="form-input"
+                                        placeholder="Masukkan nomor Whatsapp" required>
                                 </div>
 
                                 <!-- Action Buttons -->
@@ -124,11 +142,6 @@
                                     <button type="submit" class="save-profile-btn button-custom-shine">
                                         <ion-icon name="save-outline"></ion-icon>
                                         <span>Simpan Perubahan</span>
-                                    </button>
-
-                                    <button type="button" class="reset-form-btn button-custom-shine" id="reset-form">
-                                        <ion-icon name="refresh-outline"></ion-icon>
-                                        <span>Reset</span>
                                     </button>
                                 </div>
                             </form>
@@ -141,7 +154,38 @@
 
     <!-- custom js link -->
     <script src="{{ asset('linkskuy') }}/assets/js/script.js"></script>
-    <script src="{{ asset('linkskuy') }}/assets/js/scriptprofil.js"></script>
+    
+    <!-- JavaScript sederhana hanya untuk preview foto -->
+    <script>
+        // Fungsi untuk preview foto saat dipilih
+        function handlePhotoChange(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                
+                // Validasi ukuran file (2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('Ukuran file terlalu besar! Maksimal 2MB.');
+                    input.value = '';
+                    return;
+                }
+                
+                // Validasi tipe file
+                if (!file.type.startsWith('image/')) {
+                    alert('Pilih file gambar yang valid! Format: JPG, PNG, GIF');
+                    input.value = '';
+                    return;
+                }
+                
+                // Preview foto
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-photo-img').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+    
     @include('sweetalert::alert')
 
     <!-- ionicon link -->

@@ -68,7 +68,7 @@
                           $srcFoto = $fotoProfile;
                       } else {
                           // Jika path lokal, gunakan asset()
-                          $srcFoto = asset($fotoProfile);
+                          $srcFoto = asset('uploads/foto_profile/' . $fotoProfile);
                       }
                   } else {
                       $srcFoto = asset('env/logo.jpg');
@@ -93,6 +93,21 @@
         </section>
 
         <!-- testimonials modal -->
+        @if(isset($testimonis) && count($testimonis) > 0)
+        @php
+          // Ambil testimoni pertama untuk modal default
+          $modalTestimoni = $testimonis[0];
+          $fotoProfile = $modalTestimoni->user->foto_profile ?? null;
+          if ($fotoProfile) {
+              if (Str::startsWith($fotoProfile, ['http://', 'https://'])) {
+                  $srcFoto = $fotoProfile;
+              } else {
+                  $srcFoto = asset('uploads/foto_profile/' . $fotoProfile);
+              }
+          } else {
+              $srcFoto = asset('env/logo.jpg');
+          }
+        @endphp
         <div class="modal-container" data-modal-container>
           <div class="overlay" data-overlay></div>
 
@@ -103,66 +118,64 @@
 
             <div class="modal-img-wrapper">
               <figure class="modal-avatar-box">
-                <img src="{{ asset('linkskuy') }}/assets/images/avatar-1.png" alt="Daniel lewis" width="80" data-modal-img>
+                <img src="{{ $srcFoto }}" alt="{{ $modalTestimoni->user->name }}" width="80" data-modal-img>
               </figure>
 
               <img src="{{ asset('linkskuy') }}/assets/images/icon-quote.svg" alt="quote icon">
             </div>
 
             <div class="modal-content">
-              <h4 class="h3 modal-title font-custom-standar" data-modal-title>{{ $testimoni->user->name }}</h4>
+              <h4 class="h3 modal-title font-custom-standar" data-modal-title>{{ $modalTestimoni->user->name }}</h4>
 
-              <time datetime="2023-06-14" class="font-custom-standar" >{{ $testimoni->created_at->format('d M Y') }}</time>
+              <time datetime="{{ $modalTestimoni->created_at->format('Y-m-d') }}" class="font-custom-standar" >{{ $modalTestimoni->created_at->format('d M Y') }}</time>
 
               <div data-modal-text>
                 <p class="font-custom-standar">
-                  {{ $testimoni->pesan }}
+                  {{ $modalTestimoni->pesan }}
                 </p>
               </div>
             </div>
           </section>
         </div>
+        @else
+        <div class="modal-container" data-modal-container>
+          <div class="overlay" data-overlay></div>
+          <section class="testimonials-modal">
+            <button class="modal-close-btn" data-modal-close-btn>
+              <ion-icon name="close-outline"></ion-icon>
+            </button>
+            <div class="modal-img-wrapper">
+              <figure class="modal-avatar-box">
+                <img src="{{ asset('env/logo.jpg') }}" alt="Tidak ada testimoni" width="80" data-modal-img>
+              </figure>
+              <img src="{{ asset('linkskuy') }}/assets/images/icon-quote.svg" alt="quote icon">
+            </div>
+            <div class="modal-content">
+              <h4 class="h3 modal-title font-custom-standar" data-modal-title>Tidak Ada Testimoni</h4>
+              <div data-modal-text>
+                <p class="font-custom-standar">
+                  Belum ada testimoni yang tersedia.
+                </p>
+              </div>
+            </div>
+          </section>
+        </div>
+        @endif
 
         <!-- clients -->
         <section class="clients">
           <h3 class="h3 clients-title font-custom">Bestie Brand</h3>
 
           <ul class="clients-list has-scrollbar">
+            @foreach ($brands as $brand)
             <li class="clients-item">
-              <a href="#">
-                  <img src="{{ asset('linkskuy') }}/assets/images/logo-1-color.png" alt="client logo">
+              <a href="{{ $brand->link_brand }}" target="_blank">
+                  <img src="{{ asset('uploads/logo_brand/' . $brand->logo_brand) }}" alt="client logo" style="width: 150px; height: 150px; object-fit: contain;">
                 </a>
             </li>
+            @endforeach
 
-            <li class="clients-item">
-              <a href="#">
-                <img src="{{ asset('linkskuy') }}/assets/images/logo-2-color.png" alt="client logo">
-              </a>
-            </li>
-
-            <li class="clients-item">
-              <a href="#">
-                <img src="{{ asset('linkskuy') }}/assets/images/logo-3-color.png" alt="client logo">
-              </a>
-            </li>
-
-            <li class="clients-item">
-              <a href="#">
-                <img src="{{ asset('linkskuy') }}/assets/images/logo-4-color.png" alt="client logo">
-              </a>
-            </li>
-
-            <li class="clients-item">
-              <a href="#">
-                <img src="{{ asset('linkskuy') }}/assets/images/logo-5-color.png" alt="client logo">
-              </a>
-            </li>
-
-            <li class="clients-item">
-              <a href="#">
-                <img src="{{ asset('linkskuy') }}/assets/images/logo-6-color.png" alt="client logo">
-              </a>
-            </li>
+           
           </ul>
         </section>
       </article>

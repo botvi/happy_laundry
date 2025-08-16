@@ -9,6 +9,11 @@ use App\Http\Controllers\{
 
 use App\Http\Controllers\superadmin\{
     DashboardSuperAdminController,
+    ApiWhatsappController,
+    ManageTestimoniController,
+    ManagePelangganController,
+    ProfilController as ProfilSuperAdminController,
+    BrandController,
 };
 use App\Http\Controllers\user\{
     PreviewController,
@@ -37,13 +42,13 @@ use App\Http\Controllers\auth\{
 |
 */
 
-Route::get('/run-superadmin', function () {
-    Artisan::call('db:seed', [
-        '--class' => 'SuperAdminSeeder'
-    ]);
+// Route::get('/run-superadmin', function () {
+//     Artisan::call('db:seed', [
+//         '--class' => 'SuperAdminSeeder'
+//     ]);
 
-    return "SuperAdminSeeder has been create successfully!";
-});
+//     return "SuperAdminSeeder has been create successfully!";
+// });
 // Manual
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
@@ -69,7 +74,19 @@ Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'resetPa
 
 
 Route::group(['middleware' => ['role:superadmin']], function () {
+    Route::get('/profil-superadmin', [ProfilSuperAdminController::class, 'index'])->name('profil-superadmin');
+    Route::put('/profil-superadmin/update', [ProfilSuperAdminController::class, 'update'])->name('profil-superadmin.update');
     Route::get('/dashboard-superadmin', [DashboardSuperAdminController::class, 'index'])->name('dashboard-superadmin');
+    Route::get('whatsapp-api', [ApiWhatsappController::class, 'index'])->name('whatsapp-api.index');
+    Route::post('whatsapp-api', [ApiWhatsappController::class, 'storeorupdate'])->name('whatsapp-api.storeorupdate');
+    Route::get('manage-testimoni', [ManageTestimoniController::class, 'index'])->name('manage-testimoni.index');
+    Route::delete('manage-testimoni/destroy/{id}', [ManageTestimoniController::class, 'destroy'])->name('manage-testimoni.destroy');
+    Route::get('manage-pelanggan', [ManagePelangganController::class, 'index'])->name('manage-pelanggan.index');
+    Route::delete('manage-pelanggan/destroy/{id}', [ManagePelangganController::class, 'destroy'])->name('manage-pelanggan.destroy');
+    
+    // Brand Management Routes
+    Route::resource('brand', BrandController::class);
+    Route::patch('brand/{id}/toggle-status', [BrandController::class, 'toggleStatus'])->name('brand.toggle-status');
 });
 
 Route::get('/gg/{nama_link}', [PreviewController::class, 'index'])->name('preview');
@@ -101,6 +118,7 @@ Route::get('/skuy', [SkuyController::class, 'index'])->name('skuy');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
+    Route::put('/profil/update', [ProfilController::class, 'update'])->name('profil.update');
     Route::post('/skuy', [SkuyController::class, 'store'])->name('skuy.store');
     Route::get('/skuy/destroy/{id}', [SkuyController::class, 'destroy'])->name('skuy.destroy');
     Route::post('/testimoni', [TestimoniController::class, 'store'])->name('testimoni.store');

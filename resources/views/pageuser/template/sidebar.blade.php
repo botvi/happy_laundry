@@ -3,6 +3,7 @@
         <div class="sidebar-info">
             <figure class="avatar-box">
                 @php
+                    use Illuminate\Support\Str;
                     $fotoProfile = Auth::user()->foto_profile ?? null;
                     if ($fotoProfile) {
                         // Jika sudah berupa URL lengkap
@@ -10,7 +11,7 @@
                             $srcFoto = $fotoProfile;
                         } else {
                             // Jika path lokal, gunakan asset()
-                            $srcFoto = asset($fotoProfile);
+                            $srcFoto = asset('uploads/foto_profile/' . $fotoProfile);
                         }
                     } else {
                         $srcFoto = asset('env/logo.jpg');

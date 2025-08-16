@@ -3,7 +3,7 @@
 <!-- [Head] start -->
 
 <head>
-    <title>Home | Panenpro</title>
+    <title>Dashboard | Linkskuy</title>
     <!-- [Meta] -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -15,7 +15,7 @@
     <meta name="author" content="CodedThemes">
 
     <!-- [Favicon] icon -->
-    <link rel="icon" href="{{ asset('env') }}/logo.png" type="image/x-icon">
+    <link rel="icon" href="{{ asset('env') }}/logo.jpg" type="image/x-icon">
     <!-- [Google Font] Family -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap"
@@ -64,11 +64,11 @@
         <div class="footer-wrapper container-fluid">
             <div class="row">
                 <div class="col-sm my-1">
-                    <p class="m-0">Panenpro &#9829;</p>
+                    <p class="m-0">Linkskuy &#9829;</p>
                 </div>
                 <div class="col-auto my-1">
                     <ul class="list-inline footer-link mb-0">
-                        <li class="list-inline-item"><a href="{{ asset('admin') }}/index.html">Home</a></li>
+                        <li class="list-inline-item"><a href="/dashboard-superadmin">Home</a></li>
                     </ul>
                 </div>
             </div>

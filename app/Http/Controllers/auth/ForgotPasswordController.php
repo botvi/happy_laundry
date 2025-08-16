@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\WhatsappApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -106,7 +107,7 @@ class ForgotPasswordController extends Controller
 
     private function sendWhatsapp($no_wa, $message)
     {
-        $token = 'vZHB9GmpxwtU4CizgeG9';
+        $token = WhatsappApi::first()->access_token;
         $curl = curl_init();
         curl_setopt_array($curl, [
             CURLOPT_URL => 'https://api.fonnte.com/send',
