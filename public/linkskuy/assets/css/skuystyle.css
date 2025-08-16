@@ -118,7 +118,7 @@
   z-index: 100;
 }
 
-.edit-btn {
+.edit-btn, .hapus-btn {
   background: linear-gradient(135deg, #22c44d 0%, #16a34a 100%) !important;
   color: #fff !important;
   border: none !important;
@@ -132,9 +132,15 @@
   position: relative !important;
   overflow: hidden !important;
   z-index: 100 !important;
+  min-width: 120px !important;
+  height: 48px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-decoration: none !important;
 }
 
-.edit-btn::before {
+.edit-btn::before, .hapus-btn::before {
   content: '';
   position: absolute;
   top: 0;
@@ -145,14 +151,25 @@
   transition: left 0.5s;
 }
 
-.edit-btn:hover::before {
+.edit-btn:hover::before, .hapus-btn:hover::before {
   left: 100%;
 }
 
-.edit-btn:hover {
+.edit-btn:hover, .hapus-btn:hover {
   transform: translateY(-2px) !important;
   box-shadow: 0 8px 25px rgba(34, 196, 77, 0.4) !important;
   background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+}
+
+/* Specific styling for hapus button */
+.hapus-btn {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3) !important;
+}
+
+.hapus-btn:hover {
+  box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4) !important;
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%) !important;
 }
 
 /* Enhanced testimonials list styling */
@@ -367,6 +384,14 @@
     padding: 14px 28px;
     font-size: 1rem;
   }
+  
+  /* Responsive tombol edit dan hapus */
+  .edit-btn, .hapus-btn {
+    padding: 10px 20px !important;
+    font-size: 0.95rem !important;
+    min-width: 100px !important;
+    height: 44px !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -382,5 +407,24 @@
   .submit-testimonial-btn {
     padding: 12px 24px;
     font-size: 0.95rem;
+  }
+  
+  /* Responsive tombol edit dan hapus untuk mobile kecil */
+  .edit-btn, .hapus-btn {
+    padding: 8px 16px !important;
+    font-size: 0.9rem !important;
+    min-width: 90px !important;
+    height: 40px !important;
+  }
+  
+  /* Pastikan tombol tetap sejajar di mobile */
+  .link-actions {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  
+  .edit-btn, .hapus-btn {
+    width: 100% !important;
+    max-width: 200px !important;
   }
 }

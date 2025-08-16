@@ -768,8 +768,8 @@ body {
     }
 
     .main-content img[alt="Foto Profil"] {
-        width: 120px !important;
-        height: 120px !important;
+        width: 180px !important;
+        height: 180px !important;
         border-radius: 50% !important;
         object-fit: cover !important;
         object-position: center !important;
@@ -978,15 +978,16 @@ body {
         line-height: 1.4 !important;
     }
 
-    /* Mobile - Tombol Sosial Media Styling - Sama dengan Desktop */
+    /* Mobile - Tombol Sosial Media Styling - Rata Tengah */
     .social-media-grid {
-        display: grid !important;
-        grid-template-columns: repeat(4, 1fr) !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        align-items: center !important;
         gap: 16px !important;
         max-width: 400px !important;
         margin: 0 auto !important;
         padding: 0 !important;
-        justify-items: center !important;
     }
 
     .social-media-btn {

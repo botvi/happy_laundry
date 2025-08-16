@@ -8,9 +8,9 @@ use App\Models\Link;
 
 class PreviewController extends Controller
 {
-    public function index()
+    public function index($nama_link)
     {
-        $link = Link::where('user_id', auth()->user()->id)->first();
+        $link = Link::where('nama_link', $nama_link)->first();
         
         // Process order and hidden data
         $order = [];
@@ -29,6 +29,6 @@ class PreviewController extends Controller
             $backgroundCustom = $link->data_link['background_custom'];
         }
         
-        return view('pageuser.preview.index', compact('link', 'order', 'hidden', 'backgroundCustom'));
+        return view('pageuser.preview.index', compact('link', 'order', 'hidden', 'backgroundCustom', 'nama_link'));
     }
 }

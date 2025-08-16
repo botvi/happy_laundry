@@ -39,22 +39,19 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             if ($user->role == 'superadmin') {
-                Alert::success('Login Successful', 'Welcome back, Superadmin!');
+                Alert::success('Login Mantap!', 'Welcome back, Superadmin! Siap-siap ngatur dunia 😎');
                 return redirect()->route('dashboard-superadmin');
-            } else if ($user->role == 'asisten') {
-                Alert::success('Login Successful', 'Welcome back, Asisten!');
-                return redirect()->route('home');
             } else if ($user->role == 'user') {
-                Alert::success('Login Successful', 'Welcome back, User!');
-                return redirect('/home');
+                Alert::success('Login Mantap!', 'Halo bro, selamat datang lagi di Linkskuy!');
+                return redirect()->route('index');
             } else {
                 Auth::logout();
-                Alert::error('Login Failed', 'You are not authorized to access this area.');
+                Alert::error('Login Failed', 'Kamu gak punya akses ke area ini, bro!');
                 return redirect('/login');
             }
         }
     
-        Alert::error('Login Failed', 'The provided credentials do not match our records.');
+        Alert::error('Login Failed', 'Username atau password kamu salah, bro!');
         return back();
     }
 
@@ -63,6 +60,7 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+        Alert::success('Yah, cabut dulu ya?', 'Logout sukses, jangan lupa balik lagi bro!');
+        return redirect('/');
     }
 }

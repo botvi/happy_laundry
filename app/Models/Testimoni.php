@@ -5,14 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Link extends Model
+class Testimoni extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'data_link', 'nama_link', 'kode_unik'];
-
-    protected $casts = [
-        'data_link' => 'array',
-    ];
+    protected $fillable = ['user_id', 'pesan'];
 
     public function user()
     {

@@ -52,7 +52,7 @@ class RegisterController extends Controller
 
             Auth::login($user);
             Alert::success('Pendaftaran berhasil!', 'Selamat datang di Linkskuy!');
-            return redirect('/home');
+            return redirect()->route('index');
             
         } catch (\Exception $e) {
             Alert::error('Gagal mendaftar', 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.');

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 class LinkController extends Controller
 {
     
-    public function store(Request $request)
+    public function store(Request $request, $kode_unik, $nama_link)
     {
         $request->validate([
             'data_link' => 'required|array',
@@ -36,26 +36,49 @@ class LinkController extends Controller
         $dataLink = $request->data_link;
         $jsonFormat['data_link'] = $dataLink;
 
-        $link = Link::create([
-            'user_id' => auth()->user()->id,
-            'data_link' => $jsonFormat,
-        ]);
+        // Cari link berdasarkan kode_unik dan nama_link
+        $link = Link::where('kode_unik', $kode_unik)
+                    ->where('nama_link', $nama_link)
+                    ->first();
 
-        return redirect()->route('editor')->with('success', 'Link berhasil disimpan dengan format json yang sesuai');
+        if ($link) {
+            // Update data_link yang sudah ada
+            $link->update([
+                'data_link' => $jsonFormat,
+            ]);
+            $message = 'Link berhasil diupdate dengan format json yang sesuai';
+        } else {
+            // Buat link baru jika belum ada
+            $link = Link::create([
+                'kode_unik' => $kode_unik,
+                'nama_link' => $nama_link,
+                'user_id' => auth()->user()->id,
+                'data_link' => $jsonFormat,
+            ]);
+            $message = 'Link berhasil dibuat dengan format json yang sesuai';
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => $link
+        ]);
     }
 
     /**
      * Store atau update layout yang diatur oleh user dari editor
      */
-    public function storeLayout(Request $request)
+    public function storeLayout(Request $request, $kode_unik, $nama_link)
     {
         $request->validate([
             'order' => 'required|array',
             'hidden' => 'nullable|array',
         ]);
 
-        // Cek apakah user sudah memiliki data layout sebelumnya
-        $existingLink = Link::where('user_id', auth()->user()->id)->first();
+        // Cek apakah link sudah ada berdasarkan kode_unik dan nama_link
+        $existingLink = Link::where('kode_unik', $kode_unik)
+                            ->where('nama_link', $nama_link)
+                            ->first();
 
         if ($existingLink) {
             // Ambil data yang sudah ada
@@ -84,12 +107,14 @@ class LinkController extends Controller
             if (!isset($layoutData['background_custom'])) {
                 $layoutData['background_custom'] = [
                     'type' => 'image',
-                    'image' => 'https://images.pexels.com/photos/1037992/pexels-photo-1037992.jpeg?cs=srgb&dl=pexels-moose-photos-170195-1037992.jpg&fm=jpg',
+                    'image' => asset('env/bg.jpg'),
                     'updated_at' => now()->toIso8601String()
                 ];
             }
             
-            Link::create([
+            $existingLink = Link::create([
+                'kode_unik' => $kode_unik,
+                'nama_link' => $nama_link,
                 'user_id' => auth()->user()->id,
                 'data_link' => $layoutData,
             ]);
@@ -100,14 +125,14 @@ class LinkController extends Controller
         return response()->json([
             'success' => true,
             'message' => $message,
-            'data' => $existingLink ? $existingLink->data_link : $layoutData
+            'data' => $existingLink->data_link
         ]);
     }
 
     /**
      * Update profil pengguna
      */
-    public function updateProfile(Request $request)
+    public function updateProfile(Request $request, $kode_unik, $nama_link)
     {
         try {
             $request->validate([
@@ -116,7 +141,7 @@ class LinkController extends Controller
                 'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
-            $existingLink = $this->getOrCreateUserLink();
+            $existingLink = $this->getOrCreateUserLink($kode_unik, $nama_link);
             $currentData = $existingLink->data_link;
             
             // Handle upload foto profil
@@ -126,7 +151,7 @@ class LinkController extends Controller
             $currentData['profil_pengguna'] = [
                 'username' => $request->username,
                 'deskripsi' => $request->description,
-                'foto_profil' => $profileImagePath ?: ($currentData['profil_pengguna']['foto_profil'] ?? 'https://pandekakode.com/env/saya.jpeg'),
+                'foto_profil' => $profileImagePath ?: ($currentData['profil_pengguna']['foto_profil'] ?? asset('env/logo.jpg')),
                 'updated_at' => now()->toIso8601String()
             ];
 
@@ -150,7 +175,7 @@ class LinkController extends Controller
     /**
      * Update grid produk
      */
-    public function updateGridProduk(Request $request)
+    public function updateGridProduk(Request $request, $kode_unik, $nama_link)
     {
         try {
             $request->validate([
@@ -159,7 +184,7 @@ class LinkController extends Controller
                 'harga.*' => 'required|string|max:100',
             ]);
 
-            $existingLink = $this->getOrCreateUserLink();
+            $existingLink = $this->getOrCreateUserLink($kode_unik, $nama_link);
             $currentData = $existingLink->data_link;
             
             $products = [];
@@ -193,7 +218,7 @@ class LinkController extends Controller
     /**
      * Update tombol link
      */
-    public function updateTombolLink(Request $request)
+    public function updateTombolLink(Request $request, $kode_unik, $nama_link)
     {
         try {
             $request->validate([
@@ -201,7 +226,7 @@ class LinkController extends Controller
                 'link_tombol.*' => 'required|url',
             ]);
 
-            $existingLink = $this->getOrCreateUserLink();
+            $existingLink = $this->getOrCreateUserLink($kode_unik, $nama_link);
             $currentData = $existingLink->data_link;
             
             $links = [];
@@ -233,7 +258,7 @@ class LinkController extends Controller
     /**
      * Update YouTube embedded
      */
-    public function updateYoutubeEmbed(Request $request)
+    public function updateYoutubeEmbed(Request $request, $kode_unik, $nama_link)
     {
         try {
             $request->validate([
@@ -242,7 +267,7 @@ class LinkController extends Controller
                 'embeded_youtube.*' => 'required|string',
             ]);
 
-            $existingLink = $this->getOrCreateUserLink();
+            $existingLink = $this->getOrCreateUserLink($kode_unik, $nama_link);
             $currentData = $existingLink->data_link;
             
             $currentData['youtube_embeded'] = [
@@ -271,13 +296,14 @@ class LinkController extends Controller
     /**
      * Update sosial media
      */
-    public function updateSosialMedia(Request $request)
+    public function updateSosialMedia(Request $request, $kode_unik, $nama_link)
     {
         try {
             // Debug: log the incoming request
             Log::info('Sosial media update request:', [
                 'request_data' => $request->all(),
-                'user_id' => auth()->user()->id
+                'kode_unik' => $kode_unik,
+                'nama_link' => $nama_link
             ]);
 
             $request->validate([
@@ -287,7 +313,7 @@ class LinkController extends Controller
                 'sosial_media.*.active' => 'boolean',
             ]);
 
-            $existingLink = $this->getOrCreateUserLink();
+            $existingLink = $this->getOrCreateUserLink($kode_unik, $nama_link);
             $currentData = $existingLink->data_link;
             
             // Ensure sosial_media key exists
@@ -299,7 +325,8 @@ class LinkController extends Controller
             $this->updateUserLink($existingLink, $currentData);
 
             Log::info('Sosial media updated successfully:', [
-                'user_id' => auth()->user()->id,
+                'kode_unik' => $kode_unik,
+                'nama_link' => $nama_link,
                 'data' => $currentData['sosial_media']
             ]);
 
@@ -313,7 +340,8 @@ class LinkController extends Controller
             Log::error('Error updating sosial media', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
-                'user_id' => auth()->user()->id
+                'kode_unik' => $kode_unik,
+                'nama_link' => $nama_link
             ]);
             return response()->json([
                 'success' => false,
@@ -325,7 +353,7 @@ class LinkController extends Controller
     /**
      * Update portfolio project
      */
-    public function updatePortfolioProject(Request $request)
+    public function updatePortfolioProject(Request $request, $kode_unik, $nama_link)
     {
         try {
             $request->validate([
@@ -335,7 +363,7 @@ class LinkController extends Controller
                 'link_project.*' => 'required|url',
             ]);
 
-            $existingLink = $this->getOrCreateUserLink();
+            $existingLink = $this->getOrCreateUserLink($kode_unik, $nama_link);
             $currentData = $existingLink->data_link;
             
             $projects = [];
@@ -370,14 +398,14 @@ class LinkController extends Controller
     /**
      * Update gambar thumbnail
      */
-    public function updateGambarThumbnail(Request $request)
+    public function updateGambarThumbnail(Request $request, $kode_unik, $nama_link)
     {
         try {
             $request->validate([
                 'gambar_thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
-            $existingLink = $this->getOrCreateUserLink();
+            $existingLink = $this->getOrCreateUserLink($kode_unik, $nama_link);
             $currentData = $existingLink->data_link;
             
             $imagePath = $this->handleImageUpload($request, 'gambar_thumbnail', 'thumbnails');
@@ -406,14 +434,14 @@ class LinkController extends Controller
     /**
      * Update Spotify embed
      */
-    public function updateSpotifyEmbed(Request $request)
+    public function updateSpotifyEmbed(Request $request, $kode_unik, $nama_link)
     {
         try {
             $request->validate([
                 'embeded_spotify.*' => 'required|string',
             ]);
 
-            $existingLink = $this->getOrCreateUserLink();
+            $existingLink = $this->getOrCreateUserLink($kode_unik, $nama_link);
             $currentData = $existingLink->data_link;
             
             $currentData['spotify_embed'] = [
@@ -440,13 +468,14 @@ class LinkController extends Controller
     /**
      * Update background custom
      */
-    public function updateBackgroundCustom(Request $request)
+    public function updateBackgroundCustom(Request $request, $kode_unik, $nama_link)
     {
         try {
             // Debug: log the incoming request
             Log::info('Background custom update request:', [
                 'request_data' => $request->all(),
-                'user_id' => auth()->user()->id,
+                'kode_unik' => $kode_unik,
+                'nama_link' => $nama_link,
                 'files' => $request->allFiles()
             ]);
 
@@ -460,7 +489,7 @@ class LinkController extends Controller
                 'gradient_direction' => 'nullable|string|max:20',
             ]);
 
-            $existingLink = $this->getOrCreateUserLink();
+            $existingLink = $this->getOrCreateUserLink($kode_unik, $nama_link);
             $currentData = $existingLink->data_link;
             
             Log::info('Current data_link:', ['current_data' => $currentData]);
@@ -472,7 +501,7 @@ class LinkController extends Controller
 
             if ($request->background_type === 'image') {
                 $imagePath = $this->handleImageUpload($request, 'background_image', 'backgrounds');
-                $backgroundData['image'] = $imagePath ?: 'https://images.pexels.com/photos/1037992/pexels-photo-1037992.jpeg?cs=srgb&dl=pexels-moose-photos-170195-1037992.jpg&fm=jpg';
+                $backgroundData['image'] = $imagePath ?: asset('env/bg.jpg');
                 Log::info('Image upload result:', ['image_path' => $imagePath, 'final_image' => $backgroundData['image']]);
             } elseif ($request->background_type === 'color') {
                 $backgroundData['color'] = $request->background_color;
@@ -493,7 +522,8 @@ class LinkController extends Controller
             $this->updateUserLink($existingLink, $currentData);
 
             Log::info('Background custom updated successfully:', [
-                'user_id' => auth()->user()->id,
+                'kode_unik' => $kode_unik,
+                'nama_link' => $nama_link,
                 'data' => $currentData['background_custom']
             ]);
 
@@ -507,7 +537,8 @@ class LinkController extends Controller
             Log::error('Error updating background custom', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
-                'user_id' => auth()->user()->id
+                'kode_unik' => $kode_unik,
+                'nama_link' => $nama_link
             ]);
             return response()->json([
                 'success' => false,
@@ -519,12 +550,16 @@ class LinkController extends Controller
     /**
      * Helper method untuk mendapatkan atau membuat user link
      */
-    private function getOrCreateUserLink()
+    private function getOrCreateUserLink($kode_unik, $nama_link)
     {
-        $existingLink = Link::where('user_id', auth()->user()->id)->first();
+        $existingLink = Link::where('kode_unik', $kode_unik)
+                            ->where('nama_link', $nama_link)
+                            ->first();
         
         if (!$existingLink) {
             $existingLink = Link::create([
+                'kode_unik' => $kode_unik,
+                'nama_link' => $nama_link,
                 'user_id' => auth()->user()->id,
                 'data_link' => [
                     "order" => [
@@ -579,22 +614,25 @@ class LinkController extends Controller
     /**
      * Test method untuk debugging
      */
-    public function testProfile()
+    public function testProfile($kode_unik, $nama_link)
     {
         return response()->json([
             'success' => true,
             'message' => 'Test endpoint berfungsi',
-            'user_id' => auth()->user()->id,
+            'kode_unik' => $kode_unik,
+            'nama_link' => $nama_link,
             'timestamp' => now()->toIso8601String()
         ]);
     }
 
     /**
-     * Ambil layout yang tersimpan untuk user tertentu
+     * Ambil layout yang tersimpan untuk link tertentu
      */
-    public function getLayout()
+    public function getLayout($kode_unik, $nama_link)
     {
-        $link = Link::where('user_id', auth()->user()->id)->first();
+        $link = Link::where('kode_unik', $kode_unik)
+                    ->where('nama_link', $nama_link)
+                    ->first();
         
         if ($link) {
             return response()->json([
@@ -607,5 +645,71 @@ class LinkController extends Controller
             'success' => false,
             'message' => 'Tidak ada layout tersimpan'
         ]);
+    }
+
+    /**
+     * Bersihkan data elemen yang dihapus
+     */
+    public function cleanElementData(Request $request, $kode_unik, $nama_link)
+    {
+        try {
+            // Cari link berdasarkan kode_unik dan nama_link
+            $link = Link::where('kode_unik', $kode_unik)
+                        ->where('nama_link', $nama_link)
+                        ->first();
+
+            if (!$link) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Link tidak ditemukan'
+                ], 404);
+            }
+
+            // Ambil data yang sudah ada
+            $currentData = $link->data_link ?? [];
+            
+            // Bersihkan data elemen yang dihapus
+            $cleanedData = $currentData;
+            
+            // Hapus data elemen yang dikirim dalam request
+            foreach ($request->all() as $elementKey => $value) {
+                if ($value === null && isset($cleanedData[$elementKey])) {
+                    unset($cleanedData[$elementKey]);
+                    Log::info("Data elemen {$elementKey} berhasil dibersihkan", [
+                        'kode_unik' => $kode_unik,
+                        'nama_link' => $nama_link,
+                        'user_id' => auth()->user()->id
+                    ]);
+                }
+            }
+            
+            // Update timestamp
+            $cleanedData['timestamp'] = now()->toIso8601String();
+            
+            // Update data di database
+            $link->update([
+                'data_link' => $cleanedData
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data elemen berhasil dibersihkan',
+                'data' => $cleanedData
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error cleaning element data', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'kode_unik' => $kode_unik,
+                'nama_link' => $nama_link,
+                'user_id' => auth()->user()->id
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -44,11 +44,13 @@ class GoogleController extends Controller
                     return redirect()->route('google.complete', ['user_id' => $user->id]);
                 }
 
-                // Redirect langsung untuk user yang sudah terdaftar dan sudah lengkap datanya
+                // Langsung gaskeun redirect buat user yang udah lengkap datanya
                 if ($user->role == 'superadmin') {
+                    Alert::success('Login Mantap!', 'Welcome back, Superadmin! Siap-siap ngatur dunia 😎');
                     return redirect()->route('dashboard-superadmin');
                 } else {
-                    return redirect('/editor');
+                    Alert::success('Login Mantap!', 'Halo bro, selamat datang lagi di Linkskuy!');
+                    return redirect()->route('index');
                 }
             }
 
@@ -69,13 +71,13 @@ class GoogleController extends Controller
 
         } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
             // Handle invalid state exception dengan redirect dan alert
-            Alert::error('Sesi OAuth tidak valid', 'Silakan coba login lagi.');
+            Alert::error('Sesi OAuth tidak valid', 'Silakan coba login lagi, bro!');
             return redirect('/login');
             
         } catch (\Exception $e) {
             // Handle SSL certificate errors dan error lainnya dengan redirect dan alert
             $errorMessage = $e->getMessage();
-            $customMessage = 'Terjadi kesalahan saat login dengan Google.';
+            $customMessage = 'Terjadi kesalahan saat login dengan Google, bro!';
 
             if (strpos($errorMessage, 'SSL certificate problem') !== false || 
                 strpos($errorMessage, 'cURL error 60') !== false) {
@@ -97,7 +99,7 @@ class GoogleController extends Controller
         $user = User::where('id', $user_id)->first();
 
         if (!$user) {
-            Alert::error('Data Google tidak ditemukan.', 'Silakan login dengan Google terlebih dahulu.');
+            Alert::error('Data Google tidak ditemukan.', 'Silakan login dengan Google terlebih dahulu, bro!');
             return redirect('/login');
         }
 
@@ -122,7 +124,7 @@ class GoogleController extends Controller
         $user = User::where('id', $data['user_id'])->first();
 
         if (!$user) {
-            Alert::error('Data Google tidak ditemukan.', 'Silakan login dengan Google terlebih dahulu.');
+            Alert::error('Data Google tidak ditemukan.', 'Silakan login dengan Google terlebih dahulu, bro!');
             return redirect('/login');
         }
 
@@ -135,10 +137,10 @@ class GoogleController extends Controller
             Auth::login($user);
 
             Alert::success('Akun berhasil dibuat lewat Google!', 'Selamat datang di Linkskuy!');
-            return redirect('/editor');
+            return redirect()->route('index');
             
         } catch (\Exception $e) {
-            Alert::error('Gagal menyelesaikan pendaftaran', 'Terjadi kesalahan. Silakan coba lagi.');
+            Alert::error('Gagal menyelesaikan pendaftaran', 'Terjadi kesalahan. Silakan coba lagi, bro!');
             return back()->withInput();
         }
     }

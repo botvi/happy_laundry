@@ -14,6 +14,10 @@ use App\Http\Controllers\user\{
     PreviewController,
     LinkController,
     EditorController,
+    IndexController,
+    SkuyController,
+    ProfilController,
+    TestimoniController,
 };
 use App\Http\Controllers\auth\{
     LoginController,
@@ -68,22 +72,36 @@ Route::group(['middleware' => ['role:superadmin']], function () {
     Route::get('/dashboard-superadmin', [DashboardSuperAdminController::class, 'index'])->name('dashboard-superadmin');
 });
 
-Route::get('/preview', [PreviewController::class, 'index'])->name('preview');
+Route::get('/gg/{nama_link}', [PreviewController::class, 'index'])->name('preview');
 
 // Route untuk user
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/editor', [EditorController::class, 'index'])->name('editor');
-    Route::get('/get-layout', [LinkController::class, 'getLayout'])->name('get-layout');
-    Route::get('/test-profile', [LinkController::class, 'testProfile'])->name('test-profile');
-    Route::post('/store-link', [LinkController::class, 'store'])->name('store-link');
-    Route::post('/store-layout', [LinkController::class, 'storeLayout'])->name('store-layout');
-    Route::post('/update-profile', [LinkController::class, 'updateProfile'])->name('update-profile');
-    Route::post('/update-grid-produk', [LinkController::class, 'updateGridProduk'])->name('update-grid-produk');
-    Route::post('/update-tombol-link', [LinkController::class, 'updateTombolLink'])->name('update-tombol-link');
-    Route::post('/update-youtube-embed', [LinkController::class, 'updateYoutubeEmbed'])->name('update-youtube-embed');
-    Route::post('/update-sosial-media', [LinkController::class, 'updateSosialMedia'])->name('update-sosial-media');
-    Route::post('/update-portfolio-project', [LinkController::class, 'updatePortfolioProject'])->name('update-portfolio-project');
-    Route::post('/update-gambar-thumbnail', [LinkController::class, 'updateGambarThumbnail'])->name('update-gambar-thumbnail');
-    Route::post('/update-spotify-embed', [LinkController::class, 'updateSpotifyEmbed'])->name('update-spotify-embed');
-    Route::post('/update-background-custom', [LinkController::class, 'updateBackgroundCustom'])->name('update-background-custom');
+    Route::get('/editor/{kode_unik}/{nama_link}', [EditorController::class, 'index'])->name('editor');
+    
+    // Routes dengan parameter kode_unik dan nama_link
+    Route::get('/get-layout/{kode_unik}/{nama_link}', [LinkController::class, 'getLayout'])->name('get-layout');
+    Route::get('/test-profile/{kode_unik}/{nama_link}', [LinkController::class, 'testProfile'])->name('test-profile');
+    Route::post('/store-link/{kode_unik}/{nama_link}', [LinkController::class, 'store'])->name('store-link');
+    Route::post('/store-layout/{kode_unik}/{nama_link}', [LinkController::class, 'storeLayout'])->name('store-layout');
+    Route::post('/update-profile/{kode_unik}/{nama_link}', [LinkController::class, 'updateProfile'])->name('update-profile');
+    Route::post('/update-grid-produk/{kode_unik}/{nama_link}', [LinkController::class, 'updateGridProduk'])->name('update-grid-produk');
+    Route::post('/update-tombol-link/{kode_unik}/{nama_link}', [LinkController::class, 'updateTombolLink'])->name('update-tombol-link');
+    Route::post('/update-youtube-embed/{kode_unik}/{nama_link}', [LinkController::class, 'updateYoutubeEmbed'])->name('update-youtube-embed');
+    Route::post('/update-sosial-media/{kode_unik}/{nama_link}', [LinkController::class, 'updateSosialMedia'])->name('update-sosial-media');
+    Route::post('/update-portfolio-project/{kode_unik}/{nama_link}', [LinkController::class, 'updatePortfolioProject'])->name('update-portfolio-project');
+    Route::post('/update-gambar-thumbnail/{kode_unik}/{nama_link}', [LinkController::class, 'updateGambarThumbnail'])->name('update-gambar-thumbnail');
+    Route::post('/update-spotify-embed/{kode_unik}/{nama_link}', [LinkController::class, 'updateSpotifyEmbed'])->name('update-spotify-embed');
+    Route::post('/update-background-custom/{kode_unik}/{nama_link}', [LinkController::class, 'updateBackgroundCustom'])->name('update-background-custom');
+    Route::post('/clean-element-data/{kode_unik}/{nama_link}', [LinkController::class, 'cleanElementData'])->name('clean-element-data');
+});
+
+
+Route::get('/', [IndexController::class, 'index'])->name('index');
+Route::get('/skuy', [SkuyController::class, 'index'])->name('skuy');
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
+    Route::post('/skuy', [SkuyController::class, 'store'])->name('skuy.store');
+    Route::get('/skuy/destroy/{id}', [SkuyController::class, 'destroy'])->name('skuy.destroy');
+    Route::post('/testimoni', [TestimoniController::class, 'store'])->name('testimoni.store');
 });

@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Bio Keren - Editor</title>
+    <meta name="kode-unik" content="{{ $kode_unik }}">
+    <meta name="nama-link" content="{{ $nama_link }}">
+    <link rel="shortcut icon" href="{{ asset('env/logo.jpg') }}" type="image/x-icon">
+    <title>LinkSkuy - Editor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -1332,9 +1335,11 @@
                 <button class="mobile-close-btn" onclick="toggleSidebar()">
                     <i class="fas fa-times"></i>
                 </button>
-                <h1 class="text-xl font-bold">Bio Keren Editor</h1>
+                <h1 class="text-xl font-bold">LinkSkuy Editor</h1>
                 <p class="text-sm text-gray-300 mt-2">Atur susunan elemen halaman</p>
-               
+                <a href="/skuy" class="mt-4 inline-flex items-center px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm">
+                    <i class="fas fa-arrow-left mr-2"></i> Kembali Skuy
+                </a>
             </div>
             
             <div class="sidebar-content">
@@ -1409,7 +1414,7 @@
                 </div>
             </div>
             
-            <iframe id="previewFrame" class="preview-iframe" src="{{ route('preview') }}"></iframe>
+            <iframe id="previewFrame" class="preview-iframe" src="{{ route('preview', $nama_link) }}"></iframe>
         </div>
     </div>
     
@@ -1481,9 +1486,10 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Foto Profil</label>
                         <div class="flex items-center space-x-4">
                             <div class="relative">
-                                <img id="profilePreview" src="https://pandekakode.com/env/saya.jpeg" 
+                                <img id="profilePreview" src="{{ asset('env/logo.jpg') }}" 
                                      alt="Preview Foto" 
-                                     class="w-20 h-20 rounded-full object-cover border-2 border-gray-300">
+                                     class="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
+                                     onerror="this.src='{{ asset('env/logo.jpg') }}'">
                                 <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 hover:opacity-100 transition-opacity">
                                     <i class="fas fa-camera text-white text-lg"></i>
                                 </div>
@@ -1693,9 +1699,10 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Thumbnail</label>
                         <div class="flex items-center space-x-4">
                             <div class="relative">
-                                <img id="thumbnailPreview" src="https://mediaindonesia.gumlet.io/news/2024/07/d1138dc61a8d1ca95ce145724aa41032.jpg?w=376&dpr=2.6" 
+                                <img id="thumbnailPreview" src="{{ asset('env/bg.jpg') }}" 
                                      alt="Preview Thumbnail" 
-                                     class="w-32 h-24 object-cover border-2 border-gray-300 rounded-lg">
+                                     class="w-32 h-24 object-cover border-2 border-gray-300 rounded-lg"
+                                     onerror="this.src='{{ asset('env/bg.jpg') }}'">
                                 <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg opacity-0 hover:opacity-100 transition-opacity">
                                     <i class="fas fa-image text-white text-lg"></i>
                                 </div>
@@ -1816,9 +1823,10 @@
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div class="text-center">
                                 <div class="relative inline-block">
-                                    <img id="backgroundPreview" src="https://images.pexels.com/photos/1037992/pexels-photo-1037992.jpeg?cs=srgb&dl=pexels-moose-photos-170195-1037992.jpg&fm=jpg" 
+                                    <img id="backgroundPreview" src="{{ asset('env/bg.jpg') }}" 
                                          alt="Preview Background" 
-                                         class="w-48 h-36 object-cover border-4 border-white rounded-xl shadow-lg">
+                                         class="w-48 h-36 object-cover border-4 border-white rounded-xl shadow-lg"
+                                         onerror="this.src='{{ asset('env/bg.jpg') }}'">
                                     <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-200">
                                         <i class="fas fa-image text-white text-2xl"></i>
                                     </div>
@@ -2013,6 +2021,48 @@
     </div>
 
     <script>
+        // Helper function untuk mengkonversi path relatif menjadi URL lengkap
+        function getAssetUrl(path) {
+            if (!path) return '';
+            
+            // Jika sudah URL lengkap, return as is
+            if (path.startsWith('http://') || path.startsWith('https://')) {
+                return path;
+            }
+            
+            // Jika path relatif, tambahkan base URL
+            if (path.startsWith('/')) {
+                return window.location.origin + path;
+            }
+            
+            // Jika path tanpa slash, tambahkan slash dan base URL
+            return window.location.origin + '/' + path;
+        }
+        
+        // Helper function untuk menangani error loading gambar
+        function handleImageError(img, fallbackUrl) {
+            img.onerror = function() {
+                console.warn('Gambar tidak dapat dimuat:', img.src);
+                if (fallbackUrl) {
+                    img.src = fallbackUrl;
+                }
+            };
+        }
+        
+        // Helper function untuk membuat elemen gambar dengan error handling
+        function createImageElement(src, className, alt, fallbackUrl) {
+            const img = document.createElement('img');
+            img.src = getAssetUrl(src);
+            img.className = className;
+            img.alt = alt || 'Preview';
+            
+            if (fallbackUrl) {
+                handleImageError(img, fallbackUrl);
+            }
+            
+            return img;
+        }
+        
         // Data elemen-elemen yang tersedia
         const availableElements = [
             {
@@ -2079,7 +2129,10 @@
 
         // Cek layout dari server
         function checkServerLayout() {
-            fetch('/get-layout', {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/get-layout/${kodeUnik}/${namaLink}`, {
                 method: 'GET',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -2694,7 +2747,7 @@
             
             Swal.fire({
                 title: 'Hapus Elemen',
-                text: `Apakah Anda yakin ingin menghapus elemen "${elementName}"?\n\nTindakan ini tidak dapat dibatalkan dan elemen akan dihapus dari layout.`,
+                text: `Apakah Anda yakin ingin menghapus elemen "${elementName}"?\n\nTindakan ini tidak dapat dibatalkan dan elemen akan dihapus dari layout beserta semua datanya.`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc2626',
@@ -2707,6 +2760,9 @@
                     if (index > -1) {
                         currentOrder.splice(index, 1);
                         hiddenElements.delete(elementId); // Hapus dari hidden elements juga
+                        
+                        // Bersihkan data elemen yang dihapus dari server
+                        cleanElementData(elementId);
                         
                         // Update UI
                         renderElementList();
@@ -2723,9 +2779,114 @@
                         // Log untuk debugging
                         console.log(`Elemen "${elementName}" berhasil dihapus. Sisa elemen: ${currentOrder.length}`);
                         
-                        showNotification(`Elemen "${elementName}" berhasil dihapus!`, 'success');
+                        showNotification(`Elemen "${elementName}" berhasil dihapus beserta semua datanya!`, 'success');
                     }
                 }
+            });
+        }
+        
+        // Bersihkan data elemen yang dihapus dari server
+        function cleanElementData(elementId) {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            // Buat data kosong untuk elemen yang dihapus
+            const cleanData = {};
+            
+            switch(elementId) {
+                case 'profil_pengguna':
+                    cleanData.profil_pengguna = null;
+                    break;
+                case 'grid_produk':
+                    cleanData.grid_produk = null;
+                    break;
+                case 'tombol_link':
+                    cleanData.tombol_link = null;
+                    break;
+                case 'youtube_embeded':
+                    cleanData.youtube_embeded = null;
+                    break;
+                case 'sosial_media':
+                    cleanData.sosial_media = null;
+                    break;
+                case 'portfolio_project':
+                    cleanData.portfolio_project = null;
+                    break;
+                case 'gambar_thumbnail':
+                    cleanData.gambar_thumbnail = null;
+                    break;
+                case 'spotify_embed':
+                    cleanData.spotify_embed = null;
+                    break;
+                case 'background_custom':
+                    cleanData.background_custom = null;
+                    break;
+            }
+            
+            // Kirim request ke server untuk membersihkan data
+            if (Object.keys(cleanData).length > 0) {
+                fetch(`/clean-element-data/${kodeUnik}/${namaLink}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(cleanData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log(`Data elemen ${elementId} berhasil dibersihkan dari server`);
+                    } else {
+                        console.warn(`Gagal membersihkan data elemen ${elementId}:`, data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error membersihkan data elemen ${elementId}:`, error);
+                });
+            }
+        }
+        
+        // Bersihkan semua data elemen yang tidak ada dalam currentOrder
+        function cleanAllRemovedElementData() {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            // Dapatkan semua elemen yang tersedia
+            const allAvailableElements = availableElements.map(el => el.id);
+            
+            // Dapatkan elemen yang tidak ada dalam currentOrder
+            const removedElements = allAvailableElements.filter(elementId => !currentOrder.includes(elementId));
+            
+            if (removedElements.length === 0) {
+                return; // Tidak ada elemen yang dihapus
+            }
+            
+            // Buat data kosong untuk semua elemen yang dihapus
+            const cleanData = {};
+            removedElements.forEach(elementId => {
+                cleanData[elementId] = null;
+            });
+            
+            // Kirim request ke server untuk membersihkan data
+            fetch(`/clean-element-data/${kodeUnik}/${namaLink}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify(cleanData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log(`Data ${removedElements.length} elemen berhasil dibersihkan dari server:`, removedElements);
+                } else {
+                    console.warn(`Gagal membersihkan data elemen:`, data.message);
+                }
+            })
+            .catch(error => {
+                console.error(`Error membersihkan data elemen:`, error);
             });
         }
 
@@ -2848,7 +3009,7 @@
 
         // Buka preview di tab baru
         function openPreview() {
-            window.open('{{ route('preview') }}', '_blank');
+            window.open('{{ route('preview', $nama_link) }}', '_blank');
         }
 
         // Show add element modal
@@ -2938,10 +3099,42 @@
             const modal = document.getElementById('editProfileModal');
             modal.classList.remove('hidden');
             
+            // Load existing data
+            loadProfileData();
+            
             // Mobile-specific modal behavior
             if (window.innerWidth <= 768) {
                 document.body.style.overflow = 'hidden';
             }
+        }
+        
+        // Load profile data from server
+        function loadProfileData() {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/get-layout/${kodeUnik}/${namaLink}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data && data.data.profil_pengguna) {
+                        const profile = data.data.profil_pengguna;
+                        
+                        // Update form fields
+                        document.getElementById('username').value = profile.username || '';
+                        document.getElementById('description').value = profile.deskripsi || '';
+                        
+                        // Update profile image preview
+                        if (profile.foto_profil) {
+                            document.getElementById('profilePreview').src = getAssetUrl(profile.foto_profil);
+                        } else {
+                            // Fallback ke default image
+                            document.getElementById('profilePreview').src = 'https://pandekakode.com/env/saya.jpeg';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading profile data:', error);
+                });
         }
 
         // Hide edit profile modal
@@ -2959,10 +3152,43 @@
             const modal = document.getElementById('editGridProdukModal');
             modal.classList.remove('hidden');
             
+            // Load existing data
+            loadGridProdukData();
+            
             // Mobile-specific modal behavior
             if (window.innerWidth <= 768) {
                 document.body.style.overflow = 'hidden';
             }
+        }
+        
+        // Load grid produk data from server
+        function loadGridProdukData() {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/get-layout/${kodeUnik}/${namaLink}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data && data.data.grid_produk && data.data.grid_produk.length > 0) {
+                        const products = data.data.grid_produk;
+                        
+                        // Clear existing fields
+                        document.getElementById('productFields').innerHTML = '';
+                        
+                        // Add fields for each product
+                        products.forEach((product, index) => {
+                            addProductField(product);
+                        });
+                    } else {
+                        // If no data, add one empty field
+                        addProductField();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading grid produk data:', error);
+                    // Add one empty field as fallback
+                    addProductField();
+                });
         }
 
         // Hide edit grid produk modal
@@ -2980,10 +3206,43 @@
             const modal = document.getElementById('editTombolLinkModal');
             modal.classList.remove('hidden');
             
+            // Load existing data
+            loadTombolLinkData();
+            
             // Mobile-specific modal behavior
             if (window.innerWidth <= 768) {
                 document.body.style.overflow = 'hidden';
             }
+        }
+        
+        // Load tombol link data from server
+        function loadTombolLinkData() {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/get-layout/${kodeUnik}/${namaLink}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data && data.data.tombol_link && data.data.tombol_link.length > 0) {
+                        const links = data.data.tombol_link;
+                        
+                        // Clear existing fields
+                        document.getElementById('linkFields').innerHTML = '';
+                        
+                        // Add fields for each link
+                        links.forEach((link, index) => {
+                            addLinkField(link);
+                        });
+                    } else {
+                        // If no data, add one empty field
+                        addLinkField();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading tombol link data:', error);
+                    // Add one empty field as fallback
+                    addLinkField();
+                });
         }
 
         // Hide edit tombol link modal
@@ -3001,10 +3260,50 @@
             const modal = document.getElementById('editYoutubeEmbedModal');
             modal.classList.remove('hidden');
             
+            // Load existing data
+            loadYoutubeEmbedData();
+            
             // Mobile-specific modal behavior
             if (window.innerWidth <= 768) {
                 document.body.style.overflow = 'hidden';
             }
+        }
+        
+        // Load YouTube embed data from server
+        function loadYoutubeEmbedData() {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/get-layout/${kodeUnik}/${namaLink}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data && data.data.youtube_embeded) {
+                        const youtubeData = data.data.youtube_embeded;
+                        
+                        // Update form fields
+                        document.getElementById('header_youtube').value = youtubeData.header_youtube || '';
+                        document.getElementById('deskripsi_header').value = youtubeData.deskripsi_header || '';
+                        
+                        // Clear existing fields and add new ones
+                        document.getElementById('youtubeFields').innerHTML = '';
+                        
+                        if (youtubeData.embeded_youtube && youtubeData.embeded_youtube.length > 0) {
+                            youtubeData.embeded_youtube.forEach((embed, index) => {
+                                addYoutubeField(embed);
+                            });
+                        } else {
+                            addYoutubeField();
+                        }
+                    } else {
+                        // If no data, add one empty field
+                        addYoutubeField();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading YouTube embed data:', error);
+                    // Add one empty field as fallback
+                    addYoutubeField();
+                });
         }
 
         // Hide edit youtube embed modal
@@ -3022,10 +3321,42 @@
             const modal = document.getElementById('editSosialMediaModal');
             modal.classList.remove('hidden');
             
+            // Load existing data
+            loadSosialMediaData();
+            
             // Mobile-specific modal behavior
             if (window.innerWidth <= 768) {
                 document.body.style.overflow = 'hidden';
             }
+        }
+        
+        // Load sosial media data from server
+        function loadSosialMediaData() {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/get-layout/${kodeUnik}/${namaLink}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data && data.data.sosial_media && data.data.sosial_media.length > 0) {
+                        const socialMediaData = data.data.sosial_media;
+                        
+                        // Update form fields based on existing data
+                        socialMediaData.forEach(social => {
+                            const platform = social.platform.toLowerCase();
+                            const checkbox = document.getElementById(`active_${platform}`);
+                            const linkInput = document.querySelector(`input[name="sosial_media[${platform}][link]"]`);
+                            
+                            if (checkbox && linkInput) {
+                                checkbox.checked = social.active;
+                                linkInput.value = social.link || '';
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading sosial media data:', error);
+                });
         }
 
         // Hide edit sosial media modal
@@ -3043,10 +3374,43 @@
             const modal = document.getElementById('editPortfolioProjectModal');
             modal.classList.remove('hidden');
             
+            // Load existing data
+            loadPortfolioProjectData();
+            
             // Mobile-specific modal behavior
             if (window.innerWidth <= 768) {
                 document.body.style.overflow = 'hidden';
             }
+        }
+        
+        // Load portfolio project data from server
+        function loadPortfolioProjectData() {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/get-layout/${kodeUnik}/${namaLink}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data && data.data.portfolio_project && data.data.portfolio_project.length > 0) {
+                        const projects = data.data.portfolio_project;
+                        
+                        // Clear existing fields
+                        document.getElementById('portfolioFields').innerHTML = '';
+                        
+                        // Add fields for each project
+                        projects.forEach((project, index) => {
+                            addPortfolioField(project);
+                        });
+                    } else {
+                        // If no data, add one empty field
+                        addPortfolioField();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading portfolio project data:', error);
+                    // Add one empty field as fallback
+                    addPortfolioField();
+                });
         }
 
         // Hide edit portfolio project modal
@@ -3064,10 +3428,33 @@
             const modal = document.getElementById('editGambarThumbnailModal');
             modal.classList.remove('hidden');
             
+            // Load existing data
+            loadGambarThumbnailData();
+            
             // Mobile-specific modal behavior
             if (window.innerWidth <= 768) {
                 document.body.style.overflow = 'hidden';
             }
+        }
+        
+        // Load gambar thumbnail data from server
+        function loadGambarThumbnailData() {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/get-layout/${kodeUnik}/${namaLink}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data && data.data.gambar_thumbnail && data.data.gambar_thumbnail.gambar_thumbnail) {
+                        const thumbnail = data.data.gambar_thumbnail.gambar_thumbnail;
+                        
+                        // Update thumbnail preview
+                        document.getElementById('thumbnailPreview').src = getAssetUrl(thumbnail);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading gambar thumbnail data:', error);
+                });
         }
 
         // Hide edit gambar thumbnail modal
@@ -3085,10 +3472,43 @@
             const modal = document.getElementById('editSpotifyEmbedModal');
             modal.classList.remove('hidden');
             
+            // Load existing data
+            loadSpotifyEmbedData();
+            
             // Mobile-specific modal behavior
             if (window.innerWidth <= 768) {
                 document.body.style.overflow = 'hidden';
             }
+        }
+        
+        // Load Spotify embed data from server
+        function loadSpotifyEmbedData() {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/get-layout/${kodeUnik}/${namaLink}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data && data.data.spotify_embed && data.data.spotify_embed.embeded_spotify && data.data.spotify_embed.embeded_spotify.length > 0) {
+                        const spotifyEmbeds = data.data.spotify_embed.embeded_spotify;
+                        
+                        // Clear existing fields
+                        document.getElementById('spotifyFields').innerHTML = '';
+                        
+                        // Add fields for each embed
+                        spotifyEmbeds.forEach((embed, index) => {
+                            addSpotifyField(embed);
+                        });
+                    } else {
+                        // If no data, add one empty field
+                        addSpotifyField();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading Spotify embed data:', error);
+                    // Add one empty field as fallback
+                    addSpotifyField();
+                });
         }
 
         // Hide edit spotify embed modal
@@ -3106,16 +3526,71 @@
             const modal = document.getElementById('editBackgroundCustomModal');
             modal.classList.remove('hidden');
             
-            // Debug: log modal elements
-            console.log('Background custom modal opened');
-            console.log('Form:', document.getElementById('backgroundCustomForm'));
-            console.log('Background type radio:', document.querySelector('input[name="background_type"]:checked'));
-            console.log('Hidden background type:', document.getElementById('hiddenBackgroundType'));
+            // Load existing data
+            loadBackgroundCustomData();
             
             // Mobile-specific modal behavior
             if (window.innerWidth <= 768) {
                 document.body.style.overflow = 'hidden';
             }
+        }
+        
+        // Load background custom data from server
+        function loadBackgroundCustomData() {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/get-layout/${kodeUnik}/${namaLink}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data && data.data.background_custom) {
+                        const backgroundData = data.data.background_custom;
+                        
+                        // Set background type
+                        const backgroundTypeRadio = document.querySelector(`input[name="background_type"][value="${backgroundData.type}"]`);
+                        if (backgroundTypeRadio) {
+                            backgroundTypeRadio.checked = true;
+                            toggleBackgroundOptions();
+                        }
+                        
+                        // Update fields based on type
+                        if (backgroundData.type === 'image' && backgroundData.image) {
+                            document.getElementById('backgroundPreview').src = getAssetUrl(backgroundData.image);
+                        } else {
+                            // Fallback ke default background image
+                            document.getElementById('backgroundPreview').src = 'https://images.pexels.com/photos/1037992/pexels-photo-1037992.jpeg?cs=srgb&dl=pexels-moose-photos-170195-1037992.jpg&fm=jpg';
+                        }
+                        
+                        if (backgroundData.type === 'color') {
+                            if (backgroundData.color) {
+                                document.getElementById('backgroundColor').value = backgroundData.color;
+                                document.querySelector('input[onchange*="backgroundColor"]').value = backgroundData.color;
+                            }
+                            if (backgroundData.color_secondary) {
+                                document.getElementById('backgroundColorSecondary').value = backgroundData.color_secondary;
+                                document.querySelector('input[onchange*="backgroundColorSecondary"]').value = backgroundData.color_secondary;
+                            }
+                        } else if (backgroundData.type === 'gradient' && backgroundData.gradient) {
+                            if (backgroundData.gradient.color1) {
+                                document.getElementById('gradientColor1').value = backgroundData.gradient.color1;
+                                document.querySelector('input[onchange*="gradientColor1"]').value = backgroundData.gradient.color1;
+                            }
+                            if (backgroundData.gradient.color2) {
+                                document.getElementById('gradientColor2').value = backgroundData.gradient.color2;
+                                document.querySelector('input[onchange*="gradientColor2"]').value = backgroundData.gradient.color2;
+                            }
+                            if (backgroundData.gradient.direction) {
+                                document.getElementById('gradientDirection').value = backgroundData.gradient.direction;
+                            }
+                            
+                            // Update gradient preview
+                            updateGradientPreview();
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading background custom data:', error);
+                });
         }
 
         // Hide edit background custom modal
@@ -3183,7 +3658,10 @@
                 console.log('FormData entry:', key, value);
             }
 
-            fetch('/update-profile', {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/update-profile/${kodeUnik}/${namaLink}`, {
                 method: 'POST',
                 body: formData
             })
@@ -3242,7 +3720,7 @@
         }
 
         // Grid Produk Functions
-        function addProductField() {
+        function addProductField(existingProduct = null) {
             const container = document.getElementById('productFields');
             const fieldId = Date.now();
             
@@ -3257,18 +3735,26 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Foto Produk</label>
-                            <input type="file" name="foto_produk[]" accept="image/*" required 
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <div class="flex items-center space-x-4">
+                                ${existingProduct && existingProduct.foto_produk ? 
+                                    `<img src="${getAssetUrl(existingProduct.foto_produk)}" class="w-16 h-16 object-cover border-2 border-gray-300 rounded-lg" alt="Preview" onerror="this.src='https://via.placeholder.com/64x64?text=No+Image'">` : 
+                                    ''
+                                }
+                                <input type="file" name="foto_produk[]" accept="image/*" ${existingProduct ? '' : 'required'} 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Link Produk</label>
                             <input type="url" name="link_produk[]" required 
+                                   value="${existingProduct ? existingProduct.link_produk : ''}"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                    placeholder="https://example.com">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Harga</label>
                             <input type="text" name="harga[]" required 
+                                   value="${existingProduct ? existingProduct.harga : ''}"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                    placeholder="Rp 100.000">
                         </div>
@@ -3303,7 +3789,10 @@
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
             saveBtn.disabled = true;
 
-            fetch('/update-grid-produk', {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/update-grid-produk/${kodeUnik}/${namaLink}`, {
                 method: 'POST',
                 body: formData
             })
@@ -3332,7 +3821,7 @@
         }
 
         // Tombol Link Functions
-        function addLinkField() {
+        function addLinkField(existingLink = null) {
             const container = document.getElementById('linkFields');
             const fieldId = Date.now();
             
@@ -3348,12 +3837,14 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Nama Link</label>
                             <input type="text" name="nama_link[]" required 
+                                   value="${existingLink ? existingLink.nama_link : ''}"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                    placeholder="YouTube">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Link Tombol</label>
                             <input type="url" name="link_tombol[]" required 
+                                   value="${existingLink ? existingLink.link_tombol : ''}"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                    placeholder="https://youtube.com">
                         </div>
@@ -3394,7 +3885,10 @@
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
             saveBtn.disabled = true;
 
-            fetch('/update-tombol-link', {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/update-tombol-link/${kodeUnik}/${namaLink}`, {
                 method: 'POST',
                 body: formData
             })
@@ -3427,7 +3921,7 @@
         }
 
         // YouTube Embed Functions
-        function addYoutubeField() {
+        function addYoutubeField(existingEmbed = null) {
             const container = document.getElementById('youtubeFields');
             const fieldId = Date.now();
             
@@ -3443,7 +3937,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Embed Code</label>
                         <textarea name="embeded_youtube[]" rows="3" required 
                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                  placeholder="<iframe src='...'></iframe>"></textarea>
+                                  placeholder="<iframe src='...'></iframe>">${existingEmbed || ''}</textarea>
                     </div>
                 </div>
             `;
@@ -3475,7 +3969,10 @@
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
             saveBtn.disabled = true;
 
-            fetch('/update-youtube-embed', {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/update-youtube-embed/${kodeUnik}/${namaLink}`, {
                 method: 'POST',
                 body: formData
             })
@@ -3598,7 +4095,10 @@
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
             saveBtn.disabled = true;
 
-            fetch('/update-sosial-media', {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/update-sosial-media/${kodeUnik}/${namaLink}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -3635,7 +4135,7 @@
         }
 
         // Portfolio Project Functions
-        function addPortfolioField() {
+        function addPortfolioField(existingProject = null) {
             const container = document.getElementById('portfolioFields');
             const fieldId = Date.now();
             
@@ -3650,12 +4150,19 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Project</label>
-                            <input type="file" name="gambar_project[]" accept="image/*" required 
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <div class="flex items-center space-x-4">
+                                ${existingProject && existingProject.gambar_project ? 
+                                    `<img src="${getAssetUrl(existingProject.gambar_project)}" class="w-16 h-16 object-cover border-2 border-gray-300 rounded-lg" alt="Preview" onerror="this.src='https://via.placeholder.com/64x64?text=No+Image'">` : 
+                                    ''
+                                }
+                                <input type="file" name="gambar_project[]" accept="image/*" ${existingProject ? '' : 'required'} 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Judul Project</label>
                             <input type="text" name="judul_project[]" required 
+                                   value="${existingProject ? existingProject.judul_project : ''}"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                    placeholder="E-Commerce Platform">
                         </div>
@@ -3663,11 +4170,12 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi Project</label>
                             <textarea name="deskripsi_project[]" rows="3" required 
                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                      placeholder="Website toko online dengan fitur lengkap"></textarea>
+                                      placeholder="Website toko online dengan fitur lengkap">${existingProject ? existingProject.deskripsi_project : ''}</textarea>
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Link Project</label>
                             <input type="url" name="link_project[]" required 
+                                   value="${existingProject ? existingProject.link_project : ''}"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                    placeholder="https://example.com">
                         </div>
@@ -3702,7 +4210,10 @@
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
             saveBtn.disabled = true;
 
-            fetch('/update-portfolio-project', {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/update-portfolio-project/${kodeUnik}/${namaLink}`, {
                 method: 'POST',
                 body: formData
             })
@@ -3748,7 +4259,10 @@
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
             saveBtn.disabled = true;
 
-            fetch('/update-gambar-thumbnail', {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/update-gambar-thumbnail/${kodeUnik}/${namaLink}`, {
                 method: 'POST',
                 body: formData
             })
@@ -3777,7 +4291,7 @@
         }
 
         // Spotify Embed Functions
-        function addSpotifyField() {
+        function addSpotifyField(existingEmbed = null) {
             const container = document.getElementById('spotifyFields');
             const fieldId = Date.now();
             
@@ -3793,7 +4307,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Embed Code</label>
                         <textarea name="embeded_spotify[]" rows="3" required 
                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                  placeholder="<iframe src='...'></iframe>"></textarea>
+                                  placeholder="<iframe src='...'></iframe>">${existingEmbed || ''}</textarea>
                     </div>
                 </div>
             `;
@@ -3984,7 +4498,10 @@
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                 formData.append('_token', csrfToken);
 
-                fetch('/update-background-custom', {
+                const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+                const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+                
+                fetch(`/update-background-custom/${kodeUnik}/${namaLink}`, {
                     method: 'POST',
                     body: formData
                 })
@@ -4046,7 +4563,10 @@
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
             saveBtn.disabled = true;
 
-            fetch('/update-spotify-embed', {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
+            fetch(`/update-spotify-embed/${kodeUnik}/${namaLink}`, {
                 method: 'POST',
                 body: formData
             })
@@ -4103,6 +4623,9 @@
 
         // Save layout
         function saveLayout() {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
             const layoutData = {
                 order: currentOrder,
                 hidden: Array.from(hiddenElements),
@@ -4112,6 +4635,9 @@
             // Simpan ke localStorage sebagai backup
             localStorage.setItem('bioKerenLayout', JSON.stringify(layoutData));
             
+            // Bersihkan data elemen yang tidak ada dalam currentOrder
+            cleanAllRemovedElementData();
+            
             // Tampilkan loading state
             const saveBtn = document.querySelector('.save-btn');
             const originalText = saveBtn.innerHTML;
@@ -4119,7 +4645,7 @@
             saveBtn.disabled = true;
             
             // Kirim ke server via API
-            fetch('/store-layout', {
+            fetch(`/store-layout/${kodeUnik}/${namaLink}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -4177,8 +4703,14 @@
                 // Simpan ke localStorage sebagai backup
                 localStorage.setItem('bioKerenLayout', JSON.stringify(layoutData));
                 
+                // Bersihkan data elemen yang tidak ada dalam currentOrder
+                cleanAllRemovedElementData();
+                
                 // Kirim ke server via API tanpa loading state
-                fetch('/store-layout', {
+                const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+                const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+                
+                fetch(`/store-layout/${kodeUnik}/${namaLink}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -4309,13 +4841,16 @@
 
         // Load layout dari server
         function loadLayoutFromServer() {
+            const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
+            const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+            
             // Tampilkan loading state
             const loadBtn = document.querySelector('button[onclick="loadLayoutFromServer()"]');
             const originalText = loadBtn.innerHTML;
             loadBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
             loadBtn.disabled = true;
             
-            fetch('/get-layout', {
+            fetch(`/get-layout/${kodeUnik}/${namaLink}`, {
                 method: 'GET',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
