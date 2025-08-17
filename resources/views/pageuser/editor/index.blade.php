@@ -477,6 +477,25 @@
             background: #059669;
             transform: translateY(-2px);
         }
+
+        /* Responsive save button untuk mobile */
+        @media (max-width: 768px) {
+            .save-btn {
+                bottom: 80px; /* Beri ruang untuk floating action button */
+                right: 16px;
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .save-btn {
+                bottom: 70px;
+                right: 12px;
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+        }
         
         .mobile-toggle-btn {
             display: none;
@@ -492,6 +511,139 @@
         
         .mobile-close-btn {
             display: none;
+        }
+
+        /* Floating Action Button untuk Mobile */
+        .floating-action-btn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100001;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .floating-action-btn:hover {
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .floating-action-btn:active {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .floating-action-btn.editor-mode {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .floating-action-btn.preview-mode {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Pastikan floating action button selalu di atas elemen lain */
+        .floating-action-btn {
+            z-index: 100001 !important;
+            position: fixed !important;
+        }
+
+        /* Responsive untuk mobile */
+        @media (max-width: 768px) {
+            .floating-action-btn {
+                bottom: 20px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                min-width: 140px !important;
+                padding: 18px 28px !important;
+                font-size: 16px !important;
+            }
+        }
+
+        /* Responsive untuk mobile kecil */
+        @media (max-width: 480px) {
+            .floating-action-btn {
+                bottom: 16px !important;
+                min-width: 130px !important;
+                padding: 16px 24px !important;
+                font-size: 15px !important;
+            }
+        }
+
+        /* Animasi smooth untuk perubahan mode */
+        .floating-action-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            transform: translateX(-50%) !important;
+        }
+
+        /* Animasi untuk perubahan background dan shadow */
+        .floating-action-btn.editor-mode,
+        .floating-action-btn.preview-mode {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        /* Hover effect yang lebih smooth */
+        .floating-action-btn:hover {
+            transform: translateX(-50%) translateY(-3px) !important;
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4) !important;
+        }
+
+        .floating-action-btn.preview-mode:hover {
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4) !important;
+        }
+
+        /* Active state untuk touch devices */
+        .floating-action-btn:active {
+            transform: translateX(-50%) translateY(-1px) !important;
+            transition: transform 0.1s ease !important;
+        }
+
+        /* Icon styling untuk floating action button */
+        .floating-action-btn i {
+            font-size: 16px;
+            margin-right: 8px;
+            transition: all 0.3s ease;
+        }
+
+        /* Responsive icon size */
+        @media (max-width: 480px) {
+            .floating-action-btn i {
+                font-size: 14px;
+                margin-right: 6px;
+            }
+        }
+
+        /* Touch target size untuk mobile */
+        @media (max-width: 768px) {
+            .floating-action-btn {
+                min-height: 56px !important; /* Minimum touch target size */
+                min-width: 140px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+        }
+
+        /* Focus state untuk accessibility */
+        .floating-action-btn:focus {
+            outline: 3px solid rgba(59, 130, 246, 0.5) !important;
+            outline-offset: 2px !important;
+        }
+
+        .floating-action-btn.preview-mode:focus {
+            outline: 3px solid rgba(16, 185, 129, 0.5) !important;
         }
 
         /* Mencegah text selection pada body secara global */
@@ -558,6 +710,15 @@
             }
             
             .mobile-toggle-btn {
+                display: none; /* Sembunyikan tombol toggle lama */
+            }
+
+            .mobile-close-btn {
+                display: none; /* Sembunyikan tombol close lama */
+            }
+
+            /* Tampilkan floating action button di mobile */
+            .floating-action-btn {
                 display: block;
             }
             
@@ -1511,8 +1672,13 @@
     </div>
     
     <!-- Save Button -->
-    <button class="save-btn" onclick="saveLayout()">
+    <button class="save-btn" onclick="saveLayout()" style="display: none;">
         <i class="fas fa-save mr-2"></i>Simpan Layout
+    </button>
+
+    <!-- Floating Action Button untuk Mobile -->
+    <button class="floating-action-btn editor-mode" id="floatingActionBtn" onclick="toggleSidebar()">
+        <i class="fas fa-edit mr-2"></i>Editor
     </button>
     
     <!-- Add Element Modal -->
@@ -2387,6 +2553,9 @@
             setupDragAndDrop();
             initializeModals();
             
+            // Inisialisasi floating action button
+            initFloatingActionButton();
+            
             // Set preview to desktop mode
             const iframe = document.getElementById('previewFrame');
             if (iframe) {
@@ -2429,11 +2598,43 @@
             });
         }
         
+        // Inisialisasi floating action button
+        function initFloatingActionButton() {
+            const floatingBtn = document.getElementById('floatingActionBtn');
+            const sidebar = document.querySelector('.sidebar');
+            
+            if (floatingBtn && sidebar) {
+                // Set initial state berdasarkan status sidebar
+                if (sidebar.classList.contains('mobile-open')) {
+                    floatingBtn.className = 'floating-action-btn preview-mode';
+                    floatingBtn.innerHTML = '<i class="fas fa-eye mr-2"></i>Preview';
+                } else {
+                    floatingBtn.className = 'floating-action-btn editor-mode';
+                    floatingBtn.innerHTML = '<i class="fas fa-edit mr-2"></i>Editor';
+                }
+            }
+        }
+
         // Toggle sidebar untuk mobile
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
+            const floatingBtn = document.getElementById('floatingActionBtn');
+            
             if (sidebar) {
-                sidebar.classList.toggle('mobile-open');
+                const isOpen = sidebar.classList.toggle('mobile-open');
+                
+                // Update floating action button
+                if (floatingBtn) {
+                    if (isOpen) {
+                        // Sidebar terbuka, ubah ke mode Preview
+                        floatingBtn.className = 'floating-action-btn preview-mode';
+                        floatingBtn.innerHTML = '<i class="fas fa-eye mr-2"></i>Preview';
+                    } else {
+                        // Sidebar tertutup, ubah ke mode Editor
+                        floatingBtn.className = 'floating-action-btn editor-mode';
+                        floatingBtn.innerHTML = '<i class="fas fa-edit mr-2"></i>Editor';
+                    }
+                }
             }
         }
 
