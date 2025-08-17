@@ -20,6 +20,7 @@ class LinkController extends Controller
         // Susunan json yang diinginkan dengan ID elemen yang benar
         $jsonFormat = [
             "order" => [
+                "warna_text_custom",
                 "profil_pengguna",
                 "grid_produk", 
                 "tombol_link",
@@ -495,12 +496,100 @@ class LinkController extends Controller
     }
 
     /**
+     * Update warna text saja tanpa mengubah background
+     */
+    public function updateTextColor(Request $request, $kode_unik, $nama_link)
+    {
+        try {
+            $request->validate([
+                'warna_text' => 'required|string|max:7',
+            ]);
+
+            $existingLink = $this->getOrCreateUserLink($kode_unik, $nama_link);
+            $currentData = $existingLink->data_link;
+            
+            // Update hanya warna text, tidak mengubah background yang sudah ada
+            if (!isset($currentData['background_custom'])) {
+                $currentData['background_custom'] = [];
+            }
+            
+            $currentData['background_custom']['warna_text'] = $request->warna_text;
+            $currentData['background_custom']['updated_at'] = now()->toIso8601String();
+            
+            $this->updateUserLink($existingLink, $currentData);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Warna text berhasil diupdate!',
+                'data' => [
+                    'warna_text' => $request->warna_text
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error updating text color', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'kode_unik' => $kode_unik,
+                'nama_link' => $nama_link
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Update warna text custom sebagai elemen terpisah
+     */
+    public function updateWarnaTextCustom(Request $request, $kode_unik, $nama_link)
+    {
+        try {
+            $request->validate([
+                'warna_text' => 'required|string|max:7',
+            ]);
+
+            $existingLink = $this->getOrCreateUserLink($kode_unik, $nama_link);
+            $currentData = $existingLink->data_link;
+            
+            // Update data warna_text_custom sebagai elemen terpisah
+            $currentData['warna_text_custom'] = [
+                'warna_text' => $request->warna_text,
+                'updated_at' => now()->toIso8601String()
+            ];
+            
+            $this->updateUserLink($existingLink, $currentData);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Warna teks custom berhasil diupdate!',
+                'data' => [
+                    'warna_text' => $request->warna_text
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error updating warna text custom', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'kode_unik' => $kode_unik,
+                'nama_link' => $nama_link
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Update background custom
      */
     public function updateBackgroundCustom(Request $request, $kode_unik, $nama_link)
     {
         try {
-            // Debug: log the incoming request
+            // Debug: log permintaan masuk
             Log::info('Background custom update request:', [
                 'request_data' => $request->all(),
                 'kode_unik' => $kode_unik,
@@ -516,22 +605,48 @@ class LinkController extends Controller
                 'gradient_color_1' => 'nullable|string|max:7',
                 'gradient_color_2' => 'nullable|string|max:7',
                 'gradient_direction' => 'nullable|string|max:20',
+                'warna_text' => 'nullable|string|max:255',
             ]);
 
             $existingLink = $this->getOrCreateUserLink($kode_unik, $nama_link);
             $currentData = $existingLink->data_link;
-            
+
             Log::info('Current data_link:', ['current_data' => $currentData]);
-            
+
+            // Ambil data background_custom lama jika ada
+            $oldBackground = isset($currentData['background_custom']) ? $currentData['background_custom'] : [];
+
             $backgroundData = [
                 'type' => $request->background_type,
                 'updated_at' => now()->toIso8601String()
             ];
+            
+            // Hanya update warna_text jika diisi
+            if ($request->filled('warna_text')) {
+                $backgroundData['warna_text'] = $request->warna_text;
+            } else {
+                // Gunakan warna text yang sudah ada jika tidak diisi
+                if (isset($oldBackground['warna_text'])) {
+                    $backgroundData['warna_text'] = $oldBackground['warna_text'];
+                }
+            }
 
             if ($request->background_type === 'image') {
-                $imagePath = $this->handleImageUpload($request, 'background_image', 'backgrounds');
-                $backgroundData['image'] = $imagePath ?: asset('env/bg.jpg');
-                Log::info('Image upload result:', ['image_path' => $imagePath, 'final_image' => $backgroundData['image']]);
+                // Cek apakah user mengupload gambar baru
+                if ($request->hasFile('background_image')) {
+                    $imagePath = $this->handleImageUpload($request, 'background_image', 'backgrounds');
+                    $backgroundData['image'] = $imagePath ?: asset('env/bg.jpg');
+                    Log::info('Image upload result:', ['image_path' => $imagePath, 'final_image' => $backgroundData['image']]);
+                } else {
+                    // Tidak ada gambar baru, gunakan gambar lama jika ada
+                    if (isset($oldBackground['image'])) {
+                        $backgroundData['image'] = $oldBackground['image'];
+                        Log::info('No new image uploaded, using existing image', ['image' => $backgroundData['image']]);
+                    } else {
+                        $backgroundData['image'] = asset('env/bg.jpg');
+                        Log::info('No image found, using default', ['image' => $backgroundData['image']]);
+                    }
+                }
             } elseif ($request->background_type === 'color') {
                 $backgroundData['color'] = $request->background_color;
                 $backgroundData['color_secondary'] = $request->background_color_secondary;
@@ -545,9 +660,10 @@ class LinkController extends Controller
                 Log::info('Gradient data:', ['gradient' => $backgroundData['gradient']]);
             }
 
+            // Tetap update meskipun tidak ada perubahan (selalu simpan)
             $currentData['background_custom'] = $backgroundData;
             Log::info('Updated background data:', ['background_custom' => $currentData['background_custom']]);
-            
+
             $this->updateUserLink($existingLink, $currentData);
 
             Log::info('Background custom updated successfully:', [
@@ -592,6 +708,7 @@ class LinkController extends Controller
                 'user_id' => auth()->user()->id,
                 'data_link' => [
                     "order" => [
+                        "warna_text_custom",
                         "profil_pengguna",
                         "grid_produk", 
                         "tombol_link",

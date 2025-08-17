@@ -260,8 +260,8 @@
         }
         
         #spotify_embed {
-            padding-top: 0.5rem !important;
-            padding-bottom: 0.5rem !important;
+            padding-top: 0.2rem !important;
+            padding-bottom: 0.2rem !important;
         }
         
         /* Additional spacing optimizations */
@@ -303,7 +303,7 @@
         }
         
         .spotify-embed {
-            margin-bottom: 0.5rem !important;
+            margin-bottom: 0.2rem !important;
         }
         
         /* Reduce margins for headings and text elements */
@@ -475,10 +475,10 @@
                                             class="rounded-full mb-3 md:mb-4 w-48 h-48 md:w-64 md:h-64 object-cover border-4 border-white shadow-lg">
                                     @endif
                                     @if ($username)
-                                        <h2 class="font-bold text-lg md:text-xl mb-2 md:mb-3 text-gray-800">{{ $username }}</h2>
+                                        <h2 class="font-bold text-lg md:text-xl mb-2 md:mb-3" style="color: {{ $link->data_link['warna_text_custom']['warna_text'] ?? '#181818' }}">{{ $username }}</h2>
                                     @endif
                                     @if ($description)
-                                        <p class="text-center text-gray-600 mb-0 max-w-sm px-4 md:px-0" style="font-size: 1rem; line-height: 1.6;">{{ $description }}</p>
+                                        <p class="text-center text-gray-600 mb-0 max-w-sm px-4 md:px-0" style="font-size: 1rem; line-height: 1.6; color: {{ $link->data_link['warna_text_custom']['warna_text'] ?? '#181818' }}">{{ $description }}</p>
                                     @endif
                                 @endif
                             </section>
@@ -492,7 +492,7 @@
                                         isset($link->data_link['grid_produk']) &&
                                         is_array($link->data_link['grid_produk']) &&
                                         count($link->data_link['grid_produk']) > 0)
-                                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Produk Unggulan</h2>
+                                    <h2 class="text-2xl font-bold text-gray-800 mb-4" style="color: {{ $link->data_link['warna_text_custom']['warna_text'] ?? '#181818' }}">Produk Unggulan</h2>
 
                                     <div class="grid grid-cols-2 gap-4 w-full max-w-md" id="productGrid">
                                         @foreach ($link->data_link['grid_produk'] as $product)
@@ -561,13 +561,18 @@
                                         count($link->data_link['youtube_embeded']['embeded_youtube']) > 0)
                                     @php
                                         $youtube = $link->data_link['youtube_embeded'];
+                                        // Ambil warna header dari warna_text_custom jika ada, jika tidak fallback ke #181818
+                                        $warnaHeader = $link->data_link['warna_text_custom']['warna_text'] ?? '#181818';
+                                        // Ambil warna deskripsi dari warna_text_custom jika ada, jika tidak fallback ke #181818
+                                        $warnaDeskripsi = $link->data_link['warna_text_custom']['warna_text'] ?? '#181818';
                                     @endphp
                                     <div class="video-container relative">
                                         <div class="video-info mt-4 text-center">
-                                            <h3 class="text-lg font-semibold text-dark-800 mb-2">
-                                                {{ $youtube['header_youtube'] }}</h3>
+                                            <p class="text-xl font-semibold mb-2" style="color: {{ $warnaHeader }};">
+                                                {{ $youtube['header_youtube'] }}
+                                            </p>
                                             @if (isset($youtube['deskripsi_header']) && !empty($youtube['deskripsi_header']))
-                                                <p class="text-dark-600 text-sm">{{ $youtube['deskripsi_header'] }}</p>
+                                                <p class="text-sm" style="color: {{ $warnaDeskripsi }};">{{ $youtube['deskripsi_header'] }}</p>
                                             @endif
                                         </div>
                                         @foreach ($youtube['embeded_youtube'] as $embed)
@@ -593,7 +598,7 @@
                                         isset($link->data_link['sosial_media']) &&
                                         is_array($link->data_link['sosial_media']) &&
                                         count($link->data_link['sosial_media']) > 0)
-                                    <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Sosial Media</h2>
+                                    <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center" style="color: {{ $link->data_link['warna_text_custom']['warna_text'] ?? '#181818' }}">Sosial Media</h2>
 
                                     <div class="social-media-grid flex flex-wrap justify-center items-center gap-4 w-full">
                                         <div class="w-full flex justify-center">
@@ -673,8 +678,8 @@
                                                                             <div class="flex flex-col gap-4 w-full max-w-md">
                                         <!-- Header Section -->
                                         <div class="text-center mb-4">
-                                            <h2 class="text-2xl font-bold text-gray-800 mb-2">Portfolio Project</h2>
-                                            <p class="text-gray-600 text-sm leading-relaxed">
+                                            <h2 class="text-2xl font-bold text-gray-800 mb-2" style="color: {{ $link->data_link['warna_text_custom']['warna_text'] ?? '#181818' }}">Portfolio Project</h2>
+                                            <p class="text-gray-600 text-sm leading-relaxed" style="color: {{ $link->data_link['warna_text_custom']['warna_text'] ?? '#181818' }}">
                                                 Lihat koleksi project terbaru yang telah kami kerjakan dengan teknologi modern
                                             </p>
                                         </div>
@@ -726,17 +731,16 @@
                         @case('spotify_embed')
                             <!-- Spotify Embed -->
                             <section id="spotify_embed"
-                                class="flex flex-col items-center justify-center py-4 md:py-6 rounded-xl shadow-lg">
+                                class="flex flex-col items-center justify-center p-0 m-0 rounded-xl shadow-none" style="box-shadow:none;">
                                 @if (
                                     $link &&
                                         isset($link->data_link['spotify_embed']['embeded_spotify']) &&
                                         is_array($link->data_link['spotify_embed']['embeded_spotify']) &&
                                         count($link->data_link['spotify_embed']['embeded_spotify']) > 0)
-                                    <h3 class="text-lg font-semibold mb-4 text-gray-700">Spotify</h3>
-                                    <div class="flex flex-col gap-4 w-full max-w-xl">
+                                    <div class="flex flex-col gap-2 w-full max-w-xl p-0 m-0">
                                         @foreach ($link->data_link['spotify_embed']['embeded_spotify'] as $embed)
                                             @if (!empty($embed))
-                                                <div class="spotify-embed">
+                                                <div class="spotify-embed" style="margin:0;padding:0;">
                                                     {!! $embed !!}
                                                 </div>
                                             @endif

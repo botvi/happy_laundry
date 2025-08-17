@@ -147,6 +147,41 @@
             transform: scale(1.2);
         }
         
+        /* Fixed element styles */
+        .element-item.fixed-element {
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            border: 2px solid #d1d5db;
+            cursor: not-allowed;
+            position: relative;
+        }
+        
+        .element-item.fixed-element::before {
+            content: '🔒';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #6b7280;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            z-index: 10;
+        }
+        
+        .element-item.fixed-element .drag-handle {
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .element-item.fixed-element .element-controls .btn-toggle,
+        .element-item.fixed-element .element-controls .btn-delete {
+            display: none;
+        }
+        
         /* Subtle pulse animation for drag over state */
         .element-item.drag-over {
             animation: dragOverPulse 1s ease-in-out infinite;
@@ -1840,6 +1875,11 @@
                     
                     <!-- Hidden inputs untuk memastikan data terkirim -->
                     <input type="hidden" name="background_type" id="hiddenBackgroundType" value="image">
+                    <input type="hidden" name="warna_text" id="hiddenWarnaText" value="#000000">
+
+
+
+
                     
                     <!-- Tipe Background -->
                     <div class="mb-8 p-6 bg-gray-50 rounded-xl border border-gray-200">
@@ -2068,8 +2108,114 @@
                         <button onclick="hideEditBackgroundCustomModal()" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium">
                             <i class="fas fa-times mr-2"></i>Batal
                         </button>
-                        <button onclick="saveBackgroundCustom()" class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium shadow-lg">
+                        <button type="submit" form="backgroundCustomForm" class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium shadow-lg" onclick="saveBackgroundCustom(); return false;" id="saveBackgroundButton">
                             <i class="fas fa-save mr-2"></i>Simpan Background
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Warna Text Custom Modal -->
+    <div id="editWarnaTextCustomModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[100000] flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] flex flex-col">
+            <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-pink-50">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold text-purple-800">🎨 Edit Warna Teks Custom</h3>
+                        <p class="text-sm text-gray-600 mt-1">Atur warna teks untuk semua elemen halaman</p>
+                    </div>
+                    <button onclick="hideEditWarnaTextCustomModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-6">
+                <form id="warnaTextCustomForm" onsubmit="event.preventDefault(); saveWarnaTextCustom();">
+                    @csrf
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label for="warnaTextCustomPicker" class="block text-lg font-semibold text-purple-800 mb-4">🎯 Pilih Warna Teks</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="relative">
+                                            <input 
+                                                type="color" 
+                                                name="warna_text" 
+                                                id="warnaTextCustomPicker" 
+                                                value="#333333" 
+                                                class="w-24 h-24 border-4 border-white rounded-xl cursor-pointer shadow-lg hover:shadow-xl transition-all duration-200"
+                                                onchange="updateWarnaTextCustomPreview(this.value);"
+                                            >
+                                            <div class="absolute inset-0 rounded-xl pointer-events-none border-2 border-gray-300" style="box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <input type="text" id="warnaTextCustomInput" value="#333333" 
+                                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg font-mono text-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                                                   placeholder="#333333"
+                                                   onchange="updateWarnaTextCustomColorPicker(this.value);">
+                                            <p class="text-xs text-gray-500 mt-1">Masukkan kode warna HEX</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button type="button" onclick="setWarnaTextCustomPreset('#333333')" class="p-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium">
+                                            Dark
+                                        </button>
+                                        <button type="button" onclick="setWarnaTextCustomPreset('#ffffff')" class="p-3 bg-white text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
+                                            White
+                                        </button>
+                                        <button type="button" onclick="setWarnaTextCustomPreset('#1f2937')" class="p-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm font-medium">
+                                            Gray
+                                        </button>
+                                        <button type="button" onclick="setWarnaTextCustomPreset('#dc2626')" class="p-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium">
+                                            Red
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-3">👁️ Preview Warna</label>
+                                        <div id="warnaTextCustomPreview" class="p-6 bg-white rounded-xl border border-gray-200 text-center">
+                                            <h3 class="text-2xl font-bold mb-3" style="color: #333333;">Judul Halaman</h3>
+                                            <p class="text-lg mb-2" style="color: #333333;">Deskripsi singkat tentang halaman Anda</p>
+                                            <p class="text-sm" style="color: #333333;">Teks tambahan dengan ukuran yang lebih kecil</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                                        <h4 class="font-medium text-purple-800 mb-2">💡 Tips Warna Teks:</h4>
+                                        <ul class="text-sm text-gray-600 space-y-1">
+                                            <li>• Pilih warna yang kontras dengan background</li>
+                                            <li>• Warna gelap (#333, #000) untuk background terang</li>
+                                            <li>• Warna terang (#fff, #f0f0f0) untuk background gelap</li>
+                                            <li>• Gunakan warna yang mudah dibaca</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="p-6 border-t border-gray-200 bg-gray-50">
+                <div class="flex justify-between items-center">
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Warna teks akan langsung terupdate di preview
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="hideEditWarnaTextCustomModal()" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium">
+                            <i class="fas fa-times mr-2"></i>Batal
+                        </button>
+                        <button type="submit" form="warnaTextCustomForm" class="px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium shadow-lg">
+                            <i class="fas fa-save mr-2"></i>Simpan Warna Teks
                         </button>
                     </div>
                 </div>
@@ -2122,6 +2268,15 @@
         
         // Data elemen-elemen yang tersedia
         const availableElements = [
+            {
+                id: 'warna_text_custom',
+                name: 'Warna Teks Custom',
+                description: 'Atur warna teks untuk semua elemen halaman',
+                icon: 'fas fa-palette',
+                fixed: true,
+                removable: false,
+                hideable: false
+            },
             {
                 id: 'profil_pengguna',
                 name: 'Profil Pengguna',
@@ -2305,16 +2460,27 @@
             const visibleElements = [];
             const hiddenElementsArray = [];
             
+            // Pastikan elemen fixed selalu berada di posisi pertama
+            const fixedElements = [];
+            const normalElements = [];
+            
             currentOrder.forEach((elementId, index) => {
                 const element = availableElements.find(el => el.id === elementId);
                 if (element) {
                     if (hiddenElements.has(elementId)) {
                         hiddenElementsArray.push({ ...element, index });
                     } else {
-                        visibleElements.push({ ...element, index });
+                        if (element.fixed) {
+                            fixedElements.push({ ...element, index });
+                        } else {
+                            normalElements.push({ ...element, index });
+                        }
                     }
                 }
             });
+            
+            // Gabungkan fixed elements di awal, kemudian normal elements
+            visibleElements.push(...fixedElements, ...normalElements);
             
             // Render visible elements with drop zones
             if (visibleElements.length === 0) {
@@ -2359,10 +2525,10 @@
                             <button class="control-btn btn-edit" onclick="editElement('${element.id}')" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="control-btn btn-toggle" onclick="toggleElement('${element.id}')" title="Sembunyikan">
+                            ${element.hideable !== false ? `<button class="control-btn btn-toggle" onclick="toggleElement('${element.id}')" title="Sembunyikan">
                                 <i class="fas fa-eye"></i>
-                            </button>
-                            ${visibleElements.length > 1 ? `<button class="control-btn btn-delete" onclick="removeElement('${element.id}')" title="Hapus">
+                            </button>` : ''}
+                            ${element.removable !== false && visibleElements.length > 1 ? `<button class="control-btn btn-delete" onclick="removeElement('${element.id}')" title="Hapus">
                                 <i class="fas fa-trash"></i>
                             </button>` : ''}
                         </div>
@@ -2451,12 +2617,23 @@
             
             // Add event listeners to elements
             elementItems.forEach(item => {
-                item.addEventListener('dragstart', handleDragStart);
-                item.addEventListener('dragend', handleDragEnd);
-                item.addEventListener('dragover', handleDragOver);
-                item.addEventListener('drop', handleDrop);
-                item.addEventListener('dragenter', handleDragEnter);
-                item.addEventListener('dragleave', handleDragLeave);
+                const elementId = item.dataset.id;
+                const element = availableElements.find(el => el.id === elementId);
+                
+                // Skip drag events for fixed elements
+                if (element && element.fixed) {
+                    item.draggable = false;
+                    item.classList.add('fixed-element');
+                } else {
+                    item.draggable = true;
+                    item.classList.remove('fixed-element');
+                    item.addEventListener('dragstart', handleDragStart);
+                    item.addEventListener('dragend', handleDragEnd);
+                    item.addEventListener('dragover', handleDragOver);
+                    item.addEventListener('drop', handleDrop);
+                    item.addEventListener('dragenter', handleDragEnter);
+                    item.addEventListener('dragleave', handleDragLeave);
+                }
             });
             
             // Add event listeners to drop zones
@@ -2816,6 +2993,8 @@
                 showEditGambarThumbnailModal();
             } else if (elementId === 'spotify_embed') {
                 showEditSpotifyEmbedModal();
+            } else if (elementId === 'warna_text_custom') {
+                showEditWarnaTextCustomModal();
             } else if (elementId === 'background_custom') {
                 showEditBackgroundCustomModal();
             } else {
@@ -2907,6 +3086,9 @@
                     break;
                 case 'spotify_embed':
                     cleanData.spotify_embed = null;
+                    break;
+                case 'warna_text_custom':
+                    cleanData.warna_text_custom = null;
                     break;
                 case 'background_custom':
                     cleanData.background_custom = null;
@@ -3613,8 +3795,29 @@
 
         // Show edit background custom modal
         function showEditBackgroundCustomModal() {
+            console.log('showEditBackgroundCustomModal called');
             const modal = document.getElementById('editBackgroundCustomModal');
+            if (!modal) {
+                console.error('Background custom modal not found');
+                return;
+            }
+            
             modal.classList.remove('hidden');
+            console.log('Modal shown, checking for save button...');
+            
+            // Check if save button exists
+            const saveBtn = document.getElementById('saveBackgroundButton');
+            if (saveBtn) {
+                console.log('Save button found by ID:', saveBtn);
+            } else {
+                console.log('Save button not found by ID, checking by type...');
+                const saveBtnByType = document.querySelector('#editBackgroundCustomModal button[type="submit"]');
+                if (saveBtnByType) {
+                    console.log('Save button found by type:', saveBtnByType);
+                } else {
+                    console.error('No save button found at all');
+                }
+            }
             
             // Load existing data
             loadBackgroundCustomData();
@@ -3642,6 +3845,8 @@
                             backgroundTypeRadio.checked = true;
                             toggleBackgroundOptions();
                         }
+                        
+
                         
                         // Update fields based on type
                         if (backgroundData.type === 'image' && backgroundData.image) {
@@ -4609,6 +4814,7 @@
         }
 
         function saveBackgroundCustom() {
+            console.log('saveBackgroundCustom function called');
             try {
                 const form = document.getElementById('backgroundCustomForm');
                 if (!form) {
@@ -4628,6 +4834,12 @@
                 
                 const backgroundType = backgroundTypeRadio.value;
                 console.log('Selected background type:', backgroundType);
+                
+                // Update hidden input untuk memastikan data terkirim
+                const hiddenBackgroundType = document.getElementById('hiddenBackgroundType');
+                if (hiddenBackgroundType) {
+                    hiddenBackgroundType.value = backgroundType;
+                }
                 
                 // Validate based on type
                 if (backgroundType === 'image') {
@@ -4655,29 +4867,72 @@
                 }
 
                 // Tampilkan loading state
-                const saveBtn = document.querySelector('#editBackgroundCustomModal button[onclick="saveBackgroundCustom()"]');
+                let saveBtn = document.getElementById('saveBackgroundButton');
                 if (!saveBtn) {
-                    console.error('Save button not found');
-                    showNotification('Error: Button simpan tidak ditemukan!', 'error');
-                    return;
+                    console.error('Save button not found by ID');
+                    // Fallback: cari dengan selector lain
+                    const saveBtnFallback = document.querySelector('#editBackgroundCustomModal button[type="submit"]');
+                    if (!saveBtnFallback) {
+                        console.error('Save button not found by type selector either');
+                        showNotification('Error: Button simpan tidak ditemukan!', 'error');
+                        return;
+                    }
+                    saveBtn = saveBtnFallback;
                 }
                 
                 const originalText = saveBtn.innerHTML;
                 saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
                 saveBtn.disabled = true;
 
+
+                
                 // Debug: log data yang akan dikirim
                 console.log('Sending background custom data:');
+                console.log('Background type:', backgroundType);
+                console.log('Form data entries:');
                 for (let [key, value] of formData.entries()) {
                     console.log(key, value);
                 }
+                
+                // Log specific values
+                if (backgroundType === 'image') {
+                    const backgroundImage = document.getElementById('backgroundImage');
+                    console.log('Background image file:', backgroundImage?.files[0]);
+                } else if (backgroundType === 'color') {
+                    const backgroundColor = document.getElementById('backgroundColor');
+                    const backgroundColorSecondary = document.getElementById('backgroundColorSecondary');
+                    console.log('Background color:', backgroundColor?.value);
+                    console.log('Background color secondary:', backgroundColorSecondary?.value);
+                } else if (backgroundType === 'gradient') {
+                    const gradientColor1 = document.getElementById('gradientColor1');
+                    const gradientColor2 = document.getElementById('gradientColor2');
+                    const gradientDirection = document.getElementById('gradientDirection');
+                    console.log('Gradient color 1:', gradientColor1?.value);
+                    console.log('Gradient color 2:', gradientColor2?.value);
+                    console.log('Gradient direction:', gradientDirection?.value);
+                }
 
                 // Add CSRF token
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                if (!csrfMeta) {
+                    console.error('CSRF token meta tag not found');
+                    showNotification('Error: CSRF token tidak ditemukan!', 'error');
+                    return;
+                }
+                const csrfToken = csrfMeta.getAttribute('content');
                 formData.append('_token', csrfToken);
 
-                const kodeUnik = document.querySelector('meta[name="kode-unik"]').getAttribute('content');
-                const namaLink = document.querySelector('meta[name="nama-link"]').getAttribute('content');
+                const kodeUnikMeta = document.querySelector('meta[name="kode-unik"]');
+                const namaLinkMeta = document.querySelector('meta[name="nama-link"]');
+                
+                if (!kodeUnikMeta || !namaLinkMeta) {
+                    console.error('Kode unik or nama link meta tag not found');
+                    showNotification('Error: Meta tag kode unik atau nama link tidak ditemukan!', 'error');
+                    return;
+                }
+                
+                const kodeUnik = kodeUnikMeta.getAttribute('content');
+                const namaLink = namaLinkMeta.getAttribute('content');
                 
                 fetch(`/update-background-custom/${kodeUnik}/${namaLink}`, {
                     method: 'POST',
@@ -4786,6 +5041,26 @@
             
             // Initialize background custom modal
             toggleBackgroundOptions();
+            
+            // Add event listeners for background type changes
+            const backgroundTypeRadios = document.querySelectorAll('input[name="background_type"]');
+            backgroundTypeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const hiddenBackgroundType = document.getElementById('hiddenBackgroundType');
+                    if (hiddenBackgroundType) {
+                        hiddenBackgroundType.value = this.value;
+                    }
+                });
+            });
+            
+            // Add form submission event listener
+            const backgroundCustomForm = document.getElementById('backgroundCustomForm');
+            if (backgroundCustomForm) {
+                backgroundCustomForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveBackgroundCustom();
+                });
+            }
             
             // Add event listeners for gradient preview
             setTimeout(() => {
@@ -5180,6 +5455,229 @@
                     showNotification('Semua elemen telah ditampilkan!', 'success');
                 }
             });
+        }
+
+
+
+        // Warna Text Custom Modal Functions
+        function showEditWarnaTextCustomModal() {
+            const modal = document.getElementById('editWarnaTextCustomModal');
+            modal.classList.remove('hidden');
+            
+            // Load data yang sudah tersimpan
+            loadWarnaTextCustomData();
+            
+            // Mobile-specific modal behavior
+            if (window.innerWidth <= 768) {
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function hideEditWarnaTextCustomModal() {
+            document.getElementById('editWarnaTextCustomModal').classList.add('hidden');
+            
+            // Reset mobile modal behavior
+            if (window.innerWidth <= 768) {
+                document.body.style.overflow = '';
+            }
+        }
+
+        function loadWarnaTextCustomData() {
+            try {
+                console.log('loadWarnaTextCustomData function called');
+                
+                // Validasi meta tags
+                const kodeUnikMeta = document.querySelector('meta[name="kode-unik"]');
+                const namaLinkMeta = document.querySelector('meta[name="nama-link"]');
+                
+                if (!kodeUnikMeta || !namaLinkMeta) {
+                    console.error('Required meta tags not found for loadWarnaTextCustomData');
+                    return;
+                }
+                
+                const kodeUnik = kodeUnikMeta.getAttribute('content');
+                const namaLink = namaLinkMeta.getAttribute('content');
+                
+                console.log('Loading data for:', { kodeUnik, namaLink });
+                
+                // Validasi elemen yang diperlukan
+                const colorPicker = document.getElementById('warnaTextCustomPicker');
+                const colorInput = document.getElementById('warnaTextCustomInput');
+                
+                if (!colorPicker || !colorInput) {
+                    console.error('Required elements not found for warna text custom:', {
+                        colorPicker: !!colorPicker,
+                        colorInput: !!colorInput
+                    });
+                    return;
+                }
+                
+                fetch(`/get-layout/${kodeUnik}/${namaLink}`)
+                    .then(response => {
+                        console.log('Response status:', response.status);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Loaded data:', data);
+                        if (data.success && data.data && data.data.warna_text_custom) {
+                            const warnaTextData = data.data.warna_text_custom;
+                            console.log('Warna text data:', warnaTextData);
+                            
+                            if (warnaTextData.warna_text) {
+                                colorPicker.value = warnaTextData.warna_text;
+                                colorInput.value = warnaTextData.warna_text;
+                                updateWarnaTextCustomPreview(warnaTextData.warna_text);
+                                console.log('Warna text updated successfully');
+                            }
+                        } else {
+                            console.log('No warna text custom data found');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading warna text custom data:', error);
+                    });
+            } catch (error) {
+                console.error('Unexpected error in loadWarnaTextCustomData:', error);
+            }
+        }
+
+        function updateWarnaTextCustomPreview(color) {
+            // Update input text
+            const colorInput = document.getElementById('warnaTextCustomInput');
+            if (colorInput) {
+                colorInput.value = color;
+            }
+            
+            // Update preview
+            const preview = document.getElementById('warnaTextCustomPreview');
+            if (preview) {
+                const texts = preview.querySelectorAll('h3, p');
+                texts.forEach(text => {
+                    text.style.color = color;
+                });
+            }
+        }
+
+        function updateWarnaTextCustomColorPicker(color) {
+            // Validate hex color
+            if (/^#[0-9A-F]{6}$/i.test(color)) {
+                const colorPicker = document.getElementById('warnaTextCustomPicker');
+                if (colorPicker) {
+                    colorPicker.value = color;
+                    updateWarnaTextCustomPreview(color);
+                }
+            }
+        }
+
+        function setWarnaTextCustomPreset(color) {
+            const colorPicker = document.getElementById('warnaTextCustomPicker');
+            const colorInput = document.getElementById('warnaTextCustomInput');
+            
+            if (colorPicker && colorInput) {
+                colorPicker.value = color;
+                colorInput.value = color;
+                updateWarnaTextCustomPreview(color);
+            }
+        }
+
+        function saveWarnaTextCustom() {
+            try {
+                console.log('saveWarnaTextCustom function called');
+                
+                // Validasi elemen yang diperlukan
+                const colorPicker = document.getElementById('warnaTextCustomPicker');
+                if (!colorPicker) {
+                    console.error('Color picker element not found');
+                    showNotification('Error: Color picker tidak ditemukan!', 'error');
+                    return;
+                }
+                
+                const textColor = colorPicker.value;
+                console.log('Selected text color:', textColor);
+                
+                if (!textColor) {
+                    showNotification('Pilih warna teks terlebih dahulu!', 'error');
+                    return;
+                }
+
+                // Validasi meta tags
+                const kodeUnikMeta = document.querySelector('meta[name="kode-unik"]');
+                const namaLinkMeta = document.querySelector('meta[name="nama-link"]');
+                const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                
+                if (!kodeUnikMeta || !namaLinkMeta || !csrfMeta) {
+                    console.error('Required meta tags not found:', {
+                        kodeUnik: !!kodeUnikMeta,
+                        namaLink: !!namaLinkMeta,
+                        csrf: !!csrfMeta
+                    });
+                    showNotification('Error: Meta tags yang diperlukan tidak ditemukan!', 'error');
+                    return;
+                }
+                
+                const kodeUnik = kodeUnikMeta.getAttribute('content');
+                const namaLink = namaLinkMeta.getAttribute('content');
+                const csrfToken = csrfMeta.getAttribute('content');
+                
+                console.log('Meta data:', { kodeUnik, namaLink, csrfToken: csrfToken ? 'exists' : 'missing' });
+
+                // Tampilkan loading state
+                const saveBtn = document.querySelector('#editWarnaTextCustomModal button[type="submit"]');
+                if (!saveBtn) {
+                    console.error('Save button not found');
+                    showNotification('Error: Button simpan tidak ditemukan!', 'error');
+                    return;
+                }
+                
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
+                saveBtn.disabled = true;
+
+                const formData = new FormData();
+                formData.append('warna_text', textColor);
+                formData.append('_token', csrfToken);
+
+                console.log('Sending request to:', `/update-warna-text-custom/${kodeUnik}/${namaLink}`);
+                console.log('Form data:', { warna_text: textColor, _token: csrfToken ? 'exists' : 'missing' });
+
+                fetch(`/update-warna-text-custom/${kodeUnik}/${namaLink}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    console.log('Response headers:', response.headers);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response data:', data);
+                    if (data.success) {
+                        showNotification(data.message, 'success');
+                        hideEditWarnaTextCustomModal();
+                        
+                        // Auto refresh preview setelah save
+                        setTimeout(() => {
+                            refreshPreview();
+                        }, 500);
+                    } else {
+                        showNotification(data.message || 'Gagal menyimpan warna teks!', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saving warna text custom:', error);
+                    showNotification('Gagal menyimpan warna teks! Error: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    if (saveBtn) {
+                        saveBtn.innerHTML = originalText;
+                        saveBtn.disabled = false;
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Unexpected error in saveWarnaTextCustom:', error);
+                showNotification('Terjadi kesalahan yang tidak terduga: ' + error.message, 'error');
+            }
         }
     </script>
 </body>

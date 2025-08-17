@@ -109,6 +109,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/update-gambar-thumbnail/{kode_unik}/{nama_link}', [LinkController::class, 'updateGambarThumbnail'])->name('update-gambar-thumbnail');
     Route::post('/update-spotify-embed/{kode_unik}/{nama_link}', [LinkController::class, 'updateSpotifyEmbed'])->name('update-spotify-embed');
     Route::post('/update-background-custom/{kode_unik}/{nama_link}', [LinkController::class, 'updateBackgroundCustom'])->name('update-background-custom');
+    Route::post('/update-text-color/{kode_unik}/{nama_link}', [LinkController::class, 'updateTextColor'])->name('update-text-color');
+    Route::post('/update-warna-text-custom/{kode_unik}/{nama_link}', [LinkController::class, 'updateWarnaTextCustom'])->name('update-warna-text-custom');
     Route::post('/clean-element-data/{kode_unik}/{nama_link}', [LinkController::class, 'cleanElementData'])->name('clean-element-data');
 });
 
