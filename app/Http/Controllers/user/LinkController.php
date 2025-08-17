@@ -178,20 +178,34 @@ class LinkController extends Controller
     public function updateGridProduk(Request $request, $kode_unik, $nama_link)
     {
         try {
+            // Validasi input, foto_produk tidak wajib diisi (nullable)
             $request->validate([
-                'foto_produk.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'foto_produk.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'old_foto_produk.*' => 'nullable|string',
+                'nama_produk.*' => 'required|string|max:255',
                 'link_produk.*' => 'required|url',
                 'harga.*' => 'required|string|max:100',
             ]);
 
             $existingLink = $this->getOrCreateUserLink($kode_unik, $nama_link);
             $currentData = $existingLink->data_link;
-            
+
             $products = [];
-            for ($i = 0; $i < count($request->foto_produk); $i++) {
-                $imagePath = $this->handleImageUpload($request, "foto_produk.{$i}", 'products');
+            $totalProduk = count($request->nama_produk);
+
+            for ($i = 0; $i < $totalProduk; $i++) {
+                // Cek apakah ada file gambar baru yang diupload
+                $imagePath = null;
+                if ($request->hasFile("foto_produk.$i")) {
+                    $imagePath = $this->handleImageUpload($request, "foto_produk.$i", 'products');
+                } else {
+                    // Jika tidak ada file baru, gunakan gambar lama jika ada
+                    $imagePath = $request->old_foto_produk[$i] ?? null;
+                }
+
                 $products[] = [
                     'foto_produk' => $imagePath,
+                    'nama_produk' => $request->nama_produk[$i],
                     'link_produk' => $request->link_produk[$i],
                     'harga' => $request->harga[$i],
                 ];
@@ -357,18 +371,29 @@ class LinkController extends Controller
     {
         try {
             $request->validate([
-                'gambar_project.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'judul_project.*' => 'required|string|max:255',
                 'deskripsi_project.*' => 'required|string|max:500',
                 'link_project.*' => 'required|url',
+                'gambar_project.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'old_gambar_project.*' => 'nullable|string',
             ]);
 
             $existingLink = $this->getOrCreateUserLink($kode_unik, $nama_link);
             $currentData = $existingLink->data_link;
-            
+
+            $jumlahProject = count($request->judul_project);
             $projects = [];
-            for ($i = 0; $i < count($request->gambar_project); $i++) {
-                $imagePath = $this->handleImageUpload($request, "gambar_project.{$i}", 'portfolio');
+
+            for ($i = 0; $i < $jumlahProject; $i++) {
+                // Cek apakah ada file gambar baru yang diupload
+                $imagePath = null;
+                if ($request->hasFile("gambar_project.$i")) {
+                    $imagePath = $this->handleImageUpload($request, "gambar_project.$i", 'portfolio');
+                } else {
+                    // Jika tidak ada file baru, gunakan gambar lama jika ada
+                    $imagePath = $request->old_gambar_project[$i] ?? null;
+                }
+
                 $projects[] = [
                     'gambar_project' => $imagePath,
                     'judul_project' => $request->judul_project[$i],

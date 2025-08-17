@@ -77,6 +77,332 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('web/assets/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('web/assets/search-style.css') }}">
+    
+    <!-- Custom CSS untuk mobile optimization -->
+    <style>
+        /* Mobile-first responsive design */
+        @media (max-width: 768px) {
+            /* Reduce spacing between sections on mobile */
+            section {
+                margin-bottom: 0 !important;
+            }
+            
+            /* Larger font for profile description on mobile */
+            #profil_pengguna p {
+                font-size: 1.2rem !important;
+                line-height: 1.6 !important;
+                padding: 0 1rem !important;
+            }
+            
+            /* Optimize profile image size for mobile */
+            #profil_pengguna img {
+                width: 160px !important;
+                height: 160px !important;
+            }
+            
+            /* Reduce margins between elements in profile section */
+            #profil_pengguna h2 {
+                margin-bottom: 0.75rem !important;
+                font-size: 1.5rem !important;
+            }
+            
+            #profil_pengguna img {
+                margin-bottom: 0.75rem !important;
+            }
+            
+            /* Optimize section padding for mobile */
+            .main-content > section {
+                padding-top: 0.25rem !important;
+                padding-bottom: 0.25rem !important;
+            }
+            
+            /* Specific mobile optimizations */
+            .main-content h2 {
+                font-size: 1.4rem !important;
+                margin-bottom: 0.75rem !important;
+            }
+            
+            .main-content h3 {
+                font-size: 1.2rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            .main-content p {
+                font-size: 1rem !important;
+                line-height: 1.5 !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            .main-content h5 {
+                font-size: 1rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+            
+            /* Grid produk mobile optimization */
+            #productGrid {
+                gap: 0.75rem !important;
+            }
+            
+            /* Portfolio mobile optimization */
+            .project-title {
+                font-size: 1.1rem !important;
+            }
+            
+            .project-description {
+                font-size: 0.95rem !important;
+            }
+            
+            .project-btn {
+                font-size: 1rem !important;
+                padding: 0.75rem 1.5rem !important;
+            }
+        }
+        
+        /* Tablet optimization */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            #profil_pengguna p {
+                font-size: 1.05rem !important;
+                line-height: 1.6 !important;
+            }
+            
+            /* Reduce section spacing on tablet */
+            .main-content > section {
+                padding-top: 0.75rem !important;
+                padding-bottom: 0.75rem !important;
+            }
+        }
+        
+        /* Desktop optimization */
+        @media (min-width: 1025px) {
+            /* Reduce section spacing on desktop */
+            .main-content > section {
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
+            }
+        }
+        
+        /* Ensure proper spacing on all devices */
+        .main-content > section:not(:last-child) {
+            margin-bottom: 0;
+        }
+        
+        /* Smooth transitions for responsive changes */
+        section {
+            transition: all 0.3s ease;
+        }
+        
+        /* Reduce spacing for all sections globally */
+        .main-content > section {
+            padding-top: 0.25rem !important;
+            padding-bottom: 0.25rem !important;
+        }
+        
+        /* Mobile section spacing override */
+        @media (max-width: 768px) {
+            .main-content > section {
+                padding-top: 0.125rem !important;
+                padding-bottom: 0.125rem !important;
+                margin-bottom: 0 !important;
+            }
+            
+            /* Specific section spacing for mobile */
+            #grid_produk {
+                padding-top: 0.5rem !important;
+                padding-bottom: 0.5rem !important;
+            }
+            
+            #portfolio_project {
+                padding-top: 0.5rem !important;
+                padding-bottom: 0.5rem !important;
+            }
+            
+            #sosial_media {
+                padding-top: 0.5rem !important;
+                padding-bottom: 0.5rem !important;
+            }
+        }
+        
+        /* Specific section spacing adjustments */
+        #profil_pengguna {
+            padding-top: 1rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+        
+        #grid_produk {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+        
+        #tombol_link {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+        
+        #youtube_embeded {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+        
+        #sosial_media {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+        
+        #portfolio_project {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+        
+        #gambar_thumbnail {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+        
+        #spotify_embed {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+        
+        /* Additional spacing optimizations */
+        .social-media-grid {
+            gap: 0.5rem !important;
+        }
+        
+        .social-media-btn {
+            margin: 0 0.25rem !important;
+        }
+        
+        .project-container {
+            margin-bottom: 0.5rem !important;
+        }
+        
+        .video-container {
+            margin-top: 0.5rem !important;
+        }
+        
+        .video-info {
+            margin-top: 0.5rem !important;
+        }
+        
+        .video-player {
+            margin-top: 0.5rem !important;
+        }
+        
+        .spotify-embed {
+            margin-bottom: 0.5rem !important;
+        }
+        
+        /* Reduce margins for headings and text elements */
+        h2, h3 {
+            margin-bottom: 0.5rem !important;
+        }
+        
+        p {
+            margin-bottom: 0.5rem !important;
+        }
+        
+        /* Optimize grid gaps */
+        .grid {
+            gap: 0.5rem !important;
+        }
+        
+        /* Mobile grid optimization */
+        @media (max-width: 768px) {
+            #productGrid {
+                gap: 0.5rem !important;
+                margin: 0 auto !important;
+                max-width: 100% !important;
+            }
+            
+            /* Ensure product cards are properly sized */
+            #productGrid a {
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+            }
+            
+            #productGrid .group > div {
+                min-height: 160px !important;
+                max-height: 160px !important;
+            }
+            
+            /* Product text optimization */
+            #productGrid h5 {
+                font-size: 0.9rem !important;
+                font-weight: 600 !important;
+                margin-bottom: 0.25rem !important;
+            }
+            
+            #productGrid p {
+                font-size: 0.8rem !important;
+                font-weight: 600 !important;
+            }
+        }
+        
+        /* Reduce footer spacing */
+        #footer {
+            margin-top: 0.5rem !important;
+            padding: 0.5rem !important;
+        }
+        
+        /* Mobile-specific profile image styling */
+        @media (max-width: 768px) {
+            #profil_pengguna img {
+                width: 180px !important;
+                height: 180px !important;
+                border-radius: 50% !important;
+                object-fit: cover !important;
+                object-position: center !important;
+                border: 4px solid white !important;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+                display: block !important;
+                margin: 0 auto 1rem auto !important;
+            }
+            
+            /* Ensure profile section has proper spacing */
+            #profil_pengguna {
+                padding: 1rem 0.5rem !important;
+                margin-bottom: 0 !important;
+            }
+            
+            /* Profile text optimization */
+            #profil_pengguna h2 {
+                font-size: 1.6rem !important;
+                font-weight: 700 !important;
+                margin-bottom: 0.75rem !important;
+                text-align: center !important;
+            }
+            
+            #profil_pengguna p {
+                font-size: 1.1rem !important;
+                line-height: 1.6 !important;
+                text-align: center !important;
+                padding: 0 1rem !important;
+                margin-bottom: 0 !important;
+            }
+        }
+        
+        /* Extra small mobile devices */
+        @media (max-width: 480px) {
+            #profil_pengguna img {
+                width: 160px !important;
+                height: 160px !important;
+            }
+            
+            .main-content h2 {
+                font-size: 1.3rem !important;
+            }
+            
+            .main-content h3 {
+                font-size: 1.1rem !important;
+            }
+            
+            .main-content p {
+                font-size: 0.95rem !important;
+            }
+        }
+    </style>
     
     <!-- Additional Meta Tags -->
     <meta name="robots" content="index, follow">
@@ -123,7 +449,7 @@
                     @switch($sectionId)
                         @case('profil_pengguna')
                             <!-- Profil Pengguna -->
-                            <section id="profil_pengguna" class="flex flex-col items-center justify-center py-8">
+                            <section id="profil_pengguna" class="flex flex-col items-center justify-center py-4 md:py-6">
                                 @if ($link && isset($link->data_link['profil_pengguna']) && !empty($link->data_link['profil_pengguna']['username']))
                                     @php
                                         $profile = $link->data_link['profil_pengguna'];
@@ -133,13 +459,13 @@
                                     @endphp
                                     @if ($profileImage)
                                         <img src="{{ asset($profileImage) }}" alt="Foto Profil"
-                                            class="rounded-full mb-4 w-64 h-64 object-cover border-4 border-white shadow-lg">
+                                            class="rounded-full mb-3 md:mb-4 w-48 h-48 md:w-64 md:h-64 object-cover border-4 border-white shadow-lg">
                                     @endif
                                     @if ($username)
-                                        <h2 class="font-bold text-xl mb-3 text-gray-800">{{ $username }}</h4>
+                                        <h2 class="font-bold text-lg md:text-xl mb-2 md:mb-3 text-gray-800">{{ $username }}</h2>
                                     @endif
                                     @if ($description)
-                                        <p class="text-center text-gray-600 mb-0 max-w-sm" style="font-size: 1.1rem;">{{ $description }}</p>
+                                        <p class="text-center text-gray-600 mb-0 max-w-sm px-4 md:px-0" style="font-size: 1rem; line-height: 1.6;">{{ $description }}</p>
                                     @endif
                                 @endif
                             </section>
@@ -147,23 +473,13 @@
 
                         @case('grid_produk')
                             <!-- Grid Produk -->
-                            <section id="grid_produk" class="flex flex-col items-center justify-center py-8 px-4">
+                            <section id="grid_produk" class="flex flex-col items-center justify-center py-4 md:py-6 px-4">
                                 @if (
                                     $link &&
                                         isset($link->data_link['grid_produk']) &&
                                         is_array($link->data_link['grid_produk']) &&
                                         count($link->data_link['grid_produk']) > 0)
-                                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Produk Unggulan</h2>
-
-                                    <!-- Search Bar -->
-                                    <div class="w-full max-w-md mb-6">
-                                        <div class="relative">
-                                            <input type="text" id="searchInput" placeholder="Cari produk..."
-                                                class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-                                            <i
-                                                class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                                        </div>
-                                    </div>
+                                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Produk Unggulan</h2>
 
                                     <div class="grid grid-cols-2 gap-4 w-full max-w-md" id="productGrid">
                                         @foreach ($link->data_link['grid_produk'] as $product)
@@ -252,13 +568,13 @@
 
                         @case('sosial_media')
                             <!-- Tombol Sosial Media -->
-                            <section id="sosial_media" class="flex flex-col items-center justify-center py-8 px-4">
+                            <section id="sosial_media" class="flex flex-col items-center justify-center py-4 md:py-6 px-4">
                                 @if (
                                     $link &&
                                         isset($link->data_link['sosial_media']) &&
                                         is_array($link->data_link['sosial_media']) &&
                                         count($link->data_link['sosial_media']) > 0)
-                                    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Sosial Media</h2>
+                                    <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Sosial Media</h2>
 
                                     <div class="social-media-grid flex flex-wrap justify-center items-center gap-4 w-full">
                                         <div class="w-full flex justify-center">
@@ -313,16 +629,16 @@
 
                         @case('portfolio_project')
                             <!-- Project Portfolio -->
-                            <section id="portfolio_project" class="flex flex-col items-center justify-center py-8 px-4">
+                            <section id="portfolio_project" class="flex flex-col items-center justify-center py-4 md:py-6 px-4">
                                 @if (
                                     $link &&
                                         isset($link->data_link['portfolio_project']) &&
                                         is_array($link->data_link['portfolio_project']) &&
                                         count($link->data_link['portfolio_project']) > 0)
-                                    <div class="flex flex-col gap-6 w-full max-w-md">
+                                                                            <div class="flex flex-col gap-4 w-full max-w-md">
                                         <!-- Header Section -->
-                                        <div class="text-center mb-6">
-                                            <h2 class="text-2xl font-bold text-gray-800 mb-3">Portfolio Project</h2>
+                                        <div class="text-center mb-4">
+                                            <h2 class="text-2xl font-bold text-gray-800 mb-2">Portfolio Project</h2>
                                             <p class="text-gray-600 text-sm leading-relaxed">
                                                 Lihat koleksi project terbaru yang telah kami kerjakan dengan teknologi modern
                                             </p>
@@ -359,7 +675,7 @@
 
                         @case('gambar_thumbnail')
                             <!-- Gambar Thumbnail -->
-                            <section id="gambar_thumbnail" class="flex flex-col items-center justify-center py-8">
+                            <section id="gambar_thumbnail" class="flex flex-col items-center justify-center py-4 md:py-6">
                                 @if (
                                     $link &&
                                         isset($link->data_link['gambar_thumbnail']['gambar_thumbnail']) &&
@@ -375,14 +691,14 @@
                         @case('spotify_embed')
                             <!-- Spotify Embed -->
                             <section id="spotify_embed"
-                                class="flex flex-col items-center justify-center py-8 rounded-xl shadow-lg">
+                                class="flex flex-col items-center justify-center py-4 md:py-6 rounded-xl shadow-lg">
                                 @if (
                                     $link &&
                                         isset($link->data_link['spotify_embed']['embeded_spotify']) &&
                                         is_array($link->data_link['spotify_embed']['embeded_spotify']) &&
                                         count($link->data_link['spotify_embed']['embeded_spotify']) > 0)
                                     <h3 class="text-lg font-semibold mb-4 text-gray-700">Spotify</h3>
-                                    <div class="flex flex-col gap-6 w-full max-w-xl">
+                                    <div class="flex flex-col gap-4 w-full max-w-xl">
                                         @foreach ($link->data_link['spotify_embed']['embeded_spotify'] as $embed)
                                             @if (!empty($embed))
                                                 <div class="spotify-embed">
@@ -405,7 +721,7 @@
                 <img src="{{ asset('env/hitam.png') }}" alt="copyright" class="w-5 h-5">
                 <span class="text-sm">
 
-                    Bergabung dengan {{ $link->user->name }} di <a href="https://linkskuy.link"
+                    Bergabung dengan {{ $link->user && $link->user->name ? $link->user->name : '1000+ Pengguna' }} di <a href="https://linkskuy.link"
                         target="_blank">Linkskuy</a>
                 </span>
             </div>
@@ -434,6 +750,8 @@
     </div>
 
     <script src="{{ asset('web/assets/script.js') }}"></script>
+    
+    
 </body>
 
 </html>

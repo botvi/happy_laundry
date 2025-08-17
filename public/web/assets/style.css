@@ -319,6 +319,7 @@ body {
     z-index: 100;
     margin-top: auto;
     flex-shrink: 0;
+    width: 100%;
 }
 
 /* Desktop - Styling untuk card produk */
@@ -539,6 +540,17 @@ body {
     color: #333 !important;
 }
 
+/* Global - Pastikan tombol project selalu bisa diklik */
+.project-btn {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    position: relative !important;
+    z-index: 10 !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+    user-select: none !important;
+}
+
 /* Mobile - Pastikan semua tombol project selalu hitam */
 @media (max-width: 768px) {
     .project-btn,
@@ -546,6 +558,10 @@ body {
     .project-container .project-btn,
     .project-container .view-btn {
         color: #333 !important;
+        pointer-events: auto !important;
+        z-index: 25 !important;
+        min-height: 44px !important;
+        min-width: 44px !important;
     }
     
     .project-btn:hover,
@@ -1100,6 +1116,7 @@ body {
     /* Mobile - Touch active effect */
     .project-card.mobile-active .project-overlay {
         opacity: 1 !important;
+        pointer-events: auto !important;
     }
 
     .overlay-content {
@@ -1108,6 +1125,9 @@ body {
         padding: 16px !important;
         transform: translateY(15px) !important;
         transition: transform 0.3s ease !important;
+        pointer-events: auto !important;
+        z-index: 10 !important;
+        position: relative !important;
     }
 
     /* Mobile - Hover effect */
@@ -1118,6 +1138,7 @@ body {
     /* Mobile - Touch active effect */
     .project-card.mobile-active .overlay-content {
         transform: translateY(0) !important;
+        pointer-events: auto !important;
     }
 
     .project-title {
@@ -1125,6 +1146,7 @@ body {
         font-weight: bold !important;
         margin-bottom: 6px !important;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+        pointer-events: none !important;
     }
 
     .project-description {
@@ -1132,6 +1154,7 @@ body {
         margin-bottom: 12px !important;
         opacity: 0.9 !important;
         line-height: 1.3 !important;
+        pointer-events: none !important;
     }
 
     .view-btn {
@@ -1148,8 +1171,10 @@ body {
         text-decoration: none !important;
         display: inline-block !important;
         pointer-events: auto !important;
-        z-index: 2 !important;
+        z-index: 15 !important;
         position: relative !important;
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
     }
 
     /* Pastikan semua tombol project di mobile selalu hitam dengan spesifisitas tinggi */
@@ -1158,6 +1183,11 @@ body {
     .project-card .project-btn,
     .project-card .view-btn {
         color: #333 !important;
+        pointer-events: auto !important;
+        z-index: 15 !important;
+        position: relative !important;
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
     }
 
     .project-container .project-btn:hover,
@@ -1166,32 +1196,92 @@ body {
     .project-card .view-btn:hover {
         color: #333 !important;
     }
-
-    .view-btn:hover {
+    
+    /* Tambahan CSS untuk memastikan tombol project bisa diklik di mobile */
+    .project-btn {
+        pointer-events: auto !important;
+        z-index: 15 !important;
+        position: relative !important;
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
+        cursor: pointer !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        color: #333 !important;
+        border: none !important;
+        padding: 8px 16px !important;
+        border-radius: 20px !important;
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        transition: all 0.3s ease !important;
+        backdrop-filter: blur(10px) !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        min-height: 44px !important; /* Minimum touch target size */
+        min-width: 44px !important; /* Minimum touch target size */
+        line-height: 1.2 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .project-btn:hover,
+    .project-btn:active {
         background: rgba(255, 255, 255, 1) !important;
         transform: translateY(-1px) !important;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
         color: #333 !important;
     }
-
-    /* Pastikan project-btn juga hitam di mobile */
+    
+    /* Tambahan untuk mobile touch */
+    @media (max-width: 768px) {
+        .project-btn {
+            min-height: 48px !important; /* Lebih besar untuk mobile */
+            min-width: 48px !important; /* Lebih besar untuk mobile */
+            font-size: 14px !important;
+            padding: 12px 20px !important;
+            border-radius: 24px !important;
+        }
+        
+        /* Pastikan overlay tidak menghalangi tombol */
+        .project-card.mobile-active .project-overlay {
+            pointer-events: none !important;
+        }
+        
+        .project-card.mobile-active .overlay-content {
+            pointer-events: auto !important;
+        }
+        
+        .project-card.mobile-active .project-btn {
+            pointer-events: auto !important;
+            z-index: 20 !important;
+        }
+    }
+    
+    /* CSS khusus untuk memastikan tombol project bisa diklik di mobile */
+    .project-btn:focus {
+        outline: 2px solid #007bff !important;
+        outline-offset: 2px !important;
+    }
+    
+    .project-btn:active {
+        transform: scale(0.95) !important;
+        transition: transform 0.1s ease !important;
+    }
+    
+    /* Pastikan tombol tidak tertutup elemen lain */
     .project-btn {
-        color: #333 !important;
+        position: relative !important;
+        z-index: 25 !important;
     }
-
-    .project-btn:hover {
-        color: #333 !important;
-    }
-
-    /* Pastikan semua tombol project di mobile selalu hitam */
-    .project-container .project-btn,
-    .project-container .view-btn {
-        color: #333 !important;
-    }
-
-    .project-container .project-btn:hover,
-    .project-container .view-btn:hover {
-        color: #333 !important;
+    
+    /* Tambahan untuk touch devices */
+    @media (hover: none) and (pointer: coarse) {
+        .project-btn {
+            -webkit-tap-highlight-color: transparent !important;
+            touch-action: manipulation !important;
+            user-select: none !important;
+        }
     }
     
 }

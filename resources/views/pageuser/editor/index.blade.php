@@ -3736,27 +3736,61 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Foto Produk</label>
                             <div class="flex items-center space-x-4">
-                                ${existingProduct && existingProduct.foto_produk ? 
-                                    `<img src="${getAssetUrl(existingProduct.foto_produk)}" class="w-16 h-16 object-cover border-2 border-gray-300 rounded-lg" alt="Preview" onerror="this.src='https://via.placeholder.com/64x64?text=No+Image'">` : 
-                                    ''
+                                ${
+                                    existingProduct && existingProduct.foto_produk
+                                        ? `<img src="${getAssetUrl(existingProduct.foto_produk)}" class="w-16 h-16 object-cover border-2 border-gray-300 rounded-lg" alt="Preview" onerror="this.src='https://via.placeholder.com/64x64?text=No+Image'">`
+                                        : ''
                                 }
-                                <input type="file" name="foto_produk[]" accept="image/*" ${existingProduct ? '' : 'required'} 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input
+                                    type="file"
+                                    name="foto_produk[]"
+                                    accept="image/*"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    ${existingProduct && existingProduct.foto_produk ? '' : 'required'}
+                                    data-old-foto="${existingProduct && existingProduct.foto_produk ? existingProduct.foto_produk : ''}"
+                                    onchange="this.setAttribute('data-has-changed', 'true')"
+                                >
+                                ${
+                                    existingProduct && existingProduct.foto_produk
+                                        ? `<input type="hidden" name="old_foto_produk[]" value="${existingProduct.foto_produk}">`
+                                        : `<input type="hidden" name="old_foto_produk[]" value="">`
+                                }
                             </div>
+                            <small class="text-gray-500">Jika tidak ingin mengganti foto, biarkan kosong.</small>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nama Produk</label>
+                            <input
+                                type="text"
+                                name="nama_produk[]"
+                                required
+                                maxlength="20"
+                                value="${existingProduct ? existingProduct.nama_produk : ''}"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Maks 20 karakter"
+                            >
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Link Produk</label>
-                            <input type="url" name="link_produk[]" required 
-                                   value="${existingProduct ? existingProduct.link_produk : ''}"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                   placeholder="https://example.com">
+                            <input
+                                type="url"
+                                name="link_produk[]"
+                                required
+                                value="${existingProduct ? existingProduct.link_produk : ''}"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="https://example.com"
+                            >
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Harga</label>
-                            <input type="text" name="harga[]" required 
-                                   value="${existingProduct ? existingProduct.harga : ''}"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                   placeholder="Rp 100.000">
+                            <input
+                                type="text"
+                                name="harga[]"
+                                required
+                                value="${existingProduct ? existingProduct.harga : ''}"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Rp 100.000"
+                            >
                         </div>
                     </div>
                 </div>
@@ -4155,9 +4189,21 @@
                                     `<img src="${getAssetUrl(existingProject.gambar_project)}" class="w-16 h-16 object-cover border-2 border-gray-300 rounded-lg" alt="Preview" onerror="this.src='https://via.placeholder.com/64x64?text=No+Image'">` : 
                                     ''
                                 }
-                                <input type="file" name="gambar_project[]" accept="image/*" ${existingProject ? '' : 'required'} 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input 
+                                    type="file" 
+                                    name="gambar_project[]" 
+                                    accept="image/*" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    ${existingProject && existingProject.gambar_project ? '' : 'required'}
+                                    data-old-gambar="${existingProject && existingProject.gambar_project ? existingProject.gambar_project : ''}"
+                                    onchange="this.setAttribute('data-has-changed', 'true')"
+                                >
+                                ${existingProject && existingProject.gambar_project 
+                                    ? `<input type="hidden" name="old_gambar_project[]" value="${existingProject.gambar_project}">`
+                                    : `<input type="hidden" name="old_gambar_project[]" value="">`
+                                }
                             </div>
+                            <small class="text-gray-500">Jika tidak ingin mengganti gambar, biarkan field ini kosong. Jika ingin mengganti, pilih file baru.</small>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Judul Project</label>
@@ -4167,10 +4213,10 @@
                                    placeholder="E-Commerce Platform">
                         </div>
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi Project</label>
-                            <textarea name="deskripsi_project[]" rows="3" required 
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi Project <span class="text-xs text-gray-400">(maks 60 karakter)</span></label>
+                            <textarea name="deskripsi_project[]" rows="2" required maxlength="60"
                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                      placeholder="Website toko online dengan fitur lengkap">${existingProject ? existingProject.deskripsi_project : ''}</textarea>
+                                      placeholder="Maksimal 60 karakter">${existingProject ? existingProject.deskripsi_project : ''}</textarea>
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Link Project</label>
@@ -5006,4 +5052,3 @@
     </script>
 </body>
 </html>
-

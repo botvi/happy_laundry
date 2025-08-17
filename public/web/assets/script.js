@@ -9,6 +9,9 @@ function cloneContent() {
     
     // Setup mobile touch events untuk project cards
     setupMobileProjectCards();
+    
+    // Setup mobile touch events untuk tombol project
+    setupMobileProjectButtons();
 
     // Setup Share Modal setelah konten di-clone
     setupShareModal();
@@ -24,6 +27,11 @@ function setupMobileProjectCards() {
         // Simple click event untuk mobile
         card.addEventListener('click', function(e) {
             if (window.innerWidth <= 768) {
+                // Jika yang diklik adalah tombol project, jangan prevent default
+                if (e.target.classList.contains('project-btn') || e.target.closest('.project-btn')) {
+                    return; // Biarkan tombol project berfungsi normal
+                }
+                
                 e.preventDefault();
                 
                 // Toggle active state
@@ -72,6 +80,43 @@ function setupMobileProjectCards() {
                 card.classList.remove('mobile-active');
             });
         }
+    });
+}
+
+// Setup mobile touch events untuk tombol project
+function setupMobileProjectButtons() {
+    const projectButtons = document.querySelectorAll('.project-btn');
+    
+    projectButtons.forEach(button => {
+        // Tambahkan touch-action dan pointer-events untuk mobile
+        if (window.innerWidth <= 768) {
+            button.style.touchAction = 'manipulation';
+            button.style.webkitTapHighlightColor = 'transparent';
+            button.style.pointerEvents = 'auto';
+            button.style.zIndex = '20';
+        }
+        
+        // Event listener untuk memastikan tombol bisa diklik
+        button.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                // Pastikan event tidak di-block
+                e.stopPropagation();
+                console.log('Project button clicked:', this.href);
+            }
+        });
+        
+        // Touch events untuk mobile
+        button.addEventListener('touchstart', function(e) {
+            if (window.innerWidth <= 768) {
+                this.style.transform = 'scale(0.95)';
+            }
+        });
+        
+        button.addEventListener('touchend', function(e) {
+            if (window.innerWidth <= 768) {
+                this.style.transform = 'scale(1)';
+            }
+        });
     });
 }
 
