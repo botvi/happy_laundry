@@ -85,8 +85,34 @@
             cursor: grab;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
             position: relative;
             overflow: hidden;
+        }
+        
+        /* Mencegah text selection pada semua elemen di dalam element-item */
+        .element-item * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* Izinkan pointer events pada semua elemen */
+        .element-item * {
+            pointer-events: auto;
+        }
+        
+        /* Tambahkan visual feedback saat touch */
+        .element-item.touch-active {
+            transform: scale(0.98);
+            opacity: 0.8;
+            transition: all 0.1s ease;
         }
         
         .element-item::before {
@@ -250,6 +276,13 @@
             cursor: pointer;
             font-size: 12px;
             transition: all 0.2s ease;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         
         .btn-edit {
@@ -290,6 +323,13 @@
             transition: all 0.2s ease;
             padding: 4px;
             border-radius: 4px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         
         .drag-handle:hover {
@@ -419,6 +459,22 @@
             display: none;
         }
 
+        /* Mencegah text selection pada body secara global */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* Izinkan text selection hanya pada input dan textarea */
+        input, textarea, [contenteditable="true"] {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+        
         /* Mobile Responsive Styles - Simplified */
         @media (max-width: 768px) {
             .editor-container {
@@ -1358,6 +1414,7 @@
                     </button>
                     
                 </div>
+             
                 
                 <div class="text-center text-gray-500 py-2">
                     <p class="text-xs">Layout akan dimuat dari server saat halaman dibuka</p>
@@ -2201,6 +2258,20 @@
                     hideAddElementModal();
                 }
             });
+            
+            // Tambahkan event listener untuk mencegah text selection
+            document.addEventListener('selectstart', function(e) {
+                if (e.target.closest('.element-item, .drag-handle, .control-btn')) {
+                    e.preventDefault();
+                }
+            });
+            
+            // Tambahkan event listener untuk mencegah context menu
+            document.addEventListener('contextmenu', function(e) {
+                if (e.target.closest('.element-item, .drag-handle, .control-btn')) {
+                    e.preventDefault();
+                }
+            });
         }
         
         // Toggle sidebar untuk mobile
@@ -2346,6 +2417,16 @@
             }
         }
 
+        // Fungsi untuk mencegah text selection global - simplified
+        function preventTextSelection() {
+            // Mencegah text selection hanya pada element-item
+            document.querySelectorAll('.element-item').forEach(el => {
+                el.addEventListener('selectstart', (e) => {
+                    e.preventDefault();
+                });
+            });
+        }
+        
         // Setup drag and drop with improved accuracy
         function setupDragAndDrop() {
             const elementItems = document.querySelectorAll('#elementList .element-item');
@@ -2391,32 +2472,41 @@
                 elementItems.forEach(item => setupTouchEvents(item));
             }
             
+            // Mencegah text selection
+            preventTextSelection();
+            
             // Log untuk debugging
             console.log(`Drag and drop setup selesai. Elemen: ${elementItems.length}, Drop zones: ${dropZones.length}`);
         }
         
-        // Setup touch events for mobile
+        // Setup touch events for mobile - simplified version
         function setupTouchEvents(item) {
             let startY = 0;
-            let currentY = 0;
+            let startX = 0;
             let isDragging = false;
-            let startTime = 0;
             
             item.addEventListener('touchstart', (e) => {
-                startY = e.touches[0].clientY;
-                startTime = Date.now();
+                const touch = e.touches[0];
+                startY = touch.clientY;
+                startX = touch.clientX;
                 isDragging = false;
+                
+                // Tambahkan visual feedback
+                item.classList.add('touch-active');
+                
             }, { passive: true });
             
             item.addEventListener('touchmove', (e) => {
                 if (!isDragging) {
-                    currentY = e.touches[0].clientY;
-                    const diff = Math.abs(currentY - startY);
+                    const touch = e.touches[0];
+                    const diffY = Math.abs(touch.clientY - startY);
+                    const diffX = Math.abs(touch.clientX - startX);
                     
-                    if (diff > 15) {
+                    if (diffY > 10 || diffX > 10) {
                         isDragging = true;
                         item.classList.add('dragging');
-                        // Add haptic feedback if available
+                        
+                        // Haptic feedback jika tersedia
                         if (navigator.vibrate) {
                             navigator.vibrate(50);
                         }
@@ -2425,20 +2515,19 @@
             }, { passive: true });
             
             item.addEventListener('touchend', (e) => {
+                item.classList.remove('touch-active');
+                
                 if (isDragging) {
-                    const endTime = Date.now();
-                    const duration = endTime - startTime;
-                    
-                    // Only trigger if drag was long enough
-                    if (duration > 200) {
-                        item.classList.remove('dragging');
-                        // Handle reordering logic here if needed
-                    }
+                    item.classList.remove('dragging');
+                    console.log('Touch drag ended');
                 }
+                
+                isDragging = false;
             }, { passive: true });
         }
 
         function handleDragStart(e) {
+            console.log('Drag start triggered!', e.target);
             draggedElement = e.target;
             e.target.classList.add('dragging');
             
@@ -2586,6 +2675,7 @@
         
         // New drop zone handlers for better accuracy
         function handleDropZoneDragOver(e) {
+            console.log('Drop zone drag over!', e.target);
             e.preventDefault();
             e.dataTransfer.dropEffect = 'move';
         }
@@ -3882,6 +3972,48 @@
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                    placeholder="https://youtube.com">
                         </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Warna Tombol</label>
+                            <div class="flex items-center gap-3">
+                                <input 
+                                    type="color" 
+                                    name="warna_tombol[]" 
+                                    required
+                                    value="${existingLink && existingLink.warna_tombol ? existingLink.warna_tombol : '#10b981'}"
+                                    class="h-10 w-14 border-2 border-gray-300 rounded-lg cursor-pointer shadow-sm"
+                                    style="padding:0; background:transparent;"
+                                    onchange="this.nextElementSibling.value = this.value"
+                                >
+                                <input 
+                                    type="text" 
+                                    readonly 
+                                    value="${existingLink && existingLink.warna_tombol ? existingLink.warna_tombol : '#10b981'}"
+                                    class="w-28 px-2 py-1 border border-gray-200 rounded bg-gray-50 text-gray-700 text-sm"
+                                    style="pointer-events:none;"
+                                >
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Warna Teks</label>
+                            <div class="flex items-center gap-3">
+                                <input 
+                                    type="color" 
+                                    name="warna_text[]" 
+                                    required
+                                    value="${existingLink && existingLink.warna_text ? existingLink.warna_text : '#ffffff'}"
+                                    class="h-10 w-14 border-2 border-gray-300 rounded-lg cursor-pointer shadow-sm"
+                                    style="padding:0; background:transparent;"
+                                    onchange="this.nextElementSibling.value = this.value"
+                                >
+                                <input 
+                                    type="text" 
+                                    readonly 
+                                    value="${existingLink && existingLink.warna_text ? existingLink.warna_text : '#ffffff'}"
+                                    class="w-28 px-2 py-1 border border-gray-200 rounded bg-gray-50 text-gray-700 text-sm"
+                                    style="pointer-events:none;"
+                                >
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -4039,8 +4171,8 @@
             const container = document.getElementById('socialMediaFields');
             const platforms = [
                 { name: 'YouTube', icon: 'fab fa-youtube', color: 'bg-red-500' },
-                { name: 'Facebook', icon: 'fab fa-facebook-f', color: 'bg-blue-600' },
-                { name: 'Instagram', icon: 'fab fa-instagram', color: 'bg-pink-500' },
+                    { name: 'Facebook', icon: 'fab fa-facebook-f', color: 'bg-blue-600' },
+                    { name: 'Instagram', icon: 'fab fa-instagram', color: 'bg-pink-500' },
                 { name: 'Spotify', icon: 'fab fa-spotify', color: 'bg-green-500' },
                 { name: 'LinkedIn', icon: 'fab fa-linkedin-in', color: 'bg-blue-700' },
                 { name: 'TikTok', icon: 'fab fa-tiktok', color: 'bg-black' },

@@ -90,72 +90,72 @@
             
             /* Larger font for profile description on mobile */
             #profil_pengguna p {
-                font-size: 1.2rem !important;
-                line-height: 1.6 !important;
-                padding: 0 1rem !important;
+                font-size: 1.4rem !important;
+                line-height: 1.7 !important;
+                padding: 0 1.5rem !important;
             }
             
             /* Optimize profile image size for mobile */
             #profil_pengguna img {
-                width: 160px !important;
-                height: 160px !important;
+                width: 180px !important;
+                height: 180px !important;
             }
             
             /* Reduce margins between elements in profile section */
             #profil_pengguna h2 {
-                margin-bottom: 0.75rem !important;
-                font-size: 1.5rem !important;
+                margin-bottom: 1rem !important;
+                font-size: 1.8rem !important;
             }
             
             #profil_pengguna img {
-                margin-bottom: 0.75rem !important;
+                margin-bottom: 1rem !important;
             }
             
             /* Optimize section padding for mobile */
             .main-content > section {
-                padding-top: 0.25rem !important;
-                padding-bottom: 0.25rem !important;
+                padding-top: 0.5rem !important;
+                padding-bottom: 0.5rem !important;
             }
             
             /* Specific mobile optimizations */
             .main-content h2 {
+                font-size: 1.6rem !important;
+                margin-bottom: 1rem !important;
+            }
+            
+            .main-content h3 {
                 font-size: 1.4rem !important;
                 margin-bottom: 0.75rem !important;
             }
             
-            .main-content h3 {
-                font-size: 1.2rem !important;
-                margin-bottom: 0.5rem !important;
-            }
-            
             .main-content p {
-                font-size: 1rem !important;
-                line-height: 1.5 !important;
-                margin-bottom: 0.5rem !important;
+                font-size: 1.1rem !important;
+                line-height: 1.6 !important;
+                margin-bottom: 0.75rem !important;
             }
             
             .main-content h5 {
-                font-size: 1rem !important;
-                margin-bottom: 0.25rem !important;
+                font-size: 1.1rem !important;
+                margin-bottom: 0.5rem !important;
             }
             
             /* Grid produk mobile optimization */
             #productGrid {
-                gap: 0.75rem !important;
+                gap: 1rem !important;
             }
             
             /* Portfolio mobile optimization */
             .project-title {
-                font-size: 1.1rem !important;
+                font-size: 1.3rem !important;
             }
             
             .project-description {
-                font-size: 0.95rem !important;
+                font-size: 1.1rem !important;
             }
             
             .project-btn {
-                font-size: 1rem !important;
-                padding: 0.75rem 1.5rem !important;
+                font-size: 1.1rem !important;
+                padding: 0.875rem 1.75rem !important;
             }
         }
         
@@ -201,25 +201,25 @@
         /* Mobile section spacing override */
         @media (max-width: 768px) {
             .main-content > section {
-                padding-top: 0.125rem !important;
-                padding-bottom: 0.125rem !important;
+                padding-top: 0.75rem !important;
+                padding-bottom: 0.75rem !important;
                 margin-bottom: 0 !important;
             }
             
             /* Specific section spacing for mobile */
             #grid_produk {
-                padding-top: 0.5rem !important;
-                padding-bottom: 0.5rem !important;
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
             }
             
             #portfolio_project {
-                padding-top: 0.5rem !important;
-                padding-bottom: 0.5rem !important;
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
             }
             
             #sosial_media {
-                padding-top: 0.5rem !important;
-                padding-bottom: 0.5rem !important;
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
             }
         }
         
@@ -266,11 +266,24 @@
         
         /* Additional spacing optimizations */
         .social-media-grid {
-            gap: 0.5rem !important;
+            gap: 0.75rem !important;
         }
         
         .social-media-btn {
-            margin: 0 0.25rem !important;
+            margin: 0 0.5rem !important;
+        }
+        
+        /* Mobile social media button optimization */
+        @media (max-width: 768px) {
+            .social-media-btn {
+                width: 3.5rem !important;
+                height: 3.5rem !important;
+                margin: 0 0.75rem !important;
+            }
+            
+            .social-media-btn i {
+                font-size: 1.5rem !important;
+            }
         }
         
         .project-container {
@@ -310,7 +323,7 @@
         /* Mobile grid optimization */
         @media (max-width: 768px) {
             #productGrid {
-                gap: 0.5rem !important;
+                gap: 1rem !important;
                 margin: 0 auto !important;
                 max-width: 100% !important;
             }
@@ -323,19 +336,19 @@
             }
             
             #productGrid .group > div {
-                min-height: 160px !important;
-                max-height: 160px !important;
+                min-height: 180px !important;
+                max-height: 180px !important;
             }
             
             /* Product text optimization */
             #productGrid h5 {
-                font-size: 0.9rem !important;
+                font-size: 1.1rem !important;
                 font-weight: 600 !important;
-                margin-bottom: 0.25rem !important;
+                margin-bottom: 0.5rem !important;
             }
             
             #productGrid p {
-                font-size: 0.8rem !important;
+                font-size: 1rem !important;
                 font-weight: 600 !important;
             }
         }
@@ -349,36 +362,36 @@
         /* Mobile-specific profile image styling */
         @media (max-width: 768px) {
             #profil_pengguna img {
-                width: 180px !important;
-                height: 180px !important;
+                width: 200px !important;
+                height: 200px !important;
                 border-radius: 50% !important;
                 object-fit: cover !important;
                 object-position: center !important;
                 border: 4px solid white !important;
                 box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
                 display: block !important;
-                margin: 0 auto 1rem auto !important;
+                margin: 0 auto 1.25rem auto !important;
             }
             
             /* Ensure profile section has proper spacing */
             #profil_pengguna {
-                padding: 1rem 0.5rem !important;
+                padding: 1.25rem 0.75rem !important;
                 margin-bottom: 0 !important;
             }
             
             /* Profile text optimization */
             #profil_pengguna h2 {
-                font-size: 1.6rem !important;
+                font-size: 1.8rem !important;
                 font-weight: 700 !important;
-                margin-bottom: 0.75rem !important;
+                margin-bottom: 1rem !important;
                 text-align: center !important;
             }
             
             #profil_pengguna p {
-                font-size: 1.1rem !important;
-                line-height: 1.6 !important;
+                font-size: 1.3rem !important;
+                line-height: 1.7 !important;
                 text-align: center !important;
-                padding: 0 1rem !important;
+                padding: 0 1.5rem !important;
                 margin-bottom: 0 !important;
             }
         }
@@ -386,20 +399,20 @@
         /* Extra small mobile devices */
         @media (max-width: 480px) {
             #profil_pengguna img {
-                width: 160px !important;
-                height: 160px !important;
+                width: 180px !important;
+                height: 180px !important;
             }
             
             .main-content h2 {
-                font-size: 1.3rem !important;
+                font-size: 1.5rem !important;
             }
             
             .main-content h3 {
-                font-size: 1.1rem !important;
+                font-size: 1.3rem !important;
             }
             
             .main-content p {
-                font-size: 0.95rem !important;
+                font-size: 1.05rem !important;
             }
         }
     </style>
@@ -491,9 +504,10 @@
                                                             class="w-full h-full object-cover absolute inset-0" alt="Produk">
                                                         <div
                                                             class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-90 text-white p-3">
-                                                            <h5 class="font-bold text-sm mb-1 text-shadow">
-                                                                {{ $product['nama_produk'] ?? 'Produk' }}</h5>
-                                                            <p class="text-green-300 font-bold text-xs">{{ $product['harga'] }}
+                                                            <h5 class="font-bold text-sm mb-1" style="color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">
+                                                                {{ $product['nama_produk'] ?? 'Produk' }}
+                                                            </h5>
+                                                            <p class="text-green-300 font-bold text-xs" style="color: rgb(132, 252, 126); text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">{{ $product['harga'] }}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -516,10 +530,15 @@
                                     <div class="flex flex-col justify-center w-full gap-4">
                                         @foreach ($link->data_link['tombol_link'] as $linkItem)
                                             @if (isset($linkItem['nama_link']) && isset($linkItem['link_tombol']))
+                                                @php
+                                                    $warnaTombol = $linkItem['warna_tombol'] ?? '#10b981';
+                                                    $warnaText = $linkItem['warna_text'] ?? '#ffffff';
+                                                @endphp
                                                 <a href="{{ $linkItem['link_tombol'] }}"
                                                     class="template-btn-link w-full max-w-md flex justify-center">
                                                     <div
-                                                        class="bg-white/60 backdrop-blur-md hover:bg-white/80 text-black font-bold py-3 px-6 rounded-xl shadow-lg border border-black transition-all duration-300 cursor-pointer w-full text-center">
+                                                        class="font-bold py-3 px-6 rounded-xl shadow-lg border border-black transition-all duration-300 cursor-pointer w-full text-center"
+                                                        style="background-color: {{ $warnaTombol }}; color: {{ $warnaText }};">
                                                         {{ $linkItem['nama_link'] }}
                                                     </div>
                                                 </a>
@@ -580,43 +599,59 @@
                                         <div class="w-full flex justify-center">
                                             @foreach ($link->data_link['sosial_media'] as $social)
                                                 @if (isset($social['active']) && $social['active'] && isset($social['link']) && !empty($social['link']))
+                                                    @php
+                                                        // Mapping warna background sesuai platform
+                                                        $platformColors = [
+                                                            'youtube' => 'bg-red-500 text-white hover:bg-red-600',
+                                                            'facebook' => 'bg-blue-600 text-white hover:bg-blue-700',
+                                                            'instagram' => 'bg-pink-500 text-white hover:bg-pink-600',
+                                                            'spotify' => 'bg-green-500 text-white hover:bg-green-600',
+                                                            'linkedin' => 'bg-blue-700 text-white hover:bg-blue-800',
+                                                            'tiktok' => 'bg-black text-white hover:bg-gray-800',
+                                                            'telegram' => 'bg-blue-500 text-white hover:bg-blue-600',
+                                                            'whatsapp' => 'bg-green-600 text-white hover:bg-green-700',
+                                                        ];
+                                                        $platform = strtolower($social['platform'] ?? '');
+                                                        $colorClass = $platformColors[$platform] ?? 'bg-gray-400 text-white hover:bg-gray-500';
+                                                    @endphp
                                                     <a href="{{ $social['link'] }}"
-                                                        class="social-media-btn flex justify-center items-center mx-2">
-                                                        @switch(strtolower($social['platform'] ?? ''))
+                                                        class="social-media-btn flex justify-center items-center mx-2 w-12 h-12 rounded-full shadow-lg transition-colors duration-200 {{ $colorClass }}"
+                                                        target="_blank" rel="noopener noreferrer">
+                                                        @switch($platform)
                                                             @case('youtube')
-                                                                <i class="fab fa-youtube"></i>
+                                                                <i class="fab fa-youtube text-2xl" style="color: white;"></i>
                                                             @break
 
                                                             @case('facebook')
-                                                                <i class="fab fa-facebook-f"></i>
+                                                                <i class="fab fa-facebook-f text-2xl" style="color: white;"></i>
                                                             @break
 
                                                             @case('instagram')
-                                                                <i class="fab fa-instagram"></i>
+                                                                <i class="fab fa-instagram text-2xl" style="color: white;"></i>
                                                             @break
 
                                                             @case('spotify')
-                                                                <i class="fab fa-spotify"></i>
+                                                                <i class="fab fa-spotify text-2xl" style="color: white;"></i>
                                                             @break
 
                                                             @case('linkedin')
-                                                                <i class="fab fa-linkedin-in"></i>
+                                                                <i class="fab fa-linkedin-in text-2xl" style="color: white;"></i>
                                                             @break
 
                                                             @case('tiktok')
-                                                                <i class="fab fa-tiktok"></i>
+                                                                <i class="fab fa-tiktok text-2xl" style="color: white;"></i>
                                                             @break
 
                                                             @case('telegram')
-                                                                <i class="fab fa-telegram-plane"></i>
+                                                                <i class="fab fa-telegram-plane text-2xl" style="color: white;"></i>
                                                             @break
 
                                                             @case('whatsapp')
-                                                                <i class="fab fa-whatsapp"></i>
+                                                                <i class="fab fa-whatsapp text-2xl" style="color: white;"></i>
                                                             @break
 
                                                             @default
-                                                                <i class="fas fa-share-alt"></i>
+                                                                <i class="fas fa-share-alt text-2xl" style="color: white;"></i>
                                                         @endswitch
                                                     </a>
                                                 @endif
@@ -653,10 +688,10 @@
                                                                 alt="{{ $project['judul_project'] }}" class="project-image">
                                                             <div class="project-overlay">
                                                                 <div class="overlay-content">
-                                                                    <h4 class="project-title">{{ $project['judul_project'] }}
+                                                                    <h4 class="project-title" style="color: rgb(132, 252, 126); text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">{{ $project['judul_project'] }}
                                                                     </h4>
                                                                     @if (isset($project['deskripsi_project']) && !empty($project['deskripsi_project']))
-                                                                        <p class="project-description">
+                                                                        <p class="project-description" style="color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">
                                                                             {{ $project['deskripsi_project'] }}</p>
                                                                     @endif
                                                                     <a href="{{ $project['link_project'] }}"
@@ -755,3 +790,4 @@
 </body>
 
 </html>
+

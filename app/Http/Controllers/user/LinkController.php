@@ -238,6 +238,8 @@ class LinkController extends Controller
             $request->validate([
                 'nama_link.*' => 'required|string|max:255',
                 'link_tombol.*' => 'required|url',
+                'warna_tombol.*' => 'required|string|max:255',
+                'warna_text.*' => 'required|string|max:255',
             ]);
 
             $existingLink = $this->getOrCreateUserLink($kode_unik, $nama_link);
@@ -248,6 +250,8 @@ class LinkController extends Controller
                 $links[] = [
                     'nama_link' => $request->nama_link[$i],
                     'link_tombol' => $request->link_tombol[$i],
+                    'warna_tombol' => $request->warna_tombol[$i],
+                    'warna_text' => $request->warna_text[$i],
                 ];
             }
 
