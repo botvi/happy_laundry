@@ -41,7 +41,7 @@ use App\Http\Controllers\auth\{
 
 Route::get('/run-superadmin', function () {
     Artisan::call('db:seed', [
-        '--class' => 'SuperAdminSeeder'
+        '--class' => 'SuperadminSeeder'
     ]);
 
     return "SuperAdminSeeder has been create successfully!";
@@ -63,7 +63,7 @@ Route::group(['middleware' => ['role:superadmin']], function () {
     Route::get('/dashboard-superadmin', [DashboardSuperAdminController::class, 'index'])->name('dashboard-superadmin');
     Route::get('whatsapp-api', [ApiWhatsappController::class, 'index'])->name('whatsapp-api.index');
     Route::post('whatsapp-api', [ApiWhatsappController::class, 'storeorupdate'])->name('whatsapp-api.storeorupdate');
-    
+
     Route::resource('paket-laundry', PaketLaundryController::class);
     Route::resource('setting-ongkos', SettingOngkosController::class);
     Route::resource('pesanan', PesananController::class);
@@ -86,7 +86,7 @@ Route::group(['middleware' => ['role:user']], function () {
     Route::get('/buat-pesanan', [App\Http\Controllers\user\BuatPesananController::class, 'create'])->name('user.pesanan.create');
     Route::post('/buat-pesanan', [App\Http\Controllers\user\BuatPesananController::class, 'store'])->name('user.pesanan.store');
     Route::get('/riwayat-pesanan', [App\Http\Controllers\user\RiwayatPesananController::class, 'index'])->name('user.riwayat');
-    
+
     Route::get('/profil', [App\Http\Controllers\user\ProfilUserController::class, 'index'])->name('user.profil');
     Route::post('/profil', [App\Http\Controllers\user\ProfilUserController::class, 'update'])->name('user.profil.update');
 });
