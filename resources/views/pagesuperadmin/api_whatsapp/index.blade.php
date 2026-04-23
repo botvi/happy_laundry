@@ -38,7 +38,7 @@
                 @csrf
                 <div class="form-group">
                   <label class="form-label">Access Token</label>
-                  <input type="text" name="access_token" class="form-control" placeholder="Access Token" value="{{ $whatsappApi->access_token }}" required>
+                  <input type="text" name="access_token" class="form-control" placeholder="Access Token" value="{{ $whatsappApi->access_token ?? '' }}" required>
                 </div>
                 <div class="card-footer">
                   <button type="submit" class="btn btn-primary me-2">Submit</button>

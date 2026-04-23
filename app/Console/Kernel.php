@@ -13,6 +13,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        
+        // Membersihkan OTP yang sudah kadaluarsa setiap 5 menit
+        $schedule->call(function () {
+            $controller = new \App\Http\Controllers\auth\ForgotPasswordController();
+            $controller->cleanupExpiredOtps();
+        })->everyFiveMinutes();
     }
 
     /**

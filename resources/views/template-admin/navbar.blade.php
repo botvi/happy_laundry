@@ -2,7 +2,7 @@
     <div class="navbar-wrapper">
         <div class="m-header justify-content-center">
             <a href="/dashboard-superadmin" class="b-brand text-primary">
-                <img src="{{ asset('env') }}/hitam.png" alt="Logo" style="height: 60px;">
+                <img src="{{ asset('env/logo_nobg.png') }}" alt="Happy Laundry Logo" style="height: 60px;">
             </a>
         </div>
         @if (Auth::user()->role == 'superadmin')
@@ -16,9 +16,12 @@
                     </li>
 
                     <li class="pc-item pc-caption">
-                        <label>Data Linkskuy</label>
-                        <i class="ti ti-dashboard"></i>
+                        <label>Manajemen Laundry</label>
+                        <i class="ti ti-washing-machine"></i>
                     </li>
+
+
+
                     <li class="pc-item">
                         <a href="{{ route('whatsapp-api.index') }}" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-brand-whatsapp"></i></span>
@@ -26,21 +29,33 @@
                         </a>
                     </li>
                     <li class="pc-item">
-                        <a href="{{ route('manage-testimoni.index') }}" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-message-circle"></i></span>
-                            <span class="pc-mtext">Testimon Pelanggan</span>
+                        <a href="{{ route('paket-laundry.index') }}" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-box"></i></span>
+                            <span class="pc-mtext">Paket Laundry</span>
                         </a>
                     </li>
                     <li class="pc-item">
-                        <a href="{{ route('manage-pelanggan.index') }}" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-user"></i></span>
+                        <a href="{{ route('setting-ongkos.index') }}" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-settings"></i></span>
+                            <span class="pc-mtext">Setting Ongkos</span>
+                        </a>
+                    </li>
+                    <li class="pc-item">
+                        <a href="{{ route('pesanan.index') }}" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-shopping-cart"></i></span>
+                            <span class="pc-mtext">Pesanan</span>
+                        </a>
+                    </li>
+                    <li class="pc-item">
+                        <a href="{{ route('pelanggan.index') }}" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-users"></i></span>
                             <span class="pc-mtext">Pelanggan</span>
                         </a>
                     </li>
                     <li class="pc-item">
-                        <a href="{{ route('brand.index') }}" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-briefcase"></i></span>
-                            <span class="pc-mtext">Manage Brand</span>
+                        <a href="{{ route('laporan.index') }}" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-report"></i></span>
+                            <span class="pc-mtext">Laporan</span>
                         </a>
                     </li>
                 </ul>
