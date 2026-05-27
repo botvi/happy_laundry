@@ -19,9 +19,32 @@
             </div>
         </div>
 
-        {{-- Filter --}}
+        {{-- Filter Card --}}
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-body">
+                {{-- Tombol Filter Cepat --}}
+                <div class="mb-3">
+                    <span class="fw-semibold me-2 text-muted small">Filter Cepat:</span>
+                    <a href="{{ route('laporan.index', array_merge(request()->except('periode','dari','sampai'), ['periode' => 'minggu'])) }}"
+                       class="btn btn-sm me-1 {{ request('periode') == 'minggu' ? 'btn-primary' : 'btn-outline-primary' }}">
+                        <i class="ti ti-calendar-week me-1"></i>Minggu Ini
+                    </a>
+                    <a href="{{ route('laporan.index', array_merge(request()->except('periode','dari','sampai'), ['periode' => 'bulan'])) }}"
+                       class="btn btn-sm me-1 {{ request('periode') == 'bulan' ? 'btn-success' : 'btn-outline-success' }}">
+                        <i class="ti ti-calendar-month me-1"></i>Bulan Ini
+                    </a>
+                    <a href="{{ route('laporan.index', array_merge(request()->except('periode','dari','sampai'), ['periode' => 'tahun'])) }}"
+                       class="btn btn-sm me-1 {{ request('periode') == 'tahun' ? 'btn-warning text-dark' : 'btn-outline-warning' }}">
+                        <i class="ti ti-calendar me-1"></i>Tahun Ini
+                    </a>
+                    <a href="{{ route('laporan.index') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="ti ti-refresh me-1"></i>Semua
+                    </a>
+                </div>
+
+                <hr class="my-3">
+
+                {{-- Filter Manual --}}
                 <form method="GET" action="{{ route('laporan.index') }}" class="row g-3 align-items-end">
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">Status</label>
@@ -41,12 +64,32 @@
                         <input type="date" name="sampai" class="form-control" value="{{ request('sampai') }}">
                     </div>
                     <div class="col-md-3 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary flex-grow-1">Filter</button>
-                        <a href="{{ route('laporan.index') }}" class="btn btn-secondary">Reset</a>
+                        <button type="submit" class="btn btn-primary flex-grow-1">
+                            <i class="ti ti-filter me-1"></i>Filter
+                        </button>
+                        <a href="{{ route('laporan.index') }}" class="btn btn-secondary">
+                            <i class="ti ti-x"></i>
+                        </a>
                     </div>
                 </form>
             </div>
         </div>
+
+        {{-- Label Periode Aktif --}}
+        @if(request('periode') || (request('dari') && request('sampai')))
+        <div class="alert alert-info d-flex align-items-center py-2 mb-3" style="border-left: 4px solid #17a2b8;">
+            <i class="ti ti-info-circle me-2"></i>
+            @if(request('periode') == 'minggu')
+                Menampilkan data <strong>minggu ini</strong> ({{ \Carbon\Carbon::now()->startOfWeek()->format('d M Y') }} – {{ \Carbon\Carbon::now()->endOfWeek()->format('d M Y') }})
+            @elseif(request('periode') == 'bulan')
+                Menampilkan data <strong>bulan ini</strong> ({{ \Carbon\Carbon::now()->format('F Y') }})
+            @elseif(request('periode') == 'tahun')
+                Menampilkan data <strong>tahun {{ \Carbon\Carbon::now()->year }}</strong>
+            @else
+                Menampilkan data dari <strong>{{ request('dari') }}</strong> sampai <strong>{{ request('sampai') }}</strong>
+            @endif
+        </div>
+        @endif
 
         {{-- Summary --}}
         <div class="row g-3 mb-4">

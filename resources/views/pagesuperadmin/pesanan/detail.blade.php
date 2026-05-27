@@ -52,6 +52,10 @@
                         <td>: {{ $pesanan->jumlah_kilogram ?? 0 }} Kg</td>
                     </tr>
                     <tr>
+                        <th>Potongan Harga (Diskon)</th>
+                        <td class="text-success">: - Rp {{ number_format($pesanan->potongan_harga ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
                         <th>Total Harga Keseluruhan</th>
                         <td>: <strong>Rp {{ number_format($pesanan->total_harga ?? 0, 0, ',', '.') }}</strong></td>
                     </tr>

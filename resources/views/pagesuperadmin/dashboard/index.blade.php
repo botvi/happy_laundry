@@ -64,6 +64,59 @@
             </div>
         </div>
 
+        {{-- CHARTS --}}
+        <div class="row g-4 mb-4">
+            {{-- Chart Pendapatan & Pesanan 12 Bulan --}}
+            <div class="col-xl-8">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0 fw-bold">Grafik Pendapatan & Pesanan</h5>
+                            <small class="text-muted">12 Bulan Terakhir</small>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <span class="badge" style="background:#dc653d;">
+                                <i class="ti ti-circle-filled me-1" style="font-size:0.5rem;"></i>Pendapatan
+                            </span>
+                            <span class="badge bg-primary">
+                                <i class="ti ti-circle-filled me-1" style="font-size:0.5rem;"></i>Pesanan
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chartPendapatan" height="120"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Chart Donut Status --}}
+            <div class="col-xl-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0 fw-bold">Status Pesanan</h5>
+                        <small class="text-muted">Keseluruhan</small>
+                    </div>
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <canvas id="chartStatus" height="220"></canvas>
+                        <div class="mt-3 w-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><span class="badge bg-warning text-dark me-1">&nbsp;</span> Menunggu Timbangan</span>
+                                <strong>{{ $pesananMenunggu }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><span class="badge bg-primary me-1">&nbsp;</span> Diproses</span>
+                                <strong>{{ $pesananProses }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><span class="badge bg-success me-1">&nbsp;</span> Selesai</span>
+                                <strong>{{ $pesananSelesai }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- PESANAN TERBARU --}}
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
@@ -114,4 +167,115 @@
 
     </div>
 </section>
+
+{{-- Chart.js --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script>
+    // ── Data dari Laravel ──────────────────────────────────────────────
+    const chartLabels     = @json($chartLabels);
+    const chartPendapatan = @json($chartPendapatan);
+    const chartPesanan    = @json($chartPesanan);
+    const statusLabels    = @json($statusLabels);
+    const statusData      = @json($statusData);
+
+    // ── Grafik Garis: Pendapatan & Pesanan ────────────────────────────
+    const ctxLine = document.getElementById('chartPendapatan').getContext('2d');
+    new Chart(ctxLine, {
+        type: 'bar',
+        data: {
+            labels: chartLabels,
+            datasets: [
+                {
+                    label: 'Pendapatan (Rp)',
+                    data: chartPendapatan,
+                    backgroundColor: 'rgba(220,101,61,0.15)',
+                    borderColor: '#dc653d',
+                    borderWidth: 2,
+                    borderRadius: 6,
+                    type: 'bar',
+                    yAxisID: 'y',
+                },
+                {
+                    label: 'Jumlah Pesanan',
+                    data: chartPesanan,
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13,110,253,0.1)',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#0d6efd',
+                    tension: 0.4,
+                    type: 'line',
+                    yAxisID: 'y1',
+                    fill: false,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(ctx) {
+                            if (ctx.dataset.label.includes('Pendapatan')) {
+                                return ' Rp ' + ctx.parsed.y.toLocaleString('id-ID');
+                            }
+                            return ' ' + ctx.parsed.y + ' Pesanan';
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { size: 11 } }
+                },
+                y: {
+                    position: 'left',
+                    beginAtZero: true,
+                    ticks: {
+                        font: { size: 11 },
+                        callback: v => 'Rp ' + (v / 1000).toLocaleString('id-ID') + 'K'
+                    },
+                    grid: { color: 'rgba(0,0,0,0.05)' }
+                },
+                y1: {
+                    position: 'right',
+                    beginAtZero: true,
+                    grid: { drawOnChartArea: false },
+                    ticks: { font: { size: 11 }, stepSize: 1 }
+                }
+            }
+        }
+    });
+
+    // ── Grafik Donut: Status Pesanan ──────────────────────────────────
+    const ctxDonut = document.getElementById('chartStatus').getContext('2d');
+    new Chart(ctxDonut, {
+        type: 'doughnut',
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                data: statusData,
+                backgroundColor: ['#ffc107', '#0d6efd', '#198754'],
+                borderWidth: 2,
+                borderColor: '#fff',
+                hoverOffset: 8,
+            }]
+        },
+        options: {
+            responsive: true,
+            cutout: '70%',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + ' pesanan'
+                    }
+                }
+            }
+        }
+    });
+</script>
 @endsection

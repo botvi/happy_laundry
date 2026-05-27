@@ -1,72 +1,134 @@
 @extends('template-user')
 
+@extends('template-user')
+
 @section('content')
-<div class="container my-5">
+<div class="container my-5 py-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card card-modern p-4">
-                <div class="card-body">
-                    <h2 class="mb-4 fw-bold text-center">Buat Pesanan Laundry</h2>
-                    
+        <div class="col-lg-8 col-md-10">
+            <div class="text-center mb-4 pb-2">
+                <h2 class="fw-bold" style="color: var(--dark);">Buat Pesanan <span class="gradient-text">Laundry</span></h2>
+                <p class="text-muted">Isi detail pesanan Anda di bawah ini</p>
+            </div>
+
+            <div class="card card-modern border-0">
+                <div class="card-body p-4 p-md-5">
                     <form action="{{ route('user.pesanan.store') }}" method="POST" id="formPesanan">
                         @csrf
                         
                         <div class="mb-4">
-                            <label class="form-label fw-bold">Pilih Paket Laundry</label>
-                            <select name="paket_laundry_id" class="form-select form-select-lg" required>
-                                <option value="">-- Pilih Paket --</option>
-                                @foreach($pakets as $paket)
-                                    <option value="{{ $paket->id }}" {{ $paket_id == $paket->id ? 'selected' : '' }}>
-                                        {{ $paket->nama_paket }} - Rp {{ number_format($paket->harga_paket_per_kg, 0, ',', '.') }} / kg
-                                    </option>
-                                @endforeach
-                            </select>
+                            <label class="form-label">Pilih Paket Laundry</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-box-seam text-primary"></i></span>
+                                <select name="paket_laundry_id" class="form-select border-start-0 ps-0 fw-medium" required>
+                                    <option value="">-- Pilih Paket --</option>
+                                    @foreach($pakets as $paket)
+                                        <option value="{{ $paket->id }}" {{ $paket_id == $paket->id ? 'selected' : '' }}>
+                                            {{ $paket->nama_paket }} - Rp {{ number_format($paket->harga_paket_per_kg, 0, ',', '.') }} / kg
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label fw-bold">Gunakan Layanan Antar Jemput?</label>
-                            <div class="d-flex gap-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="antar_jemput" id="antar_ya" value="ya" required>
-                                    <label class="form-check-label" for="antar_ya">Ya, Antar & Jemput</label>
+                            <label class="form-label">Layanan Antar Jemput?</label>
+                            <div class="row g-3 mt-1">
+                                <div class="col-md-6">
+                                    <input type="radio" class="btn-check" name="antar_jemput" id="antar_ya" value="ya" required>
+                                    <label class="btn btn-outline-primary w-100 py-3 text-start d-flex align-items-center rounded-4" for="antar_ya">
+                                        <div class="icon-box-sm bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width:40px;height:40px;">
+                                            <i class="bi bi-truck fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">Ya, Antar Jemput</div>
+                                            <small class="text-muted">Kurir akan mengambil pakaian</small>
+                                        </div>
+                                    </label>
                                 </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="antar_jemput" id="antar_tidak" value="tidak">
-                                    <label class="form-check-label" for="antar_tidak">Tidak, Saya antar sendiri</label>
+                                <div class="col-md-6">
+                                    <input type="radio" class="btn-check" name="antar_jemput" id="antar_tidak" value="tidak">
+                                    <label class="btn btn-outline-secondary w-100 py-3 text-start d-flex align-items-center rounded-4 border-2" for="antar_tidak">
+                                        <div class="icon-box-sm bg-light text-secondary rounded-circle d-flex align-items-center justify-content-center me-3" style="width:40px;height:40px;">
+                                            <i class="bi bi-person-walking fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">Antar Sendiri</div>
+                                            <small class="text-muted">Bawa langsung ke outlet</small>
+                                        </div>
+                                    </label>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Section Lokasi (Hidden initially) -->
-                        <div id="lokasiSection" style="display: none;" class="p-3 bg-light rounded mb-4 border">
-                            <h5 class="fw-bold mb-3"><i class="bi bi-geo-alt-fill text-danger"></i> Lokasi Penjemputan</h5>
-                            <button type="button" class="btn btn-outline-primary mb-3" id="btnGetLocation">
-                                <i class="bi bi-crosshair"></i> Dapatkan Lokasi Saya
+                        <div id="lokasiSection" style="display: none;" class="p-4 bg-light rounded-4 mb-4 border border-primary-subtle">
+                            <h5 class="fw-bold mb-3 d-flex align-items-center text-dark">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2 shadow-sm" style="width: 32px; height: 32px;"><i class="bi bi-geo-alt-fill"></i></div>
+                                Lokasi Penjemputan
+                            </h5>
+                            
+                            <button type="button" class="btn btn-primary bg-primary border-0 rounded-pill px-4 mb-3" id="btnGetLocation">
+                                <i class="bi bi-crosshair me-2"></i> Dapatkan Lokasi Saya
                             </button>
                             
-                            <div id="locationStatus" class="small text-muted mb-3">Lokasi belum didapatkan.</div>
+                            <div id="locationStatus" class="small text-muted mb-3 p-2 bg-white rounded-3 border d-none"></div>
 
                             <input type="hidden" name="latitude_antar_jemput" id="latitude">
                             <input type="hidden" name="longitude_antar_jemput" id="longitude">
                             <input type="hidden" name="ongkir_antar_jemput" id="ongkir_input">
 
-                            <div class="alert alert-info d-none" id="ongkirInfo">
-                                <strong>Estimasi Jarak:</strong> <span id="jarakText">0</span> meter <br>
-                                <strong>Biaya Antar Jemput:</strong> Rp <span id="ongkirText">0</span>
+                            <div class="alert bg-white border border-info border-start-0 border-end-0 border-bottom-0 border-top-3 mt-3 shadow-sm d-none" id="ongkirInfo">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted"><i class="bi bi-signpost-split me-2 text-info"></i>Estimasi Jarak</span>
+                                    <span class="fw-bold text-dark"><span id="jarakText">0</span> meter</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted"><i class="bi bi-wallet2 me-2 text-success"></i>Biaya Antar Jemput</span>
+                                    <span class="fw-bold text-primary">Rp <span id="ongkirText">0</span></span>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="alert alert-warning">
-                            <i class="bi bi-info-circle"></i> <strong>Catatan:</strong> Total harga laundry (kg x harga paket) akan dihitung oleh admin setelah pakaian ditimbang.
+                        <div class="alert bg-primary-subtle border-0 rounded-4 d-flex align-items-center mt-4">
+                            <i class="bi bi-info-circle-fill text-primary fs-3 me-3"></i> 
+                            <div class="text-dark">
+                                <strong>Catatan:</strong> Total harga laundry (kg × harga paket) akan dihitung secara akurat oleh admin setelah pakaian ditimbang.
+                            </div>
                         </div>
 
-                        <button type="submit" class="btn btn-modern w-100 py-3 mt-3 fs-5" id="btnSubmit">Buat Pesanan Sekarang</button>
+                        <button type="submit" class="btn btn-modern w-100 py-3 mt-4 fs-5 rounded-pill shadow-lg d-flex align-items-center justify-content-center" id="btnSubmit">
+                            <i class="bi bi-check-circle me-2"></i> Buat Pesanan Sekarang
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .btn-check:checked + .btn-outline-primary {
+        background-color: rgba(255, 117, 85, 0.1);
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 0 4px rgba(255, 117, 85, 0.15);
+    }
+    .btn-check:checked + .btn-outline-secondary {
+        background-color: #f8f9fa;
+        border-color: #6c757d !important;
+        color: #495057;
+        box-shadow: 0 0 0 4px rgba(108, 117, 125, 0.15);
+    }
+    .btn-outline-secondary {
+        border-color: #dee2e6;
+        color: #6c757d;
+    }
+    .btn-outline-secondary:hover {
+        background-color: #f8f9fa;
+        color: #495057;
+        border-color: #ced4da;
+    }
+</style>
 @endsection
 
 @section('scripts')

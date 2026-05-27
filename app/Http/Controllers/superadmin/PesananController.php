@@ -63,7 +63,24 @@ class PesananController extends Controller
 
         // Hitung total harga otomatis
         $hargaPaket = $pesanan->paketLaundry->harga_paket_per_kg ?? 0;
-        $hargaTotal = ($hargaPaket * $request->jumlah_kilogram) + ($pesanan->ongkir_antar_jemput ?? 0);
+        $hargaLaundry = ($hargaPaket * $request->jumlah_kilogram);
+        
+        // Cek diskon berdasarkan berat
+        $diskon = \App\Models\Diskon::where('minimal_berat_kg', '<=', $request->jumlah_kilogram)
+                    ->orderBy('minimal_berat_kg', 'desc')
+                    ->first();
+        
+        $potongan = 0;
+        if ($diskon) {
+            if ($diskon->tipe_diskon == 'persen') {
+                $potongan = $hargaLaundry * ($diskon->nilai_diskon / 100);
+            } else {
+                $potongan = $diskon->nilai_diskon;
+            }
+        }
+        
+        $pesanan->potongan_harga = $potongan;
+        $hargaTotal = $hargaLaundry - $potongan + ($pesanan->ongkir_antar_jemput ?? 0);
         $pesanan->total_harga = $hargaTotal;
         $pesanan->save();
 
@@ -99,6 +116,9 @@ class PesananController extends Controller
         $ongkir     = $pesanan->ongkir_antar_jemput
                         ? 'Rp ' . number_format($pesanan->ongkir_antar_jemput, 0, ',', '.')
                         : '-';
+        $potongan   = $pesanan->potongan_harga
+                        ? '- Rp ' . number_format($pesanan->potongan_harga, 0, ',', '.')
+                        : '-';
         $total      = 'Rp ' . number_format($pesanan->total_harga ?? 0, 0, ',', '.');
 
         $pesan = "🧺 *Happy Laundry*\n";
@@ -112,6 +132,7 @@ class PesananController extends Controller
         $pesan .= "• Harga/Kg   : Rp {$hargaPerKg}\n";
         $pesan .= "• Harga Cuci : Rp {$hargaLaundry}\n";
         $pesan .= "• Ongkir     : {$ongkir}\n";
+        $pesan .= "• Diskon     : {$potongan}\n";
         $pesan .= "• *Total     : {$total}*\n";
         $pesan .= "━━━━━━━━━━━━━━━━━━━━\n";
         $pesan .= "Terima kasih telah menggunakan Happy Laundry! 😊";

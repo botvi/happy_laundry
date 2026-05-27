@@ -1,14 +1,16 @@
 @extends('template-user')
 
 @section('content')
-<div class="container my-5">
+<div class="container my-5 py-4">
     <div class="row mb-4 align-items-center">
-        <div class="col-md-6">
-            <h2 class="fw-bold" style="color: #2b3a55;">Riwayat Pesanan Saya</h2>
-            <p class="text-muted">Pantau status dan detail laundry Anda di sini.</p>
+        <div class="col-md-6 mb-3 mb-md-0">
+            <h2 class="fw-bold" style="color: var(--dark);">Riwayat <span class="gradient-text">Pesanan</span></h2>
+            <p class="text-muted mb-0">Pantau status dan detail laundry Anda di sini.</p>
         </div>
         <div class="col-md-6 text-md-end">
-            <a href="{{ route('user.paket') }}" class="btn btn-modern">Buat Pesanan Baru</a>
+            <a href="{{ route('user.paket') }}" class="btn btn-modern px-4 py-2 shadow-sm rounded-pill d-inline-flex align-items-center">
+                <i class="bi bi-plus-circle me-2"></i> Buat Pesanan Baru
+            </a>
         </div>
     </div>
 
@@ -21,23 +23,23 @@
     @endphp
 
     {{-- TABS --}}
-    <div class="d-flex gap-2 flex-wrap mb-4">
+    <div class="d-flex gap-2 flex-wrap mb-4 p-2 bg-white rounded-pill shadow-sm d-inline-flex border">
         @foreach([
-            ['key'=>'semua',              'label'=>'Semua',              'count'=>$semua,    'color'=>'#6c757d'],
-            ['key'=>'menunggu_timbangan', 'label'=>'Menunggu Timbangan', 'count'=>$menunggu, 'color'=>'#e6a817'],
-            ['key'=>'diproses',           'label'=>'Diproses',           'count'=>$proses,   'color'=>'#0d6efd'],
-            ['key'=>'selesai',            'label'=>'Selesai',            'count'=>$selesai,  'color'=>'#198754'],
+            ['key'=>'semua',              'label'=>'Semua',              'count'=>$semua,    'color'=>'#6c757d', 'icon'=>'bi-list-ul'],
+            ['key'=>'menunggu_timbangan', 'label'=>'Menunggu Timbangan', 'count'=>$menunggu, 'color'=>'#e6a817', 'icon'=>'bi-hourglass-split'],
+            ['key'=>'diproses',           'label'=>'Diproses',           'count'=>$proses,   'color'=>'#0d6efd', 'icon'=>'bi-arrow-repeat'],
+            ['key'=>'selesai',            'label'=>'Selesai',            'count'=>$selesai,  'color'=>'#198754', 'icon'=>'bi-check2-circle'],
         ] as $tab)
         <a href="{{ route('user.riwayat', ['status' => $tab['key']]) }}"
-           class="btn btn-sm px-3 py-2 fw-medium"
+           class="btn btn-sm px-4 py-2 fw-medium rounded-pill d-flex align-items-center transition-all"
            style="{{ $aktif == $tab['key']
-                ? 'background:'.$tab['color'].';color:white;border:2px solid '.$tab['color'].';'
-                : 'background:white;color:'.$tab['color'].';border:2px solid '.$tab['color'].';' }}">
-            {{ $tab['label'] }}
-            <span class="badge ms-1"
+                ? 'background:'.$tab['color'].';color:white;border:1px solid '.$tab['color'].';transform:scale(1.02);'
+                : 'background:transparent;color:'.$tab['color'].';border:1px solid transparent;' }}">
+            <i class="bi {{ $tab['icon'] }} me-2"></i> {{ $tab['label'] }}
+            <span class="badge rounded-pill ms-2"
                   style="{{ $aktif == $tab['key']
-                    ? 'background:rgba(255,255,255,0.3);color:white;'
-                    : 'background:'.$tab['color'].';color:white;' }}">
+                    ? 'background:rgba(255,255,255,0.25);color:white;'
+                    : 'background:rgba('.hexdec(substr($tab['color'],1,2)).','.hexdec(substr($tab['color'],3,2)).','.hexdec(substr($tab['color'],5,2)).',0.1);color:'.$tab['color'].';' }}">
                 {{ $tab['count'] }}
             </span>
         </a>
@@ -98,7 +100,14 @@
                             <span class="fw-semibold text-muted">{{ $status }}</span>
                         @endif
                     </div>
-                    <small class="text-muted">{{ $pesanan->created_at->format('d M Y, H:i') }}</small>
+                    <div class="d-flex align-items-center gap-3">
+                        <small class="text-muted">{{ $pesanan->created_at->format('d M Y, H:i') }}</small>
+                        @if($status != 'menunggu_timbangan')
+                            <a href="{{ route('user.komplain.create', ['pesanan_id' => $pesanan->id]) }}" class="btn btn-sm btn-outline-danger py-1 px-2" style="font-size: 12px; border-radius: 6px;">
+                                <i class="bi bi-exclamation-circle"></i> Komplain
+                            </a>
+                        @endif
+                    </div>
                 </div>
 
                 <div class="card-body px-4 pt-3 pb-4">
@@ -170,9 +179,23 @@
                                     </div>
                                 </div>
 
-                                {{-- Total Bayar --}}
+                                {{-- Diskon --}}
                                 <div class="col-6 col-sm-4">
-                                    <div class="p-3 rounded-3" style="background: {{ $totalBg }};">
+                                    <div class="p-3 rounded-3" style="background:#f8f9fa;">
+                                        <div class="text-muted small mb-1"><i class="bi bi-ticket-perforated me-1"></i>Diskon</div>
+                                        <div class="fw-bold text-success">
+                                            @if($pesanan->potongan_harga > 0)
+                                                - Rp {{ number_format($pesanan->potongan_harga, 0, ',', '.') }}
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Total Bayar --}}
+                                <div class="col-12 col-sm-4">
+                                    <div class="p-3 rounded-3 h-100" style="background: {{ $totalBg }};">
                                         <div class="text-muted small mb-1"><i class="bi bi-wallet2 me-1"></i>Total Bayar</div>
                                         <div class="fw-bold fs-6" style="color:#dc653d;">
                                             @if($pesanan->total_harga)

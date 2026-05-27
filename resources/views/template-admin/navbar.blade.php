@@ -41,9 +41,27 @@
                         </a>
                     </li>
                     <li class="pc-item">
+                        <a href="{{ route('diskon.index') }}" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-ticket"></i></span>
+                            <span class="pc-mtext">Setting Diskon</span>
+                        </a>
+                    </li>
+                    <li class="pc-item">
+                        <a href="{{ route('landing-setting.index') }}" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-browser"></i></span>
+                            <span class="pc-mtext">Profil Laundry</span>
+                        </a>
+                    </li>
+                    <li class="pc-item">
                         <a href="{{ route('pesanan.index') }}" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-shopping-cart"></i></span>
                             <span class="pc-mtext">Pesanan</span>
+                        </a>
+                    </li>
+                    <li class="pc-item">
+                        <a href="{{ route('superadmin.komplain.index') }}" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-messages"></i></span>
+                            <span class="pc-mtext">Data Komplain</span>
                         </a>
                     </li>
                     <li class="pc-item">

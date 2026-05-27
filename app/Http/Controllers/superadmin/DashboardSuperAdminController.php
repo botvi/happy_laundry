@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Pesanan;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardSuperAdminController extends Controller
 {
@@ -21,9 +23,34 @@ class DashboardSuperAdminController extends Controller
                             ->orderBy('created_at', 'desc')
                             ->take(5)->get();
 
+      // ── Chart: Pendapatan 12 bulan terakhir ──────────────────────────
+      $chartLabels   = [];
+      $chartPendapatan = [];
+      $chartPesanan  = [];
+
+      for ($i = 11; $i >= 0; $i--) {
+         $bulan = Carbon::now()->subMonths($i);
+         $chartLabels[] = $bulan->translatedFormat('M Y');
+
+         $chartPendapatan[] = (float) Pesanan::where('status_pesanan', 'selesai')
+            ->whereYear('created_at', $bulan->year)
+            ->whereMonth('created_at', $bulan->month)
+            ->sum('total_harga');
+
+         $chartPesanan[] = (int) Pesanan::whereYear('created_at', $bulan->year)
+            ->whereMonth('created_at', $bulan->month)
+            ->count();
+      }
+
+      // ── Chart: Status Pesanan (Pie/Donut) ────────────────────────────
+      $statusLabels = ['Menunggu Timbangan', 'Diproses', 'Selesai'];
+      $statusData   = [$pesananMenunggu, $pesananProses, $pesananSelesai];
+
       return view('pagesuperadmin.dashboard.index', compact(
          'totalPelanggan', 'totalPesanan', 'pesananMenunggu',
-         'pesananProses', 'pesananSelesai', 'totalPendapatan', 'pesananTerbaru'
+         'pesananProses', 'pesananSelesai', 'totalPendapatan', 'pesananTerbaru',
+         'chartLabels', 'chartPendapatan', 'chartPesanan',
+         'statusLabels', 'statusData'
       ));
    }
 }

@@ -67,6 +67,14 @@ Route::group(['middleware' => ['role:superadmin']], function () {
     Route::resource('paket-laundry', PaketLaundryController::class);
     Route::resource('setting-ongkos', SettingOngkosController::class);
     Route::resource('pesanan', PesananController::class);
+    Route::resource('diskon', App\Http\Controllers\superadmin\DiskonController::class)->except(['show']);
+    
+    Route::get('/superadmin/komplain', [\App\Http\Controllers\superadmin\KomplainController::class, 'index'])->name('superadmin.komplain.index');
+    Route::get('/superadmin/komplain/{id}', [\App\Http\Controllers\superadmin\KomplainController::class, 'show'])->name('superadmin.komplain.show');
+    Route::put('/superadmin/komplain/{id}', [\App\Http\Controllers\superadmin\KomplainController::class, 'update'])->name('superadmin.komplain.update');
+
+    Route::get('/landing-setting', [App\Http\Controllers\superadmin\LandingSettingController::class, 'index'])->name('landing-setting.index');
+    Route::post('/landing-setting', [App\Http\Controllers\superadmin\LandingSettingController::class, 'update'])->name('landing-setting.update');
 
     Route::get('/pelanggan', [PelangganController::class, 'index'])->name('pelanggan.index');
     Route::get('/pelanggan/{id}', [PelangganController::class, 'show'])->name('pelanggan.show');
@@ -80,12 +88,18 @@ Route::group(['middleware' => ['role:superadmin']], function () {
 
 
 Route::get('/', [IndexController::class, 'index'])->name('index');
+Route::get('/daftar-paket', [App\Http\Controllers\user\DaftarPaketController::class, 'index'])->name('user.paket');
 
 Route::group(['middleware' => ['role:user']], function () {
-    Route::get('/daftar-paket', [App\Http\Controllers\user\DaftarPaketController::class, 'index'])->name('user.paket');
     Route::get('/buat-pesanan', [App\Http\Controllers\user\BuatPesananController::class, 'create'])->name('user.pesanan.create');
     Route::post('/buat-pesanan', [App\Http\Controllers\user\BuatPesananController::class, 'store'])->name('user.pesanan.store');
     Route::get('/riwayat-pesanan', [App\Http\Controllers\user\RiwayatPesananController::class, 'index'])->name('user.riwayat');
+    Route::post('/riwayat-pesanan/{id}/selesaikan', [App\Http\Controllers\user\RiwayatPesananController::class, 'selesaikanPesanan'])->name('user.pesanan.selesaikan');
+
+    Route::get('/komplain', [\App\Http\Controllers\user\KomplainController::class, 'index'])->name('user.komplain.index');
+    Route::get('/komplain/create', [\App\Http\Controllers\user\KomplainController::class, 'create'])->name('user.komplain.create');
+    Route::post('/komplain', [\App\Http\Controllers\user\KomplainController::class, 'store'])->name('user.komplain.store');
+    Route::get('/komplain/{id}', [\App\Http\Controllers\user\KomplainController::class, 'show'])->name('user.komplain.show');
 
     Route::get('/profil', [App\Http\Controllers\user\ProfilUserController::class, 'index'])->name('user.profil');
     Route::post('/profil', [App\Http\Controllers\user\ProfilUserController::class, 'update'])->name('user.profil.update');
