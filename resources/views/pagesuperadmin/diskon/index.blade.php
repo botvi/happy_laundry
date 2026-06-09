@@ -31,7 +31,8 @@
                   <thead>
                     <tr>
                       <th>No</th>
-                      <th>Minimal Berat (KG)</th>
+                      <th>Minimal Jumlah / Berat</th>
+                      <th>Satuan</th>
                       <th>Tipe Diskon</th>
                       <th>Nilai Diskon</th>
                       <th>Aksi</th>
@@ -41,7 +42,14 @@
                     @forelse($diskons as $diskon)
                     <tr>
                       <td>{{ $loop->iteration }}</td>
-                      <td>>= {{ $diskon->minimal_berat_kg }} KG</td>
+                      <td>>= {{ (float)$diskon->minimal_berat_kg }}</td>
+                      <td>
+                        @if(($diskon->satuan ?? 'kg') == 'kg')
+                          <span class="badge bg-light-primary text-primary">Kg</span>
+                        @else
+                          <span class="badge bg-light-success text-success">Helai</span>
+                        @endif
+                      </td>
                       <td>{{ ucfirst($diskon->tipe_diskon) }}</td>
                       <td>
                           @if($diskon->tipe_diskon == 'persen')
@@ -61,7 +69,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center">Belum ada aturan diskon yang ditambahkan.</td>
+                        <td colspan="7" class="text-center">Belum ada aturan diskon yang ditambahkan.</td>
                     </tr>
                     @endforelse
                   </tbody>

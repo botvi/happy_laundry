@@ -36,15 +36,22 @@
                     </div>
                     <div class="col-md-6">
                         <strong>Paket Laundry:</strong> {{ $pesanan->paketLaundry->nama_paket ?? '-' }} 
-                        (Rp {{ number_format($pesanan->paketLaundry->harga_paket_per_kg ?? 0, 0, ',', '.') }} / kg)
+                        (Rp {{ number_format($pesanan->paketLaundry->harga_paket_per_kg ?? 0, 0, ',', '.') }} / {{ $pesanan->paketLaundry->satuan ?? 'kg' }})
                     </div>
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label">Jumlah Berat (Kg)</label>
-                  <input type="number" step="0.1" name="jumlah_kilogram" class="form-control" value="{{ $pesanan->jumlah_kilogram }}" required>
+                  <label class="form-label">
+                    @if(($pesanan->paketLaundry->satuan ?? 'kg') == 'helai')
+                      Jumlah (Helai)
+                    @else
+                      Jumlah Berat (Kg)
+                    @endif
+                  </label>
+                  <input type="number" step="{{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? '1' : '0.1' }}" name="jumlah_kilogram" class="form-control" value="{{ $pesanan->jumlah_kilogram }}" required>
                 </div>
                 
+                @if(($pesanan->paketLaundry->satuan ?? 'kg') != 'helai')
                 <div class="form-group">
                   <label class="form-label">Bukti Timbangan (Gambar)</label>
                   <input type="file" name="gambar_bukti_timbangan" class="form-control" accept="image/*">
@@ -54,11 +61,19 @@
                     </div>
                   @endif
                 </div>
+                @endif
+
+                <div class="form-group mb-3">
+                  <label class="form-label">Catatan Pelanggan</label>
+                  <textarea name="catatan_pelanggan" class="form-control" rows="3" readonly>{{ $pesanan->catatan_pelanggan ?? '-' }}</textarea>
+                </div>
 
                 <div class="form-group">
                   <label class="form-label">Status Pesanan</label>
                   <select name="status_pesanan" class="form-control" required>
-                    <option value="menunggu_timbangan" {{ $pesanan->status_pesanan == 'menunggu_timbangan' ? 'selected' : '' }}>Menunggu Timbangan</option>
+                    <option value="menunggu_timbangan" {{ $pesanan->status_pesanan == 'menunggu_timbangan' ? 'selected' : '' }}>
+                      {{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Menunggu Dihitung' : 'Menunggu Timbangan' }}
+                    </option>
                     <option value="diproses" {{ $pesanan->status_pesanan == 'diproses' ? 'selected' : '' }}>Diproses</option>
                     <option value="selesai" {{ $pesanan->status_pesanan == 'selesai' ? 'selected' : '' }}>Selesai</option>
                   </select>

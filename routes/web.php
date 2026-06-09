@@ -66,6 +66,9 @@ Route::group(['middleware' => ['role:superadmin']], function () {
 
     Route::resource('paket-laundry', PaketLaundryController::class);
     Route::resource('setting-ongkos', SettingOngkosController::class);
+    
+    Route::get('/pesanan-offline/create', [PesananController::class, 'createOffline'])->name('pesanan.create_offline');
+    Route::post('/pesanan-offline', [PesananController::class, 'storeOffline'])->name('pesanan.store_offline');
     Route::resource('pesanan', PesananController::class);
     Route::resource('diskon', App\Http\Controllers\superadmin\DiskonController::class)->except(['show']);
     

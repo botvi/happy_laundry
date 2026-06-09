@@ -12,8 +12,9 @@
                 <li class="breadcrumb-item" aria-current="page">Pesanan</li>
               </ul>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-12 d-flex justify-content-between align-items-center">
               <h2 class="mb-0">Data Pesanan</h2>
+              <a href="{{ route('pesanan.create_offline') }}" class="btn btn-primary">Tambah Pesanan Offline</a>
             </div>
           </div>
         </div>
@@ -56,8 +57,10 @@
                 <tr>
                   <th>No</th>
                   <th>Pelanggan</th>
+                  <th>Tipe</th>
                   <th>Paket</th>
-                  <th>Berat</th>
+                  <th>Antar Jemput</th>
+                  <th>Jumlah / Berat</th>
                   <th>Total Harga</th>
                   <th>Status</th>
                   <th>Tanggal</th>
@@ -73,13 +76,37 @@
                 @forelse($filtered as $pesanan)
                 <tr>
                   <td>{{ $loop->iteration }}</td>
-                  <td>{{ $pesanan->pelanggan->user->name ?? '-' }}</td>
+                  <td>
+                    @if(($pesanan->pelanggan->user->role ?? '') == 'superadmin')
+                      <span class="text-secondary fw-semibold">Offline / Walk-in</span>
+                    @else
+                      {{ $pesanan->pelanggan->user->name ?? '-' }}
+                    @endif
+                  </td>
+                  <td>
+                    @if(($pesanan->pelanggan->user->role ?? '') == 'superadmin')
+                      <span class="badge bg-secondary">Offline</span>
+                    @else
+                      <span class="badge bg-success">Online</span>
+                    @endif
+                  </td>
                   <td>{{ $pesanan->paketLaundry->nama_paket ?? '-' }}</td>
-                  <td>{{ $pesanan->jumlah_kilogram ? $pesanan->jumlah_kilogram.' Kg' : '-' }}</td>
+                  <td>
+                    @if($pesanan->dijemput == 'ya' && $pesanan->diantar == 'ya')
+                      <span class="badge bg-info text-white">Antar & Jemput</span>
+                    @elseif($pesanan->dijemput == 'ya')
+                      <span class="badge bg-warning text-dark">Jemput Saja</span>
+                    @elseif($pesanan->diantar == 'ya')
+                      <span class="badge bg-primary">Antar Saja</span>
+                    @else
+                      <span class="badge bg-secondary">Bawa Sendiri</span>
+                    @endif
+                  </td>
+                  <td>{{ $pesanan->jumlah_kilogram ? $pesanan->jumlah_kilogram . ' ' . (($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Helai' : 'Kg') : '-' }}</td>
                   <td>{{ $pesanan->total_harga ? 'Rp '.number_format($pesanan->total_harga,0,',','.') : 'Belum Dihitung' }}</td>
                   <td>
                     @if($pesanan->status_pesanan == 'menunggu_timbangan')
-                      <span class="badge bg-warning text-dark">Menunggu Timbangan</span>
+                      <span class="badge bg-warning text-dark">{{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Menunggu Dihitung' : 'Menunggu Timbangan' }}</span>
                     @elseif($pesanan->status_pesanan == 'diproses')
                       <span class="badge bg-primary">Diproses</span>
                     @elseif($pesanan->status_pesanan == 'selesai')
@@ -91,7 +118,9 @@
                   <td>{{ $pesanan->created_at->format('d M Y') }}</td>
                   <td>
                     <a href="{{ route('pesanan.show', $pesanan->id) }}" class="btn btn-sm btn-info text-white">Detail</a>
-                    <a href="{{ route('pesanan.edit', $pesanan->id) }}" class="btn btn-sm btn-warning">Timbang</a>
+                    <a href="{{ route('pesanan.edit', $pesanan->id) }}" class="btn btn-sm btn-warning">
+                      {{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Hitung' : 'Timbang' }}
+                    </a>
                     <form action="{{ route('pesanan.destroy', $pesanan->id) }}" method="POST" class="d-inline"
                           onsubmit="return confirm('Yakin hapus data ini?')">
                       @csrf @method('DELETE')
@@ -101,7 +130,7 @@
                 </tr>
                 @empty
                 <tr>
-                  <td colspan="8" class="text-center text-muted py-4">
+                  <td colspan="10" class="text-center text-muted py-4">
                     <i class="bi bi-inbox fs-3 d-block mb-2"></i>
                     Tidak ada pesanan dengan status ini.
                   </td>

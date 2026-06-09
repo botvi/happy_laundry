@@ -28,10 +28,17 @@
             <div class="card-body">
               <form action="{{ route('diskon.store') }}" method="POST">
                 @csrf
+                 <div class="mb-3">
+                  <label class="form-label">Satuan <span class="text-danger">*</span></label>
+                  <select name="satuan" class="form-control" required>
+                      <option value="kg">Kg</option>
+                      <option value="helai">Helai</option>
+                  </select>
+                </div>
                 <div class="mb-3">
-                  <label class="form-label">Minimal Berat (KG) <span class="text-danger">*</span></label>
-                  <input type="number" step="0.1" name="minimal_berat_kg" class="form-control" placeholder="Contoh: 5.0" required>
-                  <small class="text-muted">Diskon akan diterapkan jika berat cucian melebihi atau sama dengan batas ini.</small>
+                  <label class="form-label">Minimal Jumlah / Berat <span class="text-danger">*</span></label>
+                  <input type="number" step="0.1" name="minimal_berat_kg" class="form-control" placeholder="Contoh: 5" required>
+                  <small class="text-muted">Diskon akan diterapkan jika jumlah (Helai) atau berat (Kg) cucian melebihi atau sama dengan batas ini.</small>
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Tipe Diskon <span class="text-danger">*</span></label>

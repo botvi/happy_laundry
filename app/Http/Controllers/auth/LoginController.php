@@ -20,29 +20,29 @@ class LoginController extends Controller
             'username' => 'required',
             'password' => 'required',
         ]);
-    
+
         $username = $request->username;
         $password = $request->password;
-        
+
         // Coba login dengan username atau email
         $credentials = [
             'password' => $password
         ];
-        
+
         // Jika input mengandung @, anggap sebagai email
         if (strpos($username, '@') !== false) {
             $credentials['email'] = $username;
         } else {
             $credentials['username'] = $username;
         }
-    
+
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             if ($user->role == 'superadmin') {
-                Alert::success('Login Mantap!', 'Welcome back, Superadmin! Siap-siap ngatur dunia 😎');
+                Alert::success('Login Berhasil', 'Selamat datang di web Happy Laundry!');
                 return redirect()->route('dashboard-superadmin');
             } else if ($user->role == 'user') {
-                Alert::success('Login Mantap!', 'Halo bro, selamat datang lagi di Linkskuy!');
+                Alert::success('Login Berhasil', 'Selamat datang di web Happy Laundry!');
                 return redirect()->route('index');
             } else {
                 Auth::logout();
@@ -50,8 +50,8 @@ class LoginController extends Controller
                 return redirect('/login');
             }
         }
-    
-        Alert::error('Login Failed', 'Username atau password kamu salah, bro!');
+
+        Alert::error('Login Gagal', 'Username atau password kamu salah, bro!');
         return back();
     }
 
@@ -60,7 +60,7 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        Alert::success('Yah, cabut dulu ya?', 'Logout sukses, jangan lupa balik lagi bro!');
+        Alert::success('Logout Berhasil', 'Logout sukses');
         return redirect('/');
     }
 }

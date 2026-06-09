@@ -29,9 +29,16 @@
               <form action="{{ route('diskon.update', $diskon->id) }}" method="POST">
                 @csrf
                 @method('PUT')
+                 <div class="mb-3">
+                  <label class="form-label">Satuan <span class="text-danger">*</span></label>
+                  <select name="satuan" class="form-control" required>
+                      <option value="kg" {{ ($diskon->satuan ?? 'kg') == 'kg' ? 'selected' : '' }}>Kg</option>
+                      <option value="helai" {{ ($diskon->satuan ?? 'kg') == 'helai' ? 'selected' : '' }}>Helai</option>
+                  </select>
+                </div>
                 <div class="mb-3">
-                  <label class="form-label">Minimal Berat (KG) <span class="text-danger">*</span></label>
-                  <input type="number" step="0.1" name="minimal_berat_kg" class="form-control" value="{{ $diskon->minimal_berat_kg }}" required>
+                  <label class="form-label">Minimal Jumlah / Berat <span class="text-danger">*</span></label>
+                  <input type="number" step="0.1" name="minimal_berat_kg" class="form-control" value="{{ (float)$diskon->minimal_berat_kg }}" required>
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Tipe Diskon <span class="text-danger">*</span></label>

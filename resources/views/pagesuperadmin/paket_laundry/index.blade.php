@@ -33,7 +33,8 @@
                       <th>No</th>
                       <th>Nama Paket</th>
                       <th>Deskripsi</th>
-                      <th>Harga per Kg (Rp)</th>
+                      <th>Satuan</th>
+                      <th>Harga (Rp)</th>
                       <th>Aksi</th>
                     </tr>
                   </thead>
@@ -43,7 +44,14 @@
                       <td>{{ $loop->iteration }}</td>
                       <td>{{ $paket->nama_paket }}</td>
                       <td>{{ $paket->deskripsi }}</td>
-                      <td>{{ number_format($paket->harga_paket_per_kg, 0, ',', '.') }}</td>
+                      <td>
+                        @if($paket->satuan == 'kg')
+                          <span class="badge bg-light-primary text-primary">Per Kg</span>
+                        @else
+                          <span class="badge bg-light-success text-success">Per Helai</span>
+                        @endif
+                      </td>
+                      <td>Rp. {{ number_format($paket->harga_paket_per_kg, 0, ',', '.') }}</td>
                       <td>
                         <a href="{{ route('paket-laundry.edit', $paket->id) }}" class="btn btn-sm btn-warning">Edit</a>
                         <form action="{{ route('paket-laundry.destroy', $paket->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin hapus data ini?')">

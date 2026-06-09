@@ -18,7 +18,7 @@ class BuatPesananController extends Controller
         $paket_id = $request->query('paket_id');
         $pakets = PaketLaundry::all();
         $ongkos = SettingOngkos::first();
-        
+
         return view('pageuser.pesanan.buatpesanan', compact('pakets', 'ongkos', 'paket_id'));
     }
 
@@ -30,10 +30,11 @@ class BuatPesananController extends Controller
             'latitude_antar_jemput' => 'nullable|string',
             'longitude_antar_jemput' => 'nullable|string',
             'ongkir_antar_jemput' => 'nullable|numeric',
+            'catatan_pelanggan' => 'nullable|string',
         ]);
 
         $user = Auth::user();
-        
+
         // Ensure pelanggan exists for this user
         $pelanggan = Pelanggan::firstOrCreate(
             ['user_id' => $user->id]
@@ -50,6 +51,7 @@ class BuatPesananController extends Controller
             'latitude_antar_jemput' => $request->latitude_antar_jemput,
             'longitude_antar_jemput' => $request->longitude_antar_jemput,
             'ongkir_antar_jemput' => $request->antar_jemput == 'ya' ? $request->ongkir_antar_jemput : null,
+            'catatan_pelanggan' => $request->catatan_pelanggan,
             'jumlah_kilogram' => null,
             'gambar_bukti_timbangan' => null,
             'total_harga' => null,

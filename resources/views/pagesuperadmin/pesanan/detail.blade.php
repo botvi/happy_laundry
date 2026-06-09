@@ -29,11 +29,27 @@
                 <table class="table table-borderless">
                     <tr>
                         <th width="30%">Nama Pelanggan</th>
-                        <td>: {{ $pesanan->pelanggan->user->name ?? '-' }}</td>
+                        <td>: 
+                            @if(($pesanan->pelanggan->user->role ?? '') == 'superadmin')
+                                <span class="text-secondary fw-semibold">Offline / Walk-in</span>
+                            @else
+                                {{ $pesanan->pelanggan->user->name ?? '-' }}
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Tipe Pesanan</th>
+                        <td>: 
+                            @if(($pesanan->pelanggan->user->role ?? '') == 'superadmin')
+                                <span class="badge bg-secondary">Offline</span>
+                            @else
+                                <span class="badge bg-success">Online</span>
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <th>Paket Laundry</th>
-                        <td>: {{ $pesanan->paketLaundry->nama_paket ?? '-' }} (Rp {{ number_format($pesanan->paketLaundry->harga_paket_per_kg ?? 0, 0, ',', '.') }} / kg)</td>
+                        <td>: {{ $pesanan->paketLaundry->nama_paket ?? '-' }} (Rp {{ number_format($pesanan->paketLaundry->harga_paket_per_kg ?? 0, 0, ',', '.') }} / {{ $pesanan->paketLaundry->satuan ?? 'kg' }})</td>
                     </tr>
                     <tr>
                         <th>Dijemput</th>
@@ -48,8 +64,14 @@
                         <td>: Rp {{ number_format($pesanan->ongkir_antar_jemput ?? 0, 0, ',', '.') }}</td>
                     </tr>
                     <tr>
-                        <th>Jumlah Berat</th>
-                        <td>: {{ $pesanan->jumlah_kilogram ?? 0 }} Kg</td>
+                        <th>
+                            @if(($pesanan->paketLaundry->satuan ?? 'kg') == 'helai')
+                                Jumlah
+                            @else
+                                Jumlah Berat
+                            @endif
+                        </th>
+                        <td>: {{ $pesanan->jumlah_kilogram ?? 0 }} {{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Helai' : 'Kg' }}</td>
                     </tr>
                     <tr>
                         <th>Potongan Harga (Diskon)</th>
@@ -61,8 +83,19 @@
                     </tr>
                     <tr>
                         <th>Status</th>
-                        <td>: {{ strtoupper($pesanan->status_pesanan) }}</td>
+                        <td>: 
+                            @if($pesanan->status_pesanan == 'menunggu_timbangan')
+                                {{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'MENUNGGU DIHITUNG' : 'MENUNGGU TIMBANGAN' }}
+                            @else
+                                {{ strtoupper(str_replace('_', ' ', $pesanan->status_pesanan)) }}
+                            @endif
+                        </td>
                     </tr>
+                    <tr>
+                        <th>Catatan Pelanggan</th>
+                        <td>: {{ $pesanan->catatan_pelanggan ?? '-' }}</td>
+                    </tr> 
+                    @if(($pesanan->paketLaundry->satuan ?? 'kg') != 'helai')
                     <tr>
                         <th>Bukti Timbangan</th>
                         <td>: 
@@ -73,6 +106,7 @@
                             @endif
                         </td>
                     </tr>
+                    @endif
                 </table>
 
                 <div class="text-end mt-4">

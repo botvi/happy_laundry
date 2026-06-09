@@ -36,8 +36,15 @@
                   <label class="form-label">Deskripsi</label>
                   <textarea name="deskripsi" class="form-control" rows="3" required></textarea>
                 </div>
+                 <div class="form-group">
+                  <label class="form-label">Satuan</label>
+                  <select name="satuan" class="form-control" required>
+                    <option value="kg">Per Kg</option>
+                    <option value="helai">Per Helai</option>
+                  </select>
+                </div>
                 <div class="form-group">
-                  <label class="form-label">Harga per Kg (Rp)</label>
+                  <label class="form-label">Harga per Satuan (Rp)</label>
                   <input type="number" name="harga_paket_per_kg" class="form-control" required>
                 </div>
                 <div class="text-end mt-4">

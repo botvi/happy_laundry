@@ -121,35 +121,61 @@
 
     <table>
         <thead>
-            <tr>
-                <th>No</th>
-                <th>Pelanggan</th>
-                <th>Paket</th>
-                <th>Berat (Kg)</th>
-                <th>Ongkir</th>
-                <th>Diskon</th>
-                <th>Total Harga</th>
-                <th>Status</th>
-                <th>Tanggal</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($pesanans as $p)
-                <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $p->pelanggan->user->name ?? '-' }}</td>
-                    <td>{{ $p->paketLaundry->nama_paket ?? '-' }}</td>
-                    <td>{{ $p->jumlah_kilogram ?? '-' }}</td>
-                    <td>{{ $p->ongkir_antar_jemput ? 'Rp ' . number_format($p->ongkir_antar_jemput, 0, ',', '.') : '-' }}</td>
-                    <td>{{ $p->potongan_harga ? 'Rp ' . number_format($p->potongan_harga, 0, ',', '.') : '-' }}</td>
-                    <td>{{ $p->total_harga ? 'Rp ' . number_format($p->total_harga, 0, ',', '.') : '-' }}</td>
-                    <td>{{ strtoupper(str_replace('_', ' ', $p->status_pesanan)) }}</td>
-                    <td>{{ $p->created_at->format('d M Y') }}</td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="9" style="text-align:center;padding:12px;color:#888;">Tidak ada data.</td>
-                </tr>
+             <tr>
+                 <th>No</th>
+                 <th>Pelanggan</th>
+                 <th>Tipe</th>
+                 <th>Paket</th>
+                 <th>Jumlah / Berat</th>
+                 <th>Ongkir</th>
+                 <th>Diskon</th>
+                 <th>Total Harga</th>
+                 <th>Status</th>
+                 <th>Tanggal</th>
+             </tr>
+         </thead>
+         <tbody>
+             @forelse($pesanans as $p)
+                 <tr>
+                     <td>{{ $loop->iteration }}</td>
+                     <td>
+                         @if(($p->pelanggan->user->role ?? '') == 'superadmin')
+                             Offline / Walk-in
+                         @else
+                             {{ $p->pelanggan->user->name ?? '-' }}
+                         @endif
+                     </td>
+                     <td>
+                         @if(($p->pelanggan->user->role ?? '') == 'superadmin')
+                             Offline
+                         @else
+                             Online
+                         @endif
+                     </td>
+                     <td>{{ $p->paketLaundry->nama_paket ?? '-' }}</td>
+                     <td>
+                         @if($p->jumlah_kilogram)
+                             {{ $p->jumlah_kilogram }} {{ ($p->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Helai' : 'Kg' }}
+                         @else
+                             -
+                         @endif
+                     </td>
+                     <td>{{ $p->ongkir_antar_jemput ? 'Rp ' . number_format($p->ongkir_antar_jemput, 0, ',', '.') : '-' }}</td>
+                     <td>{{ $p->potongan_harga ? 'Rp ' . number_format($p->potongan_harga, 0, ',', '.') : '-' }}</td>
+                     <td>{{ $p->total_harga ? 'Rp ' . number_format($p->total_harga, 0, ',', '.') : '-' }}</td>
+                     <td>
+                         @if($p->status_pesanan == 'menunggu_timbangan')
+                             {{ ($p->paketLaundry->satuan ?? 'kg') == 'helai' ? 'MENUNGGU DIHITUNG' : 'MENUNGGU TIMBANGAN' }}
+                         @else
+                             {{ strtoupper(str_replace('_', ' ', $p->status_pesanan)) }}
+                         @endif
+                     </td>
+                     <td>{{ $p->created_at->format('d M Y') }}</td>
+                 </tr>
+             @empty
+                 <tr>
+                     <td colspan="10" style="text-align:center;padding:12px;color:#888;">Tidak ada data.</td>
+                 </tr>
             @endforelse
         </tbody>
     </table>

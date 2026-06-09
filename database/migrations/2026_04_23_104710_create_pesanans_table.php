@@ -23,6 +23,7 @@ return new class extends Migration {
             $table->string('gambar_bukti_timbangan')->nullable();
             $table->integer('total_harga')->nullable();
             $table->string('status_pesanan')->nullable();
+            $table->longText('catatan_pelanggan')->nullable();
             $table->timestamps();
         });
     }

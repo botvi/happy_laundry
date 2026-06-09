@@ -23,7 +23,7 @@
                     <p class="text-muted flex-grow-1 mb-4">{{ $paket->deskripsi }}</p>
                     <div class="mt-auto">
                         <div class="p-3 rounded-4 mb-4" style="background: rgba(255, 117, 85, 0.05);">
-                            <h3 class="gradient-text fw-bold mb-0">Rp {{ number_format($paket->harga_paket_per_kg, 0, ',', '.') }} <span class="text-muted fs-6 fw-normal">/ kg</span></h3>
+                            <h3 class="gradient-text fw-bold mb-0">Rp {{ number_format($paket->harga_paket_per_kg, 0, ',', '.') }} <span class="text-muted fs-6 fw-normal">/ {{ $paket->satuan ?? 'kg' }}</span></h3>
                         </div>
                         <a href="{{ route('user.pesanan.create', ['paket_id' => $paket->id]) }}" class="btn btn-modern w-100 py-3 shadow-sm">
                             <i class="bi bi-cart-plus me-2"></i> Pilih Paket Ini

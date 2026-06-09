@@ -54,7 +54,7 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>Paket</th>
-                                        <th>Berat (Kg)</th>
+                                        <th>Jumlah / Berat</th>
                                         <th>Total Harga</th>
                                         <th>Status</th>
                                         <th>Tanggal</th>
@@ -64,11 +64,17 @@
                                     @forelse($user->pelanggan->pesanan ?? [] as $pesanan)
                                     <tr>
                                         <td>{{ $pesanan->paketLaundry->nama_paket ?? '-' }}</td>
-                                        <td>{{ $pesanan->jumlah_kilogram ?? '-' }}</td>
+                                        <td>
+                                            @if($pesanan->jumlah_kilogram)
+                                                {{ $pesanan->jumlah_kilogram }} {{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Helai' : 'Kg' }}
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
                                         <td>{{ $pesanan->total_harga ? 'Rp '.number_format($pesanan->total_harga,0,',','.') : 'Belum dihitung' }}</td>
                                         <td>
                                             @if($pesanan->status_pesanan == 'menunggu_timbangan')
-                                                <span class="badge bg-warning text-dark">Menunggu Timbangan</span>
+                                                <span class="badge bg-warning text-dark">{{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Menunggu Dihitung' : 'Menunggu Timbangan' }}</span>
                                             @elseif($pesanan->status_pesanan == 'diproses')
                                                 <span class="badge bg-primary">Diproses</span>
                                             @elseif($pesanan->status_pesanan == 'selesai')

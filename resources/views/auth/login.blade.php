@@ -95,8 +95,26 @@
         </form>
     </div>
 
-    <!-- custom js link -->
-    <script src="{{ asset('linkskuy') }}/assets/js/auth.js"></script>
+    <!-- show password script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('[data-password-toggle]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const group = this.closest('.password-input-group');
+                    const input = group.querySelector('input');
+                    const icon = this.querySelector('ion-icon');
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.setAttribute('name', 'eye-off-outline');
+                    } else {
+                        input.type = 'password';
+                        icon.setAttribute('name', 'eye-outline');
+                    }
+                });
+            });
+        });
+    </script>
     @include('sweetalert::alert')
 
     <!-- ionicon link -->

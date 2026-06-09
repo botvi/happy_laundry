@@ -87,19 +87,7 @@
                 @enderror
             </div>
 
-            <!-- Email Field -->
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-                    <ion-icon name="mail-outline" class="text-lg"></ion-icon>
-                    Email
-                </label>
-                <input type="email" id="email" name="email"
-                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#dc653d] focus:border-[#dc653d] outline-none transition-all @error('email') border-red-500 @enderror" placeholder="Masukkan alamat email"
-                    value="{{ old('email') }}" required>
-                @error('email')
-                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+
 
             <!-- Password Field -->
             <div>
@@ -168,8 +156,26 @@
         </form>
     </div>
 
-    <!-- custom js link -->
-    <script src="{{ asset('linkskuy') }}/assets/js/auth.js"></script>
+    <!-- show password script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('[data-password-toggle]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const group = this.closest('.password-input-group');
+                    const input = group.querySelector('input');
+                    const icon = this.querySelector('ion-icon');
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.setAttribute('name', 'eye-off-outline');
+                    } else {
+                        input.type = 'password';
+                        icon.setAttribute('name', 'eye-outline');
+                    }
+                });
+            });
+        });
+    </script>
     @include('sweetalert::alert')
 
     <!-- ionicon link -->

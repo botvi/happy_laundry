@@ -28,7 +28,7 @@
                             <i class="ti ti-clock-hour4" style="font-size:1.6rem;color:#e6a817;"></i>
                         </div>
                         <div>
-                            <p class="mb-0 text-muted small">Menunggu Timbangan</p>
+                            <p class="mb-0 text-muted small">Menunggu Timbang/Hitung</p>
                             <h3 class="mb-0 fw-bold">{{ $pesananMenunggu }}</h3>
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                         <canvas id="chartStatus" height="220"></canvas>
                         <div class="mt-3 w-100">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span><span class="badge bg-warning text-dark me-1">&nbsp;</span> Menunggu Timbangan</span>
+                                <span><span class="badge bg-warning text-dark me-1">&nbsp;</span> Menunggu Timbang/Hitung</span>
                                 <strong>{{ $pesananMenunggu }}</strong>
                             </div>
                             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -145,7 +145,7 @@
                                 <td>{{ $p->total_harga ? 'Rp '.number_format($p->total_harga,0,',','.') : '-' }}</td>
                                 <td>
                                     @if($p->status_pesanan == 'menunggu_timbangan')
-                                        <span class="badge bg-warning text-dark">Menunggu Timbangan</span>
+                                        <span class="badge bg-warning text-dark">{{ ($p->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Menunggu Dihitung' : 'Menunggu Timbangan' }}</span>
                                     @elseif($p->status_pesanan == 'diproses')
                                         <span class="badge bg-primary">Diproses</span>
                                     @elseif($p->status_pesanan == 'selesai')

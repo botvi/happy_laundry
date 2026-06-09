@@ -99,7 +99,7 @@
                         <i class="bi bi-truck"></i>
                     </div>
                     <h4 class="fw-bold mb-3" style="color: var(--dark);">Antar Jemput</h4>
-                    <p class="text-muted">Tidak perlu keluar rumah. Kurir kami siap menjemput dan mengantar pakaian Anda langsung ke lokasi.</p>
+                    <p class="text-muted">Tidak perlu keluar rumah. Kami siap menjemput dan mengantar pakaian Anda langsung ke lokasi.</p>
                 </div>
             </div>
         </div>
@@ -146,7 +146,7 @@
                     <p class="text-muted mb-4">{{ $paket->deskripsi ?? 'Paket cuci premium dengan hasil maksimal' }}</p>
                     <div class="mb-4">
                         <span class="fs-2 fw-bold gradient-text">Rp {{ number_format($paket->harga_paket_per_kg, 0, ',', '.') }}</span>
-                        <span class="text-muted">/ kg</span>
+                        <span class="text-muted">/ {{ $paket->satuan ?? 'kg' }}</span>
                     </div>
                     <a href="{{ route('login') }}" class="btn btn-outline-primary w-100 rounded-pill py-2">Pilih Paket Ini</a>
                 </div>

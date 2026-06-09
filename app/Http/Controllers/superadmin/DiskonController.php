@@ -24,6 +24,7 @@ class DiskonController extends Controller
     {
         $request->validate([
             'minimal_berat_kg' => 'required|numeric|min:0.1',
+            'satuan'           => 'required|in:kg,helai',
             'tipe_diskon'      => 'required|in:persen,nominal',
             'nilai_diskon'     => 'required|numeric|min:1',
         ]);
@@ -43,6 +44,7 @@ class DiskonController extends Controller
     {
         $request->validate([
             'minimal_berat_kg' => 'required|numeric|min:0.1',
+            'satuan'           => 'required|in:kg,helai',
             'tipe_diskon'      => 'required|in:persen,nominal',
             'nilai_diskon'     => 'required|numeric|min:1',
         ]);

@@ -28,7 +28,8 @@ class PaketLaundryController extends Controller
         $request->validate([
             'nama_paket' => 'required|string',
             'deskripsi' => 'required',
-            'harga_paket_per_kg' => 'required|numeric'
+            'harga_paket_per_kg' => 'required|numeric',
+            'satuan' => 'required|in:kg,helai'
         ]);
 
         PaketLaundry::create($request->all());
@@ -52,7 +53,8 @@ class PaketLaundryController extends Controller
         $request->validate([
             'nama_paket' => 'required|string',
             'deskripsi' => 'required',
-            'harga_paket_per_kg' => 'required|numeric'
+            'harga_paket_per_kg' => 'required|numeric',
+            'satuan' => 'required|in:kg,helai'
         ]);
 
         $paket = PaketLaundry::findOrFail($id);

@@ -26,7 +26,7 @@
     <div class="d-flex gap-2 flex-wrap mb-4 p-2 bg-white rounded-pill shadow-sm d-inline-flex border">
         @foreach([
             ['key'=>'semua',              'label'=>'Semua',              'count'=>$semua,    'color'=>'#6c757d', 'icon'=>'bi-list-ul'],
-            ['key'=>'menunggu_timbangan', 'label'=>'Menunggu Timbangan', 'count'=>$menunggu, 'color'=>'#e6a817', 'icon'=>'bi-hourglass-split'],
+            ['key'=>'menunggu_timbangan', 'label'=>'Menunggu Timbang / Hitung', 'count'=>$menunggu, 'color'=>'#e6a817', 'icon'=>'bi-hourglass-split'],
             ['key'=>'diproses',           'label'=>'Diproses',           'count'=>$proses,   'color'=>'#0d6efd', 'icon'=>'bi-arrow-repeat'],
             ['key'=>'selesai',            'label'=>'Selesai',            'count'=>$selesai,  'color'=>'#198754', 'icon'=>'bi-check2-circle'],
         ] as $tab)
@@ -89,7 +89,9 @@
                     <div class="d-flex align-items-center gap-2">
                         @if($status == 'menunggu_timbangan')
                             <i class="bi bi-hourglass-split fs-5" style="color:#e6a817;"></i>
-                            <span class="fw-semibold" style="color:#e6a817;">Menunggu Timbangan</span>
+                            <span class="fw-semibold" style="color:#e6a817;">
+                                {{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Menunggu Dihitung' : 'Menunggu Timbangan' }}
+                            </span>
                         @elseif($status == 'diproses')
                             <i class="bi bi-arrow-repeat fs-5 text-primary"></i>
                             <span class="fw-semibold text-primary">Sedang Diproses</span>
@@ -122,22 +124,34 @@
                                 {{-- Harga per Kg --}}
                                 <div class="col-6 col-sm-4">
                                     <div class="p-3 rounded-3" style="background:#f8f9fa;">
-                                        <div class="text-muted small mb-1"><i class="bi bi-tag me-1"></i>Harga per Kg</div>
+                                        <div class="text-muted small mb-1">
+                                            <i class="bi bi-tag me-1"></i>Harga per {{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Helai' : 'Kg' }}
+                                        </div>
                                         <div class="fw-bold" style="color:#dc653d;">
                                             Rp {{ number_format($hargaPerKg, 0, ',', '.') }}
                                         </div>
                                     </div>
                                 </div>
+                                @if($pesanan->catatan_pelanggan)
+                                    <div class="col-12">
+                                        <div class="p-3 rounded-3" style="background: #e1f5ff; border: 1px solid #b3e5fc;">
+                                            <div class="text-muted small mb-1"><i class="bi bi-chat-dots me-1"></i>Catatan Anda</div>
+                                            <p class="mb-0" style="color: #01579b;">{{ $pesanan->catatan_pelanggan }}</p>
+                                        </div>
+                                    </div>
+                                @endif  
 
                                 {{-- Berat --}}
                                 <div class="col-6 col-sm-4">
                                     <div class="p-3 rounded-3" style="background:#f8f9fa;">
-                                        <div class="text-muted small mb-1"><i class="bi bi-speedometer2 me-1"></i>Berat Timbangan</div>
+                                        <div class="text-muted small mb-1">
+                                            <i class="bi bi-speedometer2 me-1"></i>{{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Jumlah' : 'Berat Timbangan' }}
+                                        </div>
                                         <div class="fw-bold">
                                             @if($beratKg)
-                                                {{ $beratKg }} Kg
+                                                {{ $beratKg }} {{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Helai' : 'Kg' }}
                                             @else
-                                                <span class="text-muted fst-italic small">Belum ditimbang</span>
+                                                <span class="text-muted fst-italic small">Belum {{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'dihitung' : 'ditimbang' }}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -210,7 +224,7 @@
                         </div>
 
                         {{-- KANAN: Bukti Timbangan --}}
-                        @if($pesanan->gambar_bukti_timbangan)
+                        @if(($pesanan->paketLaundry->satuan ?? 'kg') != 'helai' && $pesanan->gambar_bukti_timbangan)
                         <div class="col-md-4">
                             <div class="h-100 d-flex flex-column">
                                 <p class="text-muted small fw-semibold mb-2">

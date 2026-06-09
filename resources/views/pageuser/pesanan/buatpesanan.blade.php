@@ -24,7 +24,7 @@
                                     <option value="">-- Pilih Paket --</option>
                                     @foreach($pakets as $paket)
                                         <option value="{{ $paket->id }}" {{ $paket_id == $paket->id ? 'selected' : '' }}>
-                                            {{ $paket->nama_paket }} - Rp {{ number_format($paket->harga_paket_per_kg, 0, ',', '.') }} / kg
+                                            {{ $paket->nama_paket }} - Rp {{ number_format($paket->harga_paket_per_kg, 0, ',', '.') }} / {{ $paket->satuan ?? 'kg' }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -54,7 +54,7 @@
                                         </div>
                                         <div>
                                             <div class="fw-bold">Antar Sendiri</div>
-                                            <small class="text-muted">Bawa langsung ke outlet</small>
+                                            <small class="text-muted">Bawa langsung to outlet</small>
                                         </div>
                                     </label>
                                 </div>
@@ -93,9 +93,15 @@
                         <div class="alert bg-primary-subtle border-0 rounded-4 d-flex align-items-center mt-4">
                             <i class="bi bi-info-circle-fill text-primary fs-3 me-3"></i> 
                             <div class="text-dark">
-                                <strong>Catatan:</strong> Total harga laundry (kg × harga paket) akan dihitung secara akurat oleh admin setelah pakaian ditimbang.
+                                <strong>Catatan:</strong> Total harga laundry (jumlah/berat × harga paket) akan dihitung secara akurat oleh admin setelah pakaian ditimbang/dihitung.
                             </div>
                         </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Catatan Tambahan (Opsional)</label>
+                            <textarea name="catatan_pelanggan" class="form-control border-2 rounded-4 p-3" rows="3" placeholder="Contoh: Fokus di baju putih saja, jangan campur dengan warna gelap.">{{ old('catatan_pelanggan') }}</textarea>
+                            <div class="form-text">Tulis instruksi khusus untuk tim laundry</div>
+                        </div>  
 
                         <button type="submit" class="btn btn-modern w-100 py-3 mt-4 fs-5 rounded-pill shadow-lg d-flex align-items-center justify-content-center" id="btnSubmit">
                             <i class="bi bi-check-circle me-2"></i> Buat Pesanan Sekarang

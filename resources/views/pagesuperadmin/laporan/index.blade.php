@@ -50,7 +50,7 @@
                         <label class="form-label fw-semibold">Status</label>
                         <select name="status" class="form-select">
                             <option value="">Semua Status</option>
-                            <option value="menunggu_timbangan" {{ request('status') == 'menunggu_timbangan' ? 'selected' : '' }}>Menunggu Timbangan</option>
+                            <option value="menunggu_timbangan" {{ request('status') == 'menunggu_timbangan' ? 'selected' : '' }}>Menunggu Timbangan / Dihitung</option>
                             <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
                             <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
                         </select>
@@ -135,8 +135,9 @@
                             <tr>
                                 <th>No</th>
                                 <th>Pelanggan</th>
+                                <th>Tipe</th>
                                 <th>Paket</th>
-                                <th>Berat (Kg)</th>
+                                <th>Jumlah / Berat</th>
                                 <th>Ongkir</th>
                                 <th>Total Harga</th>
                                 <th>Status</th>
@@ -147,14 +148,33 @@
                             @forelse($pesanans as $p)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $p->pelanggan->user->name ?? '-' }}</td>
+                                <td>
+                                    @if(($p->pelanggan->user->role ?? '') == 'superadmin')
+                                        <span class="text-secondary fw-semibold">Offline / Walk-in</span>
+                                    @else
+                                        {{ $p->pelanggan->user->name ?? '-' }}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if(($p->pelanggan->user->role ?? '') == 'superadmin')
+                                        <span class="badge bg-secondary">Offline</span>
+                                    @else
+                                        <span class="badge bg-success">Online</span>
+                                    @endif
+                                </td>
                                 <td>{{ $p->paketLaundry->nama_paket ?? '-' }}</td>
-                                <td>{{ $p->jumlah_kilogram ?? '-' }}</td>
+                                <td>
+                                    @if($p->jumlah_kilogram)
+                                        {{ $p->jumlah_kilogram }} {{ ($p->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Helai' : 'Kg' }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td>{{ $p->ongkir_antar_jemput ? 'Rp '.number_format($p->ongkir_antar_jemput,0,',','.') : '-' }}</td>
                                 <td>{{ $p->total_harga ? 'Rp '.number_format($p->total_harga,0,',','.') : '-' }}</td>
                                 <td>
                                     @if($p->status_pesanan == 'menunggu_timbangan')
-                                        <span class="badge bg-warning text-dark">Menunggu Timbangan</span>
+                                        <span class="badge bg-warning text-dark">{{ ($p->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Menunggu Dihitung' : 'Menunggu Timbangan' }}</span>
                                     @elseif($p->status_pesanan == 'diproses')
                                         <span class="badge bg-primary">Diproses</span>
                                     @elseif($p->status_pesanan == 'selesai')
@@ -166,7 +186,7 @@
                                 <td>{{ $p->created_at->format('d M Y') }}</td>
                             </tr>
                             @empty
-                            <tr><td colspan="8" class="text-center text-muted py-4">Tidak ada data.</td></tr>
+                            <tr><td colspan="9" class="text-center text-muted py-4">Tidak ada data.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
