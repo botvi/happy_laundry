@@ -31,9 +31,19 @@
                         <th width="30%">Nama Pelanggan</th>
                         <td>: 
                             @if(($pesanan->pelanggan->user->role ?? '') == 'superadmin')
-                                <span class="text-secondary fw-semibold">Offline / Walk-in</span>
+                                <span class="text-secondary fw-semibold">Offline ({{ $pesanan->nama_pelanggan ?? 'Walk-in' }})</span>
                             @else
                                 {{ $pesanan->pelanggan->user->name ?? '-' }}
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>No WhatsApp</th>
+                        <td>: 
+                            @if(($pesanan->pelanggan->user->role ?? '') == 'superadmin')
+                                {{ $pesanan->no_wa ?? '-' }}
+                            @else
+                                {{ $pesanan->pelanggan->user->no_wa ?? '-' }}
                             @endif
                         </td>
                     </tr>

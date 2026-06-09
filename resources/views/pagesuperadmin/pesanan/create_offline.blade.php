@@ -30,6 +30,17 @@
                 @csrf
                 
                 <div class="form-group mb-3">
+                  <label class="form-label">Nama Pelanggan</label>
+                  <input type="text" name="nama_pelanggan" class="form-control" required placeholder="Masukkan nama pelanggan">
+                </div>
+
+                <div class="form-group mb-3">
+                  <label class="form-label">No WhatsApp Pelanggan</label>
+                  <input type="text" name="no_wa" class="form-control" required placeholder="Contoh: 081234567890">
+                  <small class="text-muted">Gunakan format angka saja (misal: 0812xxx atau 62812xxx).</small>
+                </div>
+
+                <div class="form-group mb-3">
                   <label class="form-label">Pilih Paket Laundry</label>
                   <select name="paket_laundry_id" id="paketSelect" class="form-control" required>
                     <option value="" data-satuan="kg">-- Pilih Paket --</option>

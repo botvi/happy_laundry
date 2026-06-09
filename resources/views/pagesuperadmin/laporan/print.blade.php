@@ -140,7 +140,7 @@
                      <td>{{ $loop->iteration }}</td>
                      <td>
                          @if(($p->pelanggan->user->role ?? '') == 'superadmin')
-                             Offline / Walk-in
+                             Offline ({{ $p->nama_pelanggan ?? 'Walk-in' }})
                          @else
                              {{ $p->pelanggan->user->name ?? '-' }}
                          @endif

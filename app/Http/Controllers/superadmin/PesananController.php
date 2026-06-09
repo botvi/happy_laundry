@@ -113,6 +113,8 @@ class PesananController extends Controller
     public function storeOffline(Request $request)
     {
         $request->validate([
+            'nama_pelanggan' => 'required|string|max:255',
+            'no_wa' => 'required|string|max:20',
             'paket_laundry_id' => 'required|exists:paket_laundries,id',
             'status_pesanan' => 'required',
             'catatan_pelanggan' => 'nullable|string',
@@ -160,9 +162,11 @@ class PesananController extends Controller
 
         $totalHarga = $hargaLaundry - $potongan;
 
-        Pesanan::create([
+        $pesanan = Pesanan::create([
             'pelanggan_id' => $pelanggan->id,
             'paket_laundry_id' => $paket->id,
+            'nama_pelanggan' => $request->nama_pelanggan,
+            'no_wa' => $request->no_wa,
             'dijemput' => 'tidak',
             'diantar' => 'tidak',
             'ongkir_antar_jemput' => null,
@@ -174,7 +178,10 @@ class PesananController extends Controller
             'catatan_pelanggan' => $request->catatan_pelanggan,
         ]);
 
-        Alert::success('Berhasil', 'Pesanan Offline berhasil dibuat!');
+        // ======== KIRIM NOTIFIKASI WA via Fonnte ========
+        $this->kirimNotifikasiWA($pesanan, $gambarTimbangan);
+
+        Alert::success('Berhasil', 'Pesanan Offline berhasil dibuat! Notifikasi WA telah dikirim.');
         return redirect()->route('pesanan.index');
     }
 
@@ -183,12 +190,12 @@ class PesananController extends Controller
     // ─────────────────────────────────────────────────────
     private function kirimNotifikasiWA(Pesanan $pesanan, ?string $newGambar): void
     {
-        $noWa = $pesanan->pelanggan->user->no_wa ?? null;
-        $isOffline = ($pesanan->pelanggan->user->role ?? '') === 'superadmin';
-        if (!$noWa || $isOffline)
-            return; // User tidak punya nomor WA atau pesanan offline
+        $noWa = $pesanan->no_wa ?: ($pesanan->pelanggan->user->no_wa ?? null);
+        $isOfflineWithoutWa = (($pesanan->pelanggan->user->role ?? '') === 'superadmin' && !$pesanan->no_wa);
+        if (!$noWa || $isOfflineWithoutWa)
+            return; // User tidak punya nomor WA atau pesanan offline tanpa nomor WA
 
-        $nama = $pesanan->pelanggan->user->name;
+        $nama = $pesanan->nama_pelanggan ?: ($pesanan->pelanggan->user->name ?? '-');
         $paket = $pesanan->paketLaundry->nama_paket ?? '-';
         $status = strtoupper(str_replace('_', ' ', $pesanan->status_pesanan));
         $berat = $pesanan->jumlah_kilogram;
