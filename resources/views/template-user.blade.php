@@ -274,9 +274,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('user.paket') }}">Daftar Paket</a>
                     </li>
+                    @auth
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('user.riwayat') }}">Riwayat Pesanan</a>
                     </li>
+                    @endauth
                     @auth
                         <li class="nav-item ms-3">
                             <div class="dropdown">
