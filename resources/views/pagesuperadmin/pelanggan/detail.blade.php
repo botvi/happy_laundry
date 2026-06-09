@@ -31,7 +31,6 @@
                             {{ strtoupper(substr($user->name, 0, 1)) }}
                         </div>
                         <h4 class="fw-bold mb-1">{{ $user->name }}</h4>
-                        <p class="text-muted mb-3">{{ $user->email }}</p>
                         <hr>
                         <div class="text-start">
                             <p class="mb-2"><i class="ti ti-phone me-2 text-muted"></i> {{ $user->no_wa ?? '-' }}</p>

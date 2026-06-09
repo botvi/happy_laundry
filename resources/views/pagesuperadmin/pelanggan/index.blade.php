@@ -30,7 +30,6 @@
                                 <th>No</th>
                                 <th>Nama</th>
                                 <th>Username</th>
-                                <th>Email</th>
                                 <th>No. WA</th>
                                 <th>Alamat</th>
                                 <th>Total Pesanan</th>
@@ -43,7 +42,6 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->username }}</td>
-                                <td>{{ $user->email }}</td>
                                 <td>{{ $user->no_wa ?? '-' }}</td>
                                 <td>{{ $user->pelanggan->alamat ?? '-' }}</td>
                                 <td>
