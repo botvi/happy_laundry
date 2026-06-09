@@ -78,7 +78,7 @@
                   <td>{{ $loop->iteration }}</td>
                   <td>
                     @if(($pesanan->pelanggan->user->role ?? '') == 'superadmin')
-                      <span class="text-secondary fw-semibold">({{ $pesanan->nama_pelanggan ?? 'Walk-in' }})</span>
+                      <span class="text-secondary fw-semibold">{{ $pesanan->nama_pelanggan ?? 'Walk-in' }}</span>
                     @else
                       {{ $pesanan->pelanggan->user->name ?? '-' }}
                     @endif
