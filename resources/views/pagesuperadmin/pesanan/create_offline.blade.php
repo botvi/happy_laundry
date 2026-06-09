@@ -72,11 +72,6 @@
                   </select>
                 </div>
 
-                <div class="form-group mb-3">
-                  <label class="form-label">Catatan Pelanggan / Catatan Tambahan (Opsional)</label>
-                  <textarea name="catatan_pelanggan" class="form-control" rows="3" placeholder="Tulis catatan atau detail pelanggan offline (misal: Nama/No HP pelanggan)"></textarea>
-                </div>
-
                 <div class="text-end mt-4">
                   <a href="{{ route('pesanan.index') }}" class="btn btn-secondary">Kembali</a>
                   <button type="submit" class="btn btn-primary">Simpan & Hitung Total</button>

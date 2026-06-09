@@ -117,7 +117,6 @@ class PesananController extends Controller
             'no_wa' => 'required|string|max:20',
             'paket_laundry_id' => 'required|exists:paket_laundries,id',
             'status_pesanan' => 'required',
-            'catatan_pelanggan' => 'nullable|string',
         ]);
 
         $paket = \App\Models\PaketLaundry::findOrFail($request->paket_laundry_id);
@@ -175,7 +174,6 @@ class PesananController extends Controller
             'total_harga' => $totalHarga,
             'potongan_harga' => $potongan,
             'status_pesanan' => $request->status_pesanan,
-            'catatan_pelanggan' => $request->catatan_pelanggan,
         ]);
 
         // ======== KIRIM NOTIFIKASI WA via Fonnte ========
@@ -202,7 +200,7 @@ class PesananController extends Controller
         $labelSatuan = ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Jumlah' : 'Berat';
         $satuan = ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Helai' : 'Kg';
         $labelHargaPerSatuan = ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Harga/Helai' : 'Harga/Kg';
-        
+
         $hargaPerKg = number_format($pesanan->paketLaundry->harga_paket_per_kg ?? 0, 0, ',', '.');
         $hargaLaundry = number_format(($pesanan->paketLaundry->harga_paket_per_kg ?? 0) * $berat, 0, ',', '.');
         $ongkir = $pesanan->ongkir_antar_jemput
