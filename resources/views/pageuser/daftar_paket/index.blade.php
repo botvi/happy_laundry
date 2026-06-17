@@ -16,7 +16,10 @@
                 <div class="card-body d-flex flex-column text-center position-relative">
                     <div class="mb-4">
                         <div class="icon-box" style="width: 80px; height: 80px; font-size: 2.5rem;">
-                            <i class="bi bi-box-seam"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 24 24">
+                                <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                                <path d="m21.37 4.07-5-2A.9.9 0 0 0 16 2h-1c-.55 0-1 .45-1 1 0 1.1-.9 2-2 2s-2-.9-2-2c0-.55-.45-1-1-1H8c-.13 0-.25.02-.37.07l-5 2A1 1 0 0 0 2 5v6c0 .55.45 1 1 1h2v9c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-9h2c.55 0 1-.45 1-1V5a1 1 0 0 0-.63-.93M20 10h-3v10H7V10H4V5.68l4.13-1.65c.45 1.71 2.02 2.98 3.87 2.98s3.41-1.26 3.87-2.98L20 5.68z"/>
+                            </svg>
                         </div>
                     </div>
                     <h3 class="card-title fw-bold mb-3" style="color: var(--dark);">{{ $paket->nama_paket }}</h3>
