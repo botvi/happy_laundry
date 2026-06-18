@@ -34,14 +34,7 @@
                                     <input type="text" name="name" class="form-control border-start-0 ps-0" value="{{ $user->name }}" required>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Email</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-muted"></i></span>
-                                    <input type="email" class="form-control border-start-0 ps-0 text-muted" value="{{ $user->email }}" readonly disabled style="background-color: #f8f9fa;">
-                                </div>
-                                <small class="text-muted mt-1 d-block"><i class="bi bi-info-circle me-1"></i>Email tidak dapat diubah.</small>
-                            </div>
+                           
                             <div class="col-md-12">
                                 <label class="form-label">No WhatsApp</label>
                                 <div class="input-group">

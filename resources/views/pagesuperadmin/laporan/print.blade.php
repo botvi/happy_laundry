@@ -140,7 +140,7 @@
                      <td>{{ $loop->iteration }}</td>
                      <td>
                          @if(($p->pelanggan->user->role ?? '') == 'superadmin')
-                            ({{ $p->nama_pelanggan ?? 'Walk-in' }})
+                            {{ $p->nama_pelanggan ?? 'Walk-in' }}
                          @else
                              {{ $p->pelanggan->user->name ?? '-' }}
                          @endif
