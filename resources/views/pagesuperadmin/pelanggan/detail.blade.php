@@ -76,6 +76,8 @@
                                                 <span class="badge bg-warning text-dark">{{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Menunggu Dihitung' : 'Menunggu Timbangan' }}</span>
                                             @elseif($pesanan->status_pesanan == 'diproses')
                                                 <span class="badge bg-primary">Diproses</span>
+                                            @elseif($pesanan->status_pesanan == 'diantar')
+                                                <span class="badge bg-info">Diantar</span>
                                             @elseif($pesanan->status_pesanan == 'selesai')
                                                 <span class="badge bg-success">Selesai</span>
                                             @else

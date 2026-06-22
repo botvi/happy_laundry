@@ -68,6 +68,7 @@
                   <select name="status_pesanan" id="statusSelect" class="form-control" required>
                     <option value="menunggu_timbangan">Menunggu Timbangan / Dihitung</option>
                     <option value="diproses" selected>Diproses</option>
+                    <option value="diantar">Diantar</option>
                     <option value="selesai">Selesai</option>
                   </select>
                 </div>

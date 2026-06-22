@@ -52,6 +52,7 @@
                             <option value="">Semua Status</option>
                             <option value="menunggu_timbangan" {{ request('status') == 'menunggu_timbangan' ? 'selected' : '' }}>Menunggu Timbangan / Dihitung</option>
                             <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
+                            <option value="diantar" {{ request('status') == 'diantar' ? 'selected' : '' }}>Diantar</option>
                             <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
                         </select>
                     </div>
@@ -177,6 +178,8 @@
                                         <span class="badge bg-warning text-dark">{{ ($p->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Menunggu Dihitung' : 'Menunggu Timbangan' }}</span>
                                     @elseif($p->status_pesanan == 'diproses')
                                         <span class="badge bg-primary">Diproses</span>
+                                    @elseif($p->status_pesanan == 'diantar')
+                                        <span class="badge bg-info">Diantar</span>
                                     @elseif($p->status_pesanan == 'selesai')
                                         <span class="badge bg-success">Selesai</span>
                                     @else

@@ -25,6 +25,7 @@
         $semua     = $pesanans->count();
         $menunggu  = $pesanans->where('status_pesanan', 'menunggu_timbangan')->count();
         $diproses  = $pesanans->where('status_pesanan', 'diproses')->count();
+        $diantar   = $pesanans->where('status_pesanan', 'diantar')->count();
         $selesai   = $pesanans->where('status_pesanan', 'selesai')->count();
         $aktifTab  = request('status', 'semua');
       @endphp
@@ -36,6 +37,7 @@
           ['key'=>'semua',             'label'=>'Semua',              'count'=>$semua,    'color'=>'secondary'],
           ['key'=>'menunggu_timbangan','label'=>'Menunggu Timbangan', 'count'=>$menunggu, 'color'=>'warning'],
           ['key'=>'diproses',          'label'=>'Diproses',           'count'=>$diproses, 'color'=>'primary'],
+          ['key'=>'diantar',           'label'=>'Diantar',            'count'=>$diantar,  'color'=>'info'],
           ['key'=>'selesai',           'label'=>'Selesai',            'count'=>$selesai,  'color'=>'success'],
         ] as $tab)
         <li class="nav-item" role="presentation">
@@ -109,6 +111,8 @@
                       <span class="badge bg-warning text-dark">{{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Menunggu Dihitung' : 'Menunggu Timbangan' }}</span>
                     @elseif($pesanan->status_pesanan == 'diproses')
                       <span class="badge bg-primary">Diproses</span>
+                    @elseif($pesanan->status_pesanan == 'diantar')
+                      <span class="badge bg-info">Diantar</span>
                     @elseif($pesanan->status_pesanan == 'selesai')
                       <span class="badge bg-success">Selesai</span>
                     @else

@@ -52,6 +52,20 @@
                 <div class="card border-0 shadow-sm">
                     <div class="card-body d-flex align-items-center gap-3">
                         <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle"
+                             style="width:56px;height:56px;background:#e0f7fa;">
+                            <i class="ti ti-truck" style="font-size:1.6rem;color:#0dcaf0;"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0 text-muted small">Diantar</p>
+                            <h3 class="mb-0 fw-bold">{{ $pesananDiantar }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle"
                              style="width:56px;height:56px;background:#d1ecf1;">
                             <i class="ti ti-currency-dollar" style="font-size:1.6rem;color:#17a2b8;"></i>
                         </div>
@@ -107,6 +121,10 @@
                                 <span><span class="badge bg-primary me-1">&nbsp;</span> Diproses</span>
                                 <strong>{{ $pesananProses }}</strong>
                             </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><span class="badge bg-info me-1">&nbsp;</span> Diantar</span>
+                                <strong>{{ $pesananDiantar }}</strong>
+                            </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span><span class="badge bg-success me-1">&nbsp;</span> Selesai</span>
                                 <strong>{{ $pesananSelesai }}</strong>
@@ -148,6 +166,8 @@
                                         <span class="badge bg-warning text-dark">{{ ($p->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Menunggu Dihitung' : 'Menunggu Timbangan' }}</span>
                                     @elseif($p->status_pesanan == 'diproses')
                                         <span class="badge bg-primary">Diproses</span>
+                                    @elseif($p->status_pesanan == 'diantar')
+                                        <span class="badge bg-info">Diantar</span>
                                     @elseif($p->status_pesanan == 'selesai')
                                         <span class="badge bg-success">Selesai</span>
                                     @else
@@ -258,7 +278,7 @@
             labels: statusLabels,
             datasets: [{
                 data: statusData,
-                backgroundColor: ['#ffc107', '#0d6efd', '#198754'],
+                backgroundColor: ['#ffc107', '#0d6efd', '#0dcaf0', '#198754'],
                 borderWidth: 2,
                 borderColor: '#fff',
                 hoverOffset: 8,

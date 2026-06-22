@@ -75,6 +75,7 @@
                       {{ ($pesanan->paketLaundry->satuan ?? 'kg') == 'helai' ? 'Menunggu Dihitung' : 'Menunggu Timbangan' }}
                     </option>
                     <option value="diproses" {{ $pesanan->status_pesanan == 'diproses' ? 'selected' : '' }}>Diproses</option>
+                    <option value="diantar" {{ $pesanan->status_pesanan == 'diantar' ? 'selected' : '' }}>Diantar</option>
                     <option value="selesai" {{ $pesanan->status_pesanan == 'selesai' ? 'selected' : '' }}>Selesai</option>
                   </select>
                 </div>

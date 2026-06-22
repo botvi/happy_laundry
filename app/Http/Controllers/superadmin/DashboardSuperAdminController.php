@@ -17,6 +17,7 @@ class DashboardSuperAdminController extends Controller
       $totalPesanan     = Pesanan::count();
       $pesananMenunggu  = Pesanan::where('status_pesanan', 'menunggu_timbangan')->count();
       $pesananProses    = Pesanan::where('status_pesanan', 'diproses')->count();
+      $pesananDiantar   = Pesanan::where('status_pesanan', 'diantar')->count();
       $pesananSelesai   = Pesanan::where('status_pesanan', 'selesai')->count();
       $totalPendapatan  = Pesanan::where('status_pesanan', 'selesai')->sum('total_harga');
       $pesananTerbaru   = Pesanan::with(['pelanggan.user', 'paketLaundry'])
@@ -43,12 +44,12 @@ class DashboardSuperAdminController extends Controller
       }
 
       // ── Chart: Status Pesanan (Pie/Donut) ────────────────────────────
-      $statusLabels = ['Menunggu Timbangan', 'Diproses', 'Selesai'];
-      $statusData   = [$pesananMenunggu, $pesananProses, $pesananSelesai];
+      $statusLabels = ['Menunggu Timbangan', 'Diproses', 'Diantar', 'Selesai'];
+      $statusData   = [$pesananMenunggu, $pesananProses, $pesananDiantar, $pesananSelesai];
 
       return view('pagesuperadmin.dashboard.index', compact(
          'totalPelanggan', 'totalPesanan', 'pesananMenunggu',
-         'pesananProses', 'pesananSelesai', 'totalPendapatan', 'pesananTerbaru',
+         'pesananProses', 'pesananDiantar', 'pesananSelesai', 'totalPendapatan', 'pesananTerbaru',
          'chartLabels', 'chartPendapatan', 'chartPesanan',
          'statusLabels', 'statusData'
       ));

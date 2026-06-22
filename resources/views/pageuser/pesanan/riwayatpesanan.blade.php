@@ -19,6 +19,7 @@
         $semua    = $pesanans->count();
         $menunggu = $pesanans->where('status_pesanan', 'menunggu_timbangan')->count();
         $proses   = $pesanans->where('status_pesanan', 'diproses')->count();
+        $diantar  = $pesanans->where('status_pesanan', 'diantar')->count();
         $selesai  = $pesanans->where('status_pesanan', 'selesai')->count();
     @endphp
 
@@ -28,6 +29,7 @@
             ['key'=>'semua',              'label'=>'Semua',              'count'=>$semua,    'color'=>'#6c757d', 'icon'=>'bi-list-ul'],
             ['key'=>'menunggu_timbangan', 'label'=>'Menunggu Timbang / Hitung', 'count'=>$menunggu, 'color'=>'#e6a817', 'icon'=>'bi-hourglass-split'],
             ['key'=>'diproses',           'label'=>'Diproses',           'count'=>$proses,   'color'=>'#0d6efd', 'icon'=>'bi-arrow-repeat'],
+            ['key'=>'diantar',            'label'=>'Diantar',            'count'=>$diantar,  'color'=>'#0dcaf0', 'icon'=>'bi-truck'],
             ['key'=>'selesai',            'label'=>'Selesai',            'count'=>$selesai,  'color'=>'#198754', 'icon'=>'bi-check2-circle'],
         ] as $tab)
         <a href="{{ route('user.riwayat', ['status' => $tab['key']]) }}"
@@ -72,6 +74,7 @@
                 $headerBg = '#f5f5f5';
                 if ($status == 'menunggu_timbangan') $headerBg = '#fff8e1';
                 elseif ($status == 'diproses') $headerBg = '#e8f0fe';
+                elseif ($status == 'diantar') $headerBg = '#e0f7fa';
                 elseif ($status == 'selesai') $headerBg = '#e8f5e9';
 
                 $hargaPerKg  = $pesanan->paketLaundry->harga_paket_per_kg ?? 0;
@@ -95,11 +98,14 @@
                         @elseif($status == 'diproses')
                             <i class="bi bi-arrow-repeat fs-5 text-primary"></i>
                             <span class="fw-semibold text-primary">Sedang Diproses</span>
+                        @elseif($status == 'diantar')
+                            <i class="bi bi-truck fs-5 text-info"></i>
+                            <span class="fw-semibold text-info">Diantar</span>
                         @elseif($status == 'selesai')
                             <i class="bi bi-check-circle-fill fs-5 text-success"></i>
                             <span class="fw-semibold text-success">Selesai</span>
                         @else
-                            <span class="fw-semibold text-muted">{{ $status }}</span>
+                            <span class="fw-semibold text-muted">{{ strtoupper(str_replace('_', ' ', $status)) }}</span>
                         @endif
                     </div>
                     <div class="d-flex align-items-center gap-3">
